@@ -92,8 +92,21 @@ interface Node {
 - 可拖动  
 - 可同步其它相同类型节点  
 - 支持跨布局同步相同节点（待定）
+- 可更改节点类型
 
 三、节点介绍
 
 ### 节点类型
 
+
+
+
+
+
+### 长宽比计算公式
+
+nextWidth / width = scaleWidth 宽度放大缩小倍数
+nextHeight / height = scaleHeight 高度放大缩小倍数
+
+newHeight = scaleWidth * height
+newWidth = scaleHeight * width
