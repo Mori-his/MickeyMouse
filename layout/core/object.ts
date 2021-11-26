@@ -14,6 +14,9 @@ export class ParentData {
 }
 
 export function ContainerParentDataMixin<ChildType extends BasicNode>(Base: Class<ParentData>) {
+    /**
+     * 以链表的形式管理children
+     */
     class _ContainerParentDataMixin extends Base {
         previousSibling?: ChildType;
         nextSibling?: ChildType;
@@ -22,7 +25,7 @@ export function ContainerParentDataMixin<ChildType extends BasicNode>(Base: Clas
     }
     return _ContainerParentDataMixin
 }
-type ContainerParentDataMixin<ChildType> = {
+type ContainerParentDataMixin<ChildType extends BasicNode> = {
     previousSibling?: ChildType;
     nextSibling?: ChildType;
     detach(): void

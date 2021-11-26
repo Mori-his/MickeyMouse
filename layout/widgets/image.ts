@@ -1,6 +1,6 @@
 import { Widget, WidgetOptions } from "../core/layout";
 
-enum IMAGE_MODE {
+enum IMAGE_FIT {
     COVER,
     FILL,
     CONTAIN
@@ -9,7 +9,7 @@ enum IMAGE_MODE {
 interface ImageWidgetOptions extends WidgetOptions {
     src: string
     blur: boolean
-    mode: IMAGE_MODE
+    fit: IMAGE_FIT
 }
 
 export default class ImageWidget extends Widget {
