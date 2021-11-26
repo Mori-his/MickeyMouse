@@ -66,6 +66,13 @@ interface NodeProp {
   isDispatchOnClickEvent: boolean
   // 是否显示，默认显示
   visible: boolean
+  round: {
+    radius: number
+    borderColor: {
+      color: string,
+      alpha: number
+    }
+  }
 }
 interface Node {
   id: string
@@ -94,13 +101,48 @@ interface Node {
 - 支持跨布局同步相同节点（待定）
 - 可更改节点类型
 
-三、节点介绍
+## 三、节点介绍
 
 ### 节点类型
 
+- 文本节点  
+1、文本内容  
+2、字体大小  
+3、字体  
+4、字体颜色  
+5、最大行数  
+6、最大宽度  
+7、文本对齐包括左对齐右对齐居中
+8、格式化-正常和以万、千万、亿为基本单位
+10、展示类型  
+
+|文本展示类型|说明|取值|
+|:--:|:--:|:--:|
+|走马灯|如果文本超出会以走马灯形式展示文本|2|
+|截断|如果文本超出会截断字符串|1|
+|省略号|如果文本超出会以省略号展示(测试文本...)|0|
+
+- 图片节点  
+1、url  
+2、是否高斯模糊  
+3、显示模式-裁剪模式 cover|conatin|fill  
+
+- `view`节点
+1、背景色  支持水平|垂直线性渐变
+2、
 
 
 
+
+四、sync数据同步
+1、选择属性下拉框式
+2、下拉框可自定义编辑key
+3、手动输入sync表达式
+
+
+
+###  节点注意事项
+1、每个节点有的属性可以绑定sync有的属性不可以绑定`sync`
 
 
 ### 长宽比计算公式
@@ -110,3 +152,8 @@ nextHeight / height = scaleHeight 高度放大缩小倍数
 
 newHeight = scaleWidth * height
 newWidth = scaleHeight * width
+
+
+
+-----------------------------------
+# 功能实现部分
