@@ -1,23 +1,6 @@
 import { useRouter } from "next/router";
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import { ImageParentData, ImageWidget } from "../../layout/core/layout";
-
-
-
-const imageWidget = new ImageWidget()
-const imageWidget1 = new ImageWidget()
-const imageWidget2 = new ImageWidget()
-imageWidget.addAll([imageWidget1, imageWidget2])
-imageWidget.visitChildren((child) => {
-    console.log(child);
-})
-class Root {}
-
-const owner = new Root()
-
-imageWidget.attach(owner);
-// console.log(imageWidget)
 
 
 const Button = styled.div`

@@ -41,20 +41,20 @@ export class AdaptiveSize extends Size {
 
 export class Position {
     constructor(
-        public left: number | null,
-        public top: number | null,
-        public right: number | null,
-        public bottom: number | null
+        public left?: number,
+        public top?: number,
+        public right?: number,
+        public bottom?: number
     ) {
 
     }
 
     static origin() {
-        return new Position(0, 0, null, null);
+        return new Position(0, 0);
     }
 }
 
-type AdaptivePositionOptions = {
+export type AdaptivePositionOptions = {
     position?: Position,
     horizontal?: boolean,
     vertical?: boolean
@@ -82,24 +82,37 @@ export class AdaptivePosition extends Position {
     }
 }
 
-class LayoutParentData extends ParentData {
-    size: Size = Size.zero();
-    position: Position = new Position(null, null, null, null)
-    toString() {
-        return `
-            width: ${this.size.width}
-            height: ${this.size.height}
-            left: ${this.position.left}
-            top: ${this.position.top}
-            right: ${this.position.right}
-            bottom: ${this.position.bottom}
-        `
+export class LayoutParentData extends ParentData {
+    detach() {
+        super.detach();
     }
 }
+export interface LayoutOptions {
+    left: number
+    top: number
+    right: number
+    bottom: number
+    width: number
+    height: number
+    horizontal: boolean
+    vertical: boolean
+}
+export class Layout extends BasicNode {
+    left?: number
+    top?: number
+    right?: number
+    bottom?: number
+    horizontal?: boolean
+    vertical?: boolean
 
-class Layout extends BasicNode {
-    constructor() {
+    constructor(adaptivePosition: AdaptivePosition) {
         super();
+        this.left = adaptivePosition.left;
+        this.top = adaptivePosition.top;
+        this.right = adaptivePosition.right;
+        this.bottom = adaptivePosition.bottom;
+        this.horizontal = adaptivePosition.horizontal;
+        this.vertical = adaptivePosition.vertical;
     }
     setupParentData(child: BasicNode) {
         if (!(child.parentData instanceof LayoutParentData))
@@ -112,26 +125,26 @@ class Layout extends BasicNode {
     }
 }
 
-
-
-type ImageWidgetVisitor = (child: ImageWidget) => any;
-
-export class ImageParentData extends ContainerParentDataMixin<Layout>(LayoutParentData) {
-    background?: string
+export interface WidgetOptions extends AdaptivePosition {
+    id: string // 当前控件ID
+    name?: string // 当前控件名称
+    description?: string // 当前控件描述信息
+    type: string // 控件类型
 }
 
-export class ImageWidget extends ContainerNodeMixin<Layout, ImageParentData>(Layout) {
+// [ParentData]可以实现一些相对于父元素的定位信息
+export class WidgetParentData extends ContainerParentDataMixin<Layout>(LayoutParentData) {
     
-
-    
+    detach() {
+        super.detach();
+    }
 }
-
-
-
-
-
-
-
-
-// export default applyMixins(Layout, [AdaptivePosition, AdaptiveBox]);
-
+export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData>(Layout) {
+    constructor(options: WidgetOptions) {
+        super(new AdaptivePosition({
+            position: new Position(options.left, options.top, options.right, options.bottom),
+            horizontal: options.horizontal,
+            vertical: options.vertical
+        }));
+    }
+}

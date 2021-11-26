@@ -28,7 +28,7 @@ type ContainerParentDataMixin<ChildType> = {
     detach(): void
 }
 
-type BasicNodeVisitor = (child: BasicNode) => void
+type BasicNodeVisitor<T extends BasicNode> = (child: T) => void
 
 export default class BasicNode extends AbstractNode {
 
@@ -61,7 +61,7 @@ export default class BasicNode extends AbstractNode {
         super.detach();
     }
 
-    visitChildren(visitor: BasicNodeVisitor): void {}
+    visitChildren(visitor: BasicNodeVisitor<BasicNode>): void {}
 
 }
 
@@ -78,6 +78,9 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
     TargetClass: ClassType<BasicNode>
 ) {
     class _ContainerNodeMixin extends TargetClass {
+        constructor(...args: any[]) {
+            super(...args);
+        }
 
         private _childCount: number = 0;
         get childCount(): number {return this._childCount}
@@ -282,7 +285,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
          * 以访问者模式处理[children]
          * @param visitor 访问者
          */
-        visitChildren(visitor: BasicNodeVisitor) {
+        visitChildren(visitor: BasicNodeVisitor<ChildType>) {
             let child: ChildType = this._firstChild!;
             while(child) {
                 visitor(child);
