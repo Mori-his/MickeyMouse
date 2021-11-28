@@ -1,3 +1,4 @@
+import { ClassType } from '../types/types';
 import AbstractNode from './node';
 
 
@@ -25,7 +26,7 @@ export function ContainerParentDataMixin<ChildType extends BasicNode>(Base: Clas
     }
     return _ContainerParentDataMixin
 }
-type ContainerParentDataMixin<ChildType extends BasicNode> = {
+export type ContainerParentDataMixin<ChildType extends BasicNode> = {
     previousSibling?: ChildType;
     nextSibling?: ChildType;
     detach(): void
@@ -42,6 +43,11 @@ export default class BasicNode extends AbstractNode {
             child.parentData = new ParentData();
     }
 
+    /**
+     * 
+     * @param child 
+     * @override
+     */
     adoptChild(child: BasicNode) {
         assert(child);
         this.setupParentData(child);
@@ -68,7 +74,7 @@ export default class BasicNode extends AbstractNode {
 
 }
 
-type ClassType<T> = new(...args: any[]) => T;
+
 
 
 
@@ -122,8 +128,13 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
               childParentData = child.parentData! as ParentDataType;
             }
             return child === equals;
-          }
-    
+        }
+        
+        /**
+         * 插入子节点
+         * @param child 要插入的节点
+         * @param after 要插入到指定节点位置后面
+         */
         private _insertIntoChildList(child: ChildType, after?: ChildType) {
             const childParentData = child.parentData! as ParentDataType;
             assert(!childParentData.nextSibling);
@@ -169,7 +180,12 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
                 }
             }
         }
-    
+        
+        /**
+         * 插入子节点
+         * @param child 要插入的节点
+         * @param after 要插入此节点的子节点
+         */
         insert(child: ChildType, after?: ChildType) {
             assert(!Object.is(child, this), '不能插入到自身中');
             assert(!Object.is(after, this), '不能同时是另一个 BasicNode 的父级和兄弟级。');
@@ -181,13 +197,26 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             this._insertIntoChildList(child, after);
         }
 
+        /**
+         * 插入到节点末端
+         * @param child 新增子节点
+         */
         add(child: ChildType) {
             this.insert(child, this._lastChild);
         }
+
+        /**
+         * 插入节点集合到末端
+         * @param children 要插入的节点集合
+         */
         addAll(children: ChildType[]) {
             children.forEach(this.add.bind(this));
         }
 
+        /**
+         * 删除指定节点
+         * @param child 要删除的子节点
+         */
         private _removeFromChildList(child: ChildType) {
             const childParentData: ParentDataType = child.parentData! as ParentDataType;
             assert(this._debugUltimatePreviousSiblingOf(child, this._firstChild));
@@ -222,11 +251,18 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             this._childCount -= 1;
         }
 
+        /**
+         * 要删除的节点并且取消关联[owner]
+         * @param child 要删除的节点
+         */
         remove(child: ChildType) {
             this._removeFromChildList(child);
             this.dropChild(child);
         }
 
+        /**
+         * 删除所有节点
+         */
         removeAll() {
             let child: ChildType = this._firstChild!;
             while(child) {
@@ -242,6 +278,12 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             this._childCount = 0;
         }
 
+        /**
+         * 移动子节点到指定位置
+         * @param child 要移动的及诶单
+         * @param after 移动到此节点的后面
+         * @returns void
+         */
         move(child: ChildType, after?: ChildType) {
             assert(!Object.is(child, this));
             assert(!Object.is(after, this));
@@ -255,6 +297,11 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             // 这里要有个钩子
         }
 
+        /**
+         * 附加到目标
+         * @param owner 附加到此目标
+         * @override
+         */
         attach(owner: Object) {
             super.attach(owner);
             let child: ChildType = this._firstChild!;
@@ -265,6 +312,10 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             }
         }
 
+        /**
+         * 分离附加【owner]
+         * @override
+         */
         detach() {
             super.detach();
             let child: ChildType = this._firstChild!;
@@ -275,6 +326,9 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             }
         }
 
+        /**
+         * 重新计算所有子节点的[depth]深度
+         */
         redepthChildren() {
             let child: ChildType = this._firstChild!;
             while(child) {

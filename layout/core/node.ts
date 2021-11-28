@@ -2,9 +2,9 @@ const assert = console.assert;
 
 
 export default abstract class AbstractNode {
-    _depth: number = 0;
-    _owner: Object | null = null;
-    _parent: AbstractNode | null = null;
+    private _depth: number = 0;
+    private _owner: Object | null = null;
+    private _parent: AbstractNode | null = null;
 
     protected redepthChild(child: AbstractNode): void {
         assert(child.owner === this.owner);

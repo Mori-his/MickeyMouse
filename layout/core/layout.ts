@@ -88,14 +88,8 @@ export class LayoutParentData extends ParentData {
     }
 }
 export interface LayoutOptions {
-    left: number
-    top: number
-    right: number
-    bottom: number
-    width: number
-    height: number
-    horizontal: boolean
-    vertical: boolean
+    position: AdaptivePosition,
+    size: AdaptiveSize
 }
 export class Layout extends BasicNode {
     left?: number
@@ -104,21 +98,33 @@ export class Layout extends BasicNode {
     bottom?: number
     horizontal?: boolean
     vertical?: boolean
+    width?: number
+    height?: number
 
-    constructor(adaptivePosition: AdaptivePosition) {
+    constructor(options: Partial<LayoutOptions>) {
         super();
-        this.left = adaptivePosition.left;
-        this.top = adaptivePosition.top;
-        this.right = adaptivePosition.right;
-        this.bottom = adaptivePosition.bottom;
-        this.horizontal = adaptivePosition.horizontal;
-        this.vertical = adaptivePosition.vertical;
+        this.left = options?.position?.left;
+        this.top = options?.position?.top;
+        this.right = options?.position?.right;
+        this.bottom = options?.position?.bottom;
+        this.horizontal = options?.position?.horizontal;
+        this.vertical = options?.position?.vertical;
     }
+    /**
+     * 设置子节点的[ParentData]
+     * @param child 要设置[parentData]的子节点
+     * @override
+     */
     setupParentData(child: BasicNode) {
         if (!(child.parentData instanceof LayoutParentData))
             child.parentData = new LayoutParentData();
     }
 
+    /**
+     * 关联子节点
+     * @param child 要关联的子节点
+     * @override
+     */
     adoptChild(child: BasicNode) {
         this.setupParentData(child);
         super.adoptChild(child);
@@ -133,13 +139,14 @@ export interface WidgetOptions extends AdaptivePosition {
 }
 
 // [ParentData]可以实现一些相对于父元素的定位信息
+// 如果想自定义ParentData尝试混入[ContainerParentDataMixin]
 export class WidgetParentData extends ContainerParentDataMixin<Layout>(LayoutParentData) {
     
     detach() {
         super.detach();
     }
 }
-export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData>(Layout) {
+export class Widget extends ContainerNodeMixin<Layout, WidgetParentData>(Layout) {
     constructor(options: WidgetOptions) {
         super(new AdaptivePosition({
             position: new Position(options.left, options.top, options.right, options.bottom),

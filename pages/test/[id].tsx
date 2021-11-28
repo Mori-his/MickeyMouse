@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
+import { ContainerParentDataMixin } from "../../layout/core/object";
+import ImageWidget from "../../layout/widgets/image";
 
 
 const Button = styled.div`
@@ -8,7 +10,21 @@ const Button = styled.div`
     color: ${props => props.$color};
 `
 
+const imageWidget = new ImageWidget({
+    id: '33333',
+    type: 'Image'
+});
+const childImageWidget = new ImageWidget({
+    id: '4444',
+    type: 'Image'
+});
 
+
+imageWidget.add(childImageWidget);
+imageWidget.visitChildren((child) => {
+   const childParentData: ContainerParentDataMixin<ImageWidget> =  child.parentData!;
+   childParentData.nextSibling
+})
 
 class TestDecorator {
     @decoratorTest
