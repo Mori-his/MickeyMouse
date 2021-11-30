@@ -10,15 +10,7 @@ export interface Originator<State> {
     restoreMemento(): void
 }
 
-/**
- * TODO
- * 
- * 1、
- * 
- * 
- */
-
-class Memento<State> implements IMemento<State> {
+export class Memento<State> implements IMemento<State> {
 
     constructor(private _state: State, private _undo: IUndo<State>) {
 
@@ -35,7 +27,7 @@ class Memento<State> implements IMemento<State> {
 }
 
 
-class Caretaker {
+export class Caretaker {
     static instance: Caretaker = new Caretaker();
 
     static getInstance() {
@@ -46,7 +38,15 @@ class Caretaker {
     private _mementoCount: number = 0;
     private _nextMementos: any[] = [];
 
+    private _maxMemento: number = 100;
+    get maxMemento() { return this._maxMemento; }
+    set maxMemento(max) { this._maxMemento = max; }
+
     addMemento<State>(memento: Memento<State>) {
+        if (this._mementoCount >= this._maxMemento) {
+            // 查过最大存储量先进先出
+            this._mementos.shift();
+        }
         this._mementos.push(memento);
         this._mementoCount += 1;
         this._nextMementos = [];
@@ -62,7 +62,7 @@ class Caretaker {
         
     }
 
-    restoreFormMementoAt<State>(step: number) {
+    restoreFormMementoAt<State>(step: number = 1) {
         let restoreIndex: number;
         if (this._mementoCount < step) {
             restoreIndex = 0;

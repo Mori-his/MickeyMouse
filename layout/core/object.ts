@@ -62,14 +62,6 @@ export default class BasicNode extends AbstractNode {
         super.dropChild(child);
     }
 
-    attach(owner: Object) {
-        super.attach(owner);
-    }
-
-    detach() {
-        super.detach();
-    }
-
     visitChildren(visitor: BasicNodeVisitor<BasicNode>): void {}
 
 }
@@ -96,6 +88,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
         
         private _firstChild?: ChildType;
         get firstChild(): ChildType | undefined {return this._firstChild}
+
         private _lastChild?: ChildType;
         get lastChild(): ChildType | undefined {return this._lastChild}
     
@@ -105,7 +98,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
          * @param equals 要比较的child
          * @returns 是否相等
          */
-        private _debugUltimatePreviousSiblingOf(child: ChildType, equals?: ChildType): boolean {
+        protected _debugUltimatePreviousSiblingOf(child: ChildType, equals?: ChildType): boolean {
             let childParentData: ParentDataType = child.parentData! as ParentDataType;
             while (childParentData.previousSibling) {
                 assert(childParentData.previousSibling !== child);
@@ -120,7 +113,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
          * @param equals 要比较的节点
          * @returns 是否相等
          */
-        private _debugUltimateNextSiblingOf(child: ChildType, equals?: ChildType): boolean {
+        protected _debugUltimateNextSiblingOf(child: ChildType, equals?: ChildType): boolean {
             let childParentData: ParentDataType = child.parentData! as ParentDataType;
             while (childParentData.nextSibling) {
               assert(childParentData.nextSibling !== child);
@@ -135,7 +128,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
          * @param child 要插入的节点
          * @param after 要插入到指定节点位置后面
          */
-        private _insertIntoChildList(child: ChildType, after?: ChildType) {
+        protected _insertIntoChildList(child: ChildType, after?: ChildType): void {
             const childParentData = child.parentData! as ParentDataType;
             assert(!childParentData.nextSibling);
             assert(!childParentData.previousSibling);
@@ -156,6 +149,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
                 assert(this._debugUltimatePreviousSiblingOf(after, this._firstChild));
                 // _lastChild是否是尾部节点
                 assert(this._debugUltimateNextSiblingOf(after, this._lastChild));
+
                 const afterParentData = after.parentData! as ParentDataType;
                 if (!afterParentData.nextSibling) {
                     // after节点没有了下一个节点，说明after是最后一个节点
@@ -164,12 +158,13 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
                     childParentData.previousSibling = after;
                     // after节点下一个位置是当前要插入的节点
                     afterParentData.nextSibling = child;
+                    this._lastChild = child;
                 } else { // after 不是最后一个节点
                     // 当前节点的下个节点就是after的节点
                     childParentData.nextSibling = afterParentData.nextSibling;
                     // 当前节点的上一个节点就是after
                     childParentData.previousSibling = after;
-    
+
                     const childPreviousSiblingParentData: ParentDataType =  childParentData.previousSibling!.parentData! as ParentDataType;
                     const childNextSiblingParentData: ParentDataType = childParentData.nextSibling!.parentData! as ParentDataType;
                     // 当前节点的上一个节点的下一个节点是自己
@@ -186,7 +181,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
          * @param child 要插入的节点
          * @param after 要插入此节点的子节点
          */
-        insert(child: ChildType, after?: ChildType) {
+        insert(child: ChildType, after?: ChildType): void {
             assert(!Object.is(child, this), '不能插入到自身中');
             assert(!Object.is(after, this), '不能同时是另一个 BasicNode 的父级和兄弟级。');
             assert(child !== after, '不能插入在其自身之后');
