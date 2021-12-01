@@ -1,11 +1,10 @@
+import React from "react";
 import { useRouter } from "next/router";
-import { useQuery } from 'react-query';
-import styled from 'styled-components';
-import ImageWidget from "../../../layout/widgets/image";
 
+import { GlobalStyle } from '../../styles/globals'
+import Tabs from "../../components/container/tabs";
 
 class TestDecorator {
-    
     text = 123;
 }
 
@@ -13,25 +12,25 @@ function decoratorTest(target: any, a: any) {
     console.log(target, a);
 }
 
-const image = new ImageWidget({
-    id: '1111',
-    src: '',
-})
-console.log(image)
 
-
-function Users() {
+function LayoutConfigPage() {
     const router = useRouter();
     const { query } = router;
+    const handleTabClick = function(event: Event) {
+
+    }
     return (
-        <div>
-            <p>id: { query.id }</p>
-        </div>
+        <React.Fragment>
+            <GlobalStyle />
+            <div>
+                <Tabs />
+            </div>
+        </React.Fragment>
     );
 }
 
 
-export default Users;
+export default LayoutConfigPage;
 
 
 
