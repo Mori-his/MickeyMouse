@@ -10,13 +10,15 @@
 
 
 1、座位默认显示状态  
-- 座位默认显示主要应用于当客户端加载布局是默认显示的状态（待确认）
+- 座位默认显示主要应用于当客户端加载布局是默认显示的状态（待确认）  
 
 2、导入配置项  
-- 根据指定好的JSON规则加载对应布局
+- 根据指定好的JSON规则加载对应布局  
+- 对接DMG后台导入配置项(待确认)，可能也是后续要考虑的  
 
 3、导出配置项  
-- 根据设置好的布局配置导出对应的布局
+- 根据设置好的布局配置导出对应的布局  
+- 直接同步至DOM布局(待确认)  
 
 4、当前布局数据配置项  
 - 当前布局中额外的数据配置项用于对特殊布局做出相应处理
@@ -89,16 +91,17 @@ interface NodeProp {
     }
   }
 }
+type SyncData = {
+	[key in keyof NodeProp]: string
+}
 interface Node {
-  id: string
-  name: string
-  desc: string
-  data: {
-    // 绑定`sync`
-    // 主要包含[NodeProp]第一层的属性
-    [key in keyof NodeProp]: string
-  }
-  prop: NodeProp
+	id: string
+	name: string
+	desc: string
+	// 绑定`sync`
+	// 主要包含[NodeProp]第一层的属性	
+	data: SyncData
+	prop: NodeProp
 }
 
 ```

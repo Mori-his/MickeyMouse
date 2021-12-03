@@ -1,4 +1,4 @@
-import { action, computed, flow, makeObservable, observable,  } from 'mobx';
+import { action, computed, flow, makeAutoObservable, makeObservable, observable,  } from 'mobx';
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from '../../../layout/core/object';
 
 
@@ -8,14 +8,18 @@ export class OwnerParentData extends ContainerParentDataMixin<BasicNode>(ParentD
 
 export class Owner extends ContainerNodeMixin<BasicNode, OwnerParentData>(BasicNode) {
     static count: number = 1;
-    constructor(private _name?: string) {
+    constructor(public name?: string) {
         super();
-        this._name ??= `未命名${Owner.count}`
+        this.name ??= `未命名${Owner.count}`
         Owner.count++;
+        makeObservable(this, {
+            name: observable,
+            setName: action
+        });
     }
 
-    get name() {
-        return this._name;
+    setName(name: string) {
+        this.name = name;
     }
 
 }
@@ -33,9 +37,7 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
 
     constructor() {
         super();
-        if (this.childCount === 0) {
-            this.add(new Owner());
-        }
+        this.#initOnwer();
         makeObservable(this, {
             add: action,
             addAll: action,
@@ -57,6 +59,28 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
     updateSelectedIndex(index: number) {
         if (index > this.childCount) index = this.childCount;
         this.selectIndex = index;
+    }
+
+    remove(child: Owner) {
+        super.remove(child);
+        if (this.selectIndex >= this.childCount) {
+            this.selectIndex = this.childCount - 1;
+        }
+        if(this.childCount === 0) {
+            this.#initOnwer();
+        }
+    }
+
+    removeAll() {
+        super.removeAll();
+        this.#initOnwer();
+    }
+
+    #initOnwer() {
+        if (this.childCount === 0) {
+            this.add(new Owner());
+            this.selectIndex = 0;
+        }
     }
 }
 

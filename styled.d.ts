@@ -20,8 +20,8 @@ interface ContainerConfigs {
 interface ImageConfigs {
     $src: string
 }
-interface Configs {
-    $color: string
+interface Configs extends ImageConfigs, ContainerConfigs, LayoutConfigs, SizeConfigs {
+    
 }
 
 

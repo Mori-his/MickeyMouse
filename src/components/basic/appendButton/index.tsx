@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const AppendButtonWrapper = styled.div`
+    cursor: pointer;
     &:hover {
         .append-line {
             stroke: #fff;
