@@ -45,6 +45,22 @@ export const GlobalStyle = createGlobalStyle`
         border-collapse: collapse;
         border-spacing: 0;
     }
+    .fade-enter {
+        opacity: 0;
+    }
+    .fade-enter-active {
+        opacity: 1;
+        transition: opacity .5s;
+    }
+    .fade-exit {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .fade-exit-active {
+        opacity: 0;
+        transform: scale(0);
+        transition: opacity .5s, scale .5s;
+    }
 `;
 
 export const HiddenScrollbar = css`

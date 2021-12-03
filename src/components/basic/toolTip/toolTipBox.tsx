@@ -4,8 +4,8 @@ import { createPortal } from 'react-dom';
 import styled, { keyframes } from "styled-components";
 import { getOffsetLeft, getOffsetTop, getStyleAttr } from "../../../utils/styleTool";
 
-const transitionName = 'tooltip';
-const transitionTime = 300;
+const transitionName = 'fade';
+const transitionTime = 2000;
 const arrowSize = 8;
 
 
@@ -44,20 +44,7 @@ const ToolTipBox = styled.div<{
     padding: 10px;
     border-radius: 4px;
     font-size: 12px;
-    &.${transitionName}-enter {
-        opacity: 0;
-    }
-    &.${transitionName}-enter-active {
-        opacity: 1;
-        transition: opacity ${ transitionTime }ms;
-    }
-    &.${transitionName}-exit {
-        opacity: 1;
-    }
-    &.${transitionName}-exit-active {
-        opacity: 0;
-        transition: opacity ${ transitionTime }ms;
-    }
+    
 `
 
 export type Placement = 'top' | 'top-start' | 'top-end' |
