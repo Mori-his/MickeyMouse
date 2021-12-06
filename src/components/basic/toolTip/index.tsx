@@ -2,22 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ToolTipAttach, { Placement, ToolTipSize } from "./toolTipBox";
 
-
-
-
-
-const ToolTipWrapper = styled.div``
-
-
 export interface ToolTipProps {
-    title: string
+    title?: string
     size?: ToolTipSize,
     placement?: Placement
+    children: React.ReactElement
+    nodeRef?: React.Ref<HTMLElement>;
 }
 
-function ToolTip(props: React.PropsWithChildren<ToolTipProps>) {
-
-    const { size = 'middle', placement = 'bottom' } = props;
+function ToolTip(props: ToolTipProps) {
+    const { size = 'middle', placement = 'top', title = '' } = props;
     const toolRef = useRef<HTMLDivElement>(null);
     const [hasToolTip, setHasToolTip] = useState(false);
 
@@ -28,23 +22,24 @@ function ToolTip(props: React.PropsWithChildren<ToolTipProps>) {
         setHasToolTip(false);
     }
     const toolEl: HTMLDivElement = toolRef.current!;
-
-    return (
-        <ToolTipWrapper
-            ref={toolRef}
-            onMouseEnter={e => handleMouseEnter(e)}
-            onMouseLeave={e => handleMouseLeave(e)}
+    return title ? (
+        <React.Fragment
             >
-            { props.children }
+            { React.cloneElement(props.children, {
+                ref: toolRef,
+                onMouseEnter: (e: React.MouseEvent) => handleMouseEnter(e),
+                onMouseLeave: (e: React.MouseEvent) => handleMouseLeave(e)
+            }) }
             <ToolTipAttach
                 { ...props }
                 toolTipEl={ toolEl }
                 isAttach={ hasToolTip }
                 size={ size }
                 placement={ placement }
+                title={ title }
                 />
-        </ToolTipWrapper>
-    );
+        </React.Fragment>
+    ) : props.children;
 }
 
 export default ToolTip;

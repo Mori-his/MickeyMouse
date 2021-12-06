@@ -38,7 +38,6 @@ export function CloseButton(props: React.PropsWithChildren<CloseButtonProps>) {
                 size={ size }
                 hoverColor="#ff0000"
                 hoverBgColor="#fff"
-                title="删除, 请谨慎操作"
                 />
         </CloseWrapper>
     );

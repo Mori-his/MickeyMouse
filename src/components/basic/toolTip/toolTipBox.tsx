@@ -1,56 +1,80 @@
 import React, { useRef, useEffect, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { createPortal } from 'react-dom';
-import styled, { keyframes } from "styled-components";
-import { getOffsetLeft, getOffsetTop, getStyleAttr } from "../../../utils/styleTool";
+import styled, { css } from "styled-components";
+import TooltipComputed from "./toolTopComputed";
 
 const transitionName = 'fade';
-const transitionTime = 2000;
+const transitionTime = 30000000;
 const arrowSize = 8;
 
-
+export type Placement = 'top' | 'bottom';
+// 'top' | 'top-start' | 'top-end' |
+// 'bottom' | 'bottom-start' | 'bottom-end' |
+// 'right' | 'right-start' | 'right-end' |
+// 'left' | 'left-start' | 'left-end';
 
 export type ToolTipSize = 'small' | 'middle' | 'large';
 const sizeData: {[P in ToolTipSize]: number} = {
-    small: 300,
-    middle: 500,
-    large: 700
+    small: 150,
+    middle: 300,
+    large: 450
 }
 
-const ToolTipArrow = styled.div`
+export type LeftState = {
+    isLeft: boolean,
+    value: number
+}
+
+export type ToolTipArrowProps = {
+    left: number
+    top: number
+}
+
+const ArrowBox = styled.div<ToolTipArrowProps>`
     position: absolute;
-    top: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
+    width: 8px;
+    height: 8px;
+    z-index: 10;
+    top: ${props => props.top}px;
+    left: ${props => props.left}px;
     border: ${arrowSize}px solid transparent;
+`;
+
+const ToolTipArrowTop = styled(ArrowBox)`
+    /* transform: rotate(-45deg); */
+    border-color: #e2e2e2 transparent transparent  transparent;
+    `
+const ToolTipArrowBottom = styled(ArrowBox)`
+    /* transform: rotate(45deg); */
     border-color: transparent transparent #e2e2e2  transparent;
 `
 
-const ToolTipBox = styled.div<{
+type ToolTipBoxProps = {
     isAttach: boolean
     sizeValue: number
     top: number
-    left: number
-}>`
+    left: LeftState
+}
+
+/* left: ${props => props.left }px; */
+const ToolTipBox = styled.div<ToolTipBoxProps>`
     position: absolute;
-    left: ${props => props.left }px;
     top: ${props => props.top + 8 }px;
     max-width: ${ props => props.sizeValue }px;
     color: #5b5b5b;
     background-color: #e2e2e2;
-	box-shadow: 0px 2px 8px 0px #222831;
+    box-shadow: 0px 2px 8px 0px #222831;
     padding: 10px;
     border-radius: 4px;
     font-size: 12px;
-    
+    ${props => props.left.isLeft ? css`
+        left: ${props.left.value}px;
+    ` : css`
+        right: ${props.left.value}px;
+    `}
 `
 
-export type Placement = 'top' | 'top-start' | 'top-end' |
-                 'bottom' | 'bottom-start' | 'bottom-end' |
-                 'right' | 'right-start' | 'right-end' |
-                 'left' | 'left-start' | 'left-end';
 
 
 export interface ToolTipAttachProps {
@@ -61,92 +85,41 @@ export interface ToolTipAttachProps {
     placement: Placement
 }
 
-class TooltipComputed {
-
-    targetElStyles!: CSSStyleDeclaration
-    toolTipElStyles!: CSSStyleDeclaration
-    targetWidth!: number
-    targetHeight!: number
-    targetOffsetTop!: number
-    targetOffsetLeft!: number
-    toolTipWidth!: number
-    toolTipHeight!: number
-
-    constructor(public targetEl: HTMLElement, public toolTipEl: HTMLElement, public placement: Placement) {
-        this.init();
-    }
-
-    init() {
-        this.targetElStyles = getStyleAttr(this.targetEl) as CSSStyleDeclaration;
-        this.toolTipElStyles = getStyleAttr(this.toolTipEl) as CSSStyleDeclaration;
-
-        this.targetWidth = parseFloat(this.targetElStyles.width);
-        this.targetHeight = parseFloat(this.targetElStyles.height);
-
-        this.targetOffsetTop = getOffsetTop(this.targetEl);
-        this.targetOffsetLeft = getOffsetLeft(this.targetEl);
-
-        this.toolTipWidth = parseFloat(this.toolTipElStyles.width);
-        this.toolTipHeight = parseFloat(this.toolTipElStyles.height);
-    }
-
-    /**
-     * 是否超出边界
-     * @param left 当前Left值
-     * @param top  当前top值
-     */
-    isExceedEdges(left: number, top: number) {
-        if (left > 0) return true;
-        const { innerHeight, innerWidth } = window;
-        if (left + this.toolTipWidth > innerWidth) return true;
-        if (top + this.toolTipHeight > innerHeight) return true;
-    }
-
-    getOffsetTop() {
-        let top = this.targetOffsetTop + this.targetHeight;
-    }
-    getOffsetLeft() {
-        let left = (this.targetWidth - this.toolTipWidth) / 2 + this.targetOffsetLeft;
-        if (left > 0) {
-            left = 0;
-        }
-        return left;
-    }
-    getArrowLeft() {
-
-    }
-}
-
-
 function ToolTipAttach(props: React.PropsWithChildren<ToolTipAttachProps>) {
     const { toolTipEl, size, placement } = props;
     const sizeValue: number = sizeData[size];
     const [toolTipTop, setToolTipTop] = useState(0);
-    const [toolTipLeft, setToolTipLeft] = useState(0);
+    const [toolTipLeft, setToolTipLeft] = useState<{isLeft: boolean, value: number}>({
+        isLeft: true,
+        value: 0
+    });
     const [toolTipArrowOffset, setToolTipArrowOffset] = useState({
         left: 0,
         top: 0
     });
-    const nodeRef = React.useRef(null);
+    const [statePlacement, setStatePlacement] = useState(placement);
+    const nodeRef = useRef(null);
+    const toolTipBoxRef = useRef(null);
 
-    const handleToolTipBox = function(toolTipBoxEl: HTMLDivElement) {
-        if (toolTipBoxEl) {
-            const targetElStyles = getStyleAttr(toolTipEl) as CSSStyleDeclaration;
-            const toolTipElStyles = getStyleAttr(toolTipBoxEl) as CSSStyleDeclaration;
-
-            const targetWidth = parseFloat(targetElStyles.width);
-            const targetHeight = parseFloat(targetElStyles.height);
-
-            const targetOffsetTop = getOffsetTop(toolTipEl);
-            const targetOffsetLeft = getOffsetLeft(toolTipEl);
-
-            const toolTipWidth = parseFloat(toolTipElStyles.width);
-
-            setToolTipTop(targetOffsetTop + targetHeight);
-            // left =  (当前元素  - 提示盒子宽度) / 2  + 目标元素的OffsetLeft
-            setToolTipLeft((targetWidth - toolTipWidth) / 2 + targetOffsetLeft);
+    useEffect(() => {
+        if (props.isAttach && toolTipBoxRef.current) {
+            const tooltipComputed = new TooltipComputed(toolTipEl, toolTipBoxRef.current, placement);
+            setToolTipTop(tooltipComputed.top);
+            setToolTipLeft(typeof tooltipComputed.left === 'number' ? {
+                isLeft: true,
+                value: tooltipComputed.left
+            } : {
+                isLeft: false,
+                value: tooltipComputed.left.value
+            });
+            setToolTipArrowOffset({
+                left: tooltipComputed.arrowLeft,
+                top: tooltipComputed.arrowTop
+            });
+            setStatePlacement(tooltipComputed.placement);
         }
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.isAttach]);
 
     return process.browser ? createPortal(
         <CSSTransition
@@ -158,14 +131,24 @@ function ToolTipAttach(props: React.PropsWithChildren<ToolTipAttachProps>) {
             >
             <div ref={ nodeRef }>
                 <ToolTipBox
-                    ref={ handleToolTipBox }
+                    ref={ toolTipBoxRef }
                     isAttach={ props.isAttach }
                     sizeValue={ sizeValue }
                     top={ toolTipTop}
                     left={ toolTipLeft }
                     >
                     { props.title }
-                    <ToolTipArrow />
+                    {
+                        statePlacement === 'top' ?
+                        <ToolTipArrowTop
+                            left={toolTipArrowOffset.left}
+                            top={toolTipArrowOffset.top}
+                            />  :
+                        <ToolTipArrowBottom
+                            left={toolTipArrowOffset.left}
+                            top={toolTipArrowOffset.top}
+                            />
+                    }
                 </ToolTipBox>
             </div>
         </CSSTransition>

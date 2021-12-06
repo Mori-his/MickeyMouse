@@ -1,11 +1,13 @@
+import { useRef } from "react";
 import styled from "styled-components";
 import IconButton from "../../basic/iconButton";
+import ToolTip from "../../basic/toolTip";
 
 const TabSettingsWrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-wrap: wrap-reverse;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
     width: 100%;
     height: 48px;
 	background-color: #2a313c;
@@ -20,6 +22,13 @@ function TabSettings() {
             <IconButton
                 active={ false }
                 icon="import"
+                $title="导入配置项导入配置项导入配置项导入配置项导入配置项"
+                margin={{left: 8, right: 8}}
+                />
+            <IconButton
+                active={ false }
+                icon="settings"
+                $title="设置当前配置项设置当前配置项设置当前配置项设置当前配置项设置当前配置项设置当前配置项"
             />
         </TabSettingsWrapper>
     );
