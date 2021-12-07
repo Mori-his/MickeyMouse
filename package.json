@@ -5,7 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "yarn build && next export -o dist"
   },
   "dependencies": {
     "mobx": "^6.3.7",

@@ -1,4 +1,4 @@
-import { getOffsetLeft, getOffsetTop, getStyleAttr } from "../../../utils/styleTool"
+import { getOffsetLeft, getOffsetTop, getStyleAttr } from "@utils/styleTool"
 import { Placement } from "./toolTipBox"
 
 
@@ -143,7 +143,7 @@ export default class TooltipComputed {
     getArrowLeft() {
         const { scrollX } = this.exceedScrollAttrs;
         const targetLeft = this.targetOffsetLeft - scrollX;
-        let targetCenter = targetLeft  + this.targetWidth / 2;
+        let targetCenter = targetLeft  + this.targetWidth / 4;
         if (targetCenter < 0) targetCenter = 0;
         switch(this.#arrowWelt) {
             case 'left':

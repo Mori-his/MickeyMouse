@@ -1,7 +1,5 @@
-import { useRef } from "react";
 import styled from "styled-components";
-import IconButton from "../../basic/iconButton";
-import ToolTip from "../../basic/toolTip";
+import IconButton from "@components/basic/iconButton";
 
 const TabSettingsWrapper = styled.div`
     display: flex;
@@ -20,15 +18,13 @@ function TabSettings() {
     return (
         <TabSettingsWrapper>
             <IconButton
-                active={ false }
                 icon="import"
-                $title="导入配置项导入配置项导入配置项导入配置项导入配置项"
+                $title="导入配置项"
                 margin={{left: 8, right: 8}}
                 />
             <IconButton
-                active={ false }
                 icon="settings"
-                $title="设置当前配置项设置当前配置项设置当前配置项设置当前配置项设置当前配置项设置当前配置项"
+                $title="设置当前配置项"
             />
         </TabSettingsWrapper>
     );

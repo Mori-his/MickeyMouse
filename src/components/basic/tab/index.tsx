@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { CloseButton } from "../closeButton";
-import ToolTip from "../toolTip";
+import { CloseButton } from "@components/basic/closeButton";
+import ToolTip from "@components/basic/toolTip";
 
 
 const PageButtonWrapper = styled.div<{$active: boolean}>`

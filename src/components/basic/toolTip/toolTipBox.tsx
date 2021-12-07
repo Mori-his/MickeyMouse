@@ -2,10 +2,10 @@ import React, { useRef, useEffect, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { createPortal } from 'react-dom';
 import styled, { css } from "styled-components";
-import TooltipComputed from "./toolTopComputed";
+import TooltipComputed from "./toolTipComputed";
 
 const transitionName = 'fade';
-const transitionTime = 30000000;
+const transitionTime = 300;
 const arrowSize = 8;
 
 export type Placement = 'top' | 'bottom';
@@ -55,12 +55,14 @@ type ToolTipBoxProps = {
     sizeValue: number
     top: number
     left: LeftState
+    placement: Placement
 }
 
 /* left: ${props => props.left }px; */
 const ToolTipBox = styled.div<ToolTipBoxProps>`
     position: absolute;
-    top: ${props => props.top + 8 }px;
+    z-index: 10;
+    top: ${props => props.top + (props.placement === 'top' ? -arrowSize : arrowSize)}px;
     max-width: ${ props => props.sizeValue }px;
     color: #5b5b5b;
     background-color: #e2e2e2;
@@ -68,6 +70,7 @@ const ToolTipBox = styled.div<ToolTipBoxProps>`
     padding: 10px;
     border-radius: 4px;
     font-size: 12px;
+    line-height: 16px;
     ${props => props.left.isLeft ? css`
         left: ${props.left.value}px;
     ` : css`
@@ -125,8 +128,12 @@ function ToolTipAttach(props: React.PropsWithChildren<ToolTipAttachProps>) {
         <CSSTransition
             nodeRef={ nodeRef }
             in={ props.isAttach }
-            classNames={ transitionName }
-            timeout={ transitionTime }
+            classNames={ transitionName + ' tooltip-transition' }
+            timeout={{
+                enter: transitionTime,
+                appear: transitionTime,
+                exit: transitionTime / 3
+            }}
             unmountOnExit
             >
             <div ref={ nodeRef }>
@@ -136,6 +143,7 @@ function ToolTipAttach(props: React.PropsWithChildren<ToolTipAttachProps>) {
                     sizeValue={ sizeValue }
                     top={ toolTipTop}
                     left={ toolTipLeft }
+                    placement={ statePlacement }
                     >
                     { props.title }
                     {

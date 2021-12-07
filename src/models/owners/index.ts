@@ -1,5 +1,5 @@
 import { action, computed, flow, makeAutoObservable, makeObservable, observable,  } from 'mobx';
-import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from '../../../layout/core/object';
+import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from '@layout/core/object';
 
 
 export class OwnerParentData extends ContainerParentDataMixin<BasicNode>(ParentData) {

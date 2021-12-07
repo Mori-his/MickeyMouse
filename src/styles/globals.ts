@@ -45,12 +45,15 @@ export const GlobalStyle = createGlobalStyle`
         border-collapse: collapse;
         border-spacing: 0;
     }
+    body {
+        background-color: #222831;
+    }
     .fade-enter {
         opacity: 0;
     }
     .fade-enter-active {
         opacity: 1;
-        transition: opacity .5s;
+        transition: opacity .3s;
     }
     .fade-exit {
         opacity: 1;
@@ -59,7 +62,10 @@ export const GlobalStyle = createGlobalStyle`
     .fade-exit-active {
         opacity: 0;
         transform: scale(0);
-        transition: opacity .5s, scale .5s;
+        transition: opacity .3s, scale .3s;
+    }
+    .tooltip-transition {
+        z-index: 10;
     }
 `;
 

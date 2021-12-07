@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import IconButton from "../iconButton";
+import IconButton from "@components/basic/iconButton";
 
 
 export const CloseWrapper = styled.div<{
@@ -33,7 +33,6 @@ export function CloseButton(props: React.PropsWithChildren<CloseButtonProps>) {
             $size={ size }
             >
             <IconButton
-                active={ false }
                 icon="close"
                 size={ size }
                 hoverColor="#ff0000"

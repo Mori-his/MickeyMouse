@@ -1,8 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-import { GlobalStyle } from '../../styles/globals'
-import MainContainer from "../../components/container/mainContainer";
+import { GlobalStyle } from '@styles/globals'
+import MainContainer from "@components/container/mainContainer";
 
 function LayoutConfigPage() {
     const router = useRouter();

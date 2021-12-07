@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { IIcons, getIcon, IconWrapper, IconProps, SvgWrapperStyle } from "../svgs/icons";
-import ToolTip from "../toolTip";
+import ToolTip from "@components/basic/toolTip";
 
 type Margin = {
     left: number
@@ -52,7 +52,7 @@ export interface IconButtonProps extends IconProps {
 
 function IconButton(props: React.PropsWithChildren<IconButtonProps>) {
     if (!props.icon) return <React.Fragment></React.Fragment>
-    const { size = 32 } = props;
+    const { size = 32, active = false } = props;
     const margin = Object.assign({ left: 0, top: 0, right: 0, bottom: 0}, props.margin);
     // 获取当前Icon的Svg
     const CurrentIcon = getIcon(props.icon);
@@ -64,6 +64,7 @@ function IconButton(props: React.PropsWithChildren<IconButtonProps>) {
                 { ...props }
                 className={ props.className }
                 onClick={e => props.onClick && props.onClick(e)}
+                active={ active }
                 size={ size }
                 margin={ margin }
                 >

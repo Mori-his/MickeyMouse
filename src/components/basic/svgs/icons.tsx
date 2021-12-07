@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 export interface IconProps {
-    active: boolean
+    active?: boolean
     activeColor?: string
     hoverColor?: string
     defaultColor?: string
@@ -43,11 +43,12 @@ const SvgWrapper = styled.div<SvgWrapperProps>`
 
 
 export function IconWrapper(props: React.PropsWithChildren<IconPropsWithSize<IconProps>>) {
+    const { active = false } = props;
     return (
         <SvgWrapper
             activeColor={ props.activeColor }
             hoverColor={ props.hoverColor }
-            active={ props.active }
+            active={ active }
             size={ props.size }
             >
             { props.children }

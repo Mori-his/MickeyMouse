@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import React, { useRef, useState } from "react";
 import ToolTipAttach, { Placement, ToolTipSize } from "./toolTipBox";
 
 export interface ToolTipProps {
@@ -7,11 +6,17 @@ export interface ToolTipProps {
     size?: ToolTipSize,
     placement?: Placement
     children: React.ReactElement
-    nodeRef?: React.Ref<HTMLElement>;
+    nodeRef?: React.Ref<HTMLElement>
+    display?: boolean
 }
 
 function ToolTip(props: ToolTipProps) {
-    const { size = 'middle', placement = 'top', title = '' } = props;
+    const {
+        size = 'middle',
+        placement = 'top',
+        title = '',
+        display = false
+    } = props;
     const toolRef = useRef<HTMLDivElement>(null);
     const [hasToolTip, setHasToolTip] = useState(false);
 
@@ -21,6 +26,7 @@ function ToolTip(props: ToolTipProps) {
     const handleMouseLeave = function(event: React.MouseEvent) {
         setHasToolTip(false);
     }
+
     const toolEl: HTMLDivElement = toolRef.current!;
     return title ? (
         <React.Fragment

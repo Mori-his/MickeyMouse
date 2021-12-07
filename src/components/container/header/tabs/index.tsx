@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react';
 import React, { ReactElement, useState } from "react";
 import styled from "styled-components";
-import { Owner, OwnerCaretaker } from "../../../model/owners";
-import { HiddenScrollbar } from "../../../styles/globals";
-import AppendButton from "../../basic/appendButton";
-import Tab, { TabProps } from "../../basic/tab";
+import { Owner, OwnerCaretaker } from "@models/owners";
+import { HiddenScrollbar } from "@styles/globals";
+import AppendButton from "@components/basic/appendButton";
+import Tab, { TabProps } from "@components/basic/tab";
 
 /**
  * ===========================================================
@@ -69,7 +69,7 @@ export const TagList = observer((props: React.PropsWithChildren<TagListProps>) =
         child.setName(name);
     }
 
-    ownerCaretaker.visitChildren((child, index) => {
+    ownerCaretaker.visitChildren((child: any, index: number) => {
         const childNode: Owner = child as Owner;
         tabs.push(
             <Tab
