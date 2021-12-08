@@ -7,7 +7,6 @@ export interface ToolTipProps {
     placement?: Placement
     children: React.ReactElement
     nodeRef?: React.Ref<HTMLElement>
-    display?: boolean
 }
 
 function ToolTip(props: ToolTipProps) {
@@ -15,7 +14,6 @@ function ToolTip(props: ToolTipProps) {
         size = 'middle',
         placement = 'top',
         title = '',
-        display = false
     } = props;
     const toolRef = useRef<HTMLDivElement>(null);
     const [hasToolTip, setHasToolTip] = useState(false);

@@ -33,8 +33,8 @@ export type ToolTipArrowProps = {
 
 const ArrowBox = styled.div<ToolTipArrowProps>`
     position: absolute;
-    width: 8px;
-    height: 8px;
+    width: 0;
+    height: 0;
     z-index: 10;
     top: ${props => props.top}px;
     left: ${props => props.left}px;
@@ -43,11 +43,11 @@ const ArrowBox = styled.div<ToolTipArrowProps>`
 
 const ToolTipArrowTop = styled(ArrowBox)`
     /* transform: rotate(-45deg); */
-    border-color: #e2e2e2 transparent transparent  transparent;
-    `
+    border-top-color: ${props => props.theme.lightContrast};
+`
 const ToolTipArrowBottom = styled(ArrowBox)`
     /* transform: rotate(45deg); */
-    border-color: transparent transparent #e2e2e2  transparent;
+    border-bottom-color: ${props => props.theme.lightContrast};
 `
 
 type ToolTipBoxProps = {
@@ -64,9 +64,9 @@ const ToolTipBox = styled.div<ToolTipBoxProps>`
     z-index: 10;
     top: ${props => props.top + (props.placement === 'top' ? -arrowSize : arrowSize)}px;
     max-width: ${ props => props.sizeValue }px;
-    color: #5b5b5b;
-    background-color: #e2e2e2;
-    box-shadow: 0px 2px 8px 0px #222831;
+    color: ${props => props.theme.lightContrastText};
+    background-color: ${props => props.theme.lightContrast};
+    box-shadow: 0px 2px 8px 0px ${props => props.theme.main};
     padding: 10px;
     border-radius: 4px;
     font-size: 12px;

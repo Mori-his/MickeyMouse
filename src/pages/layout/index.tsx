@@ -3,16 +3,18 @@ import { useRouter } from "next/router";
 
 import { GlobalStyle } from '@styles/globals'
 import MainContainer from "@components/container/mainContainer";
+import { ThemeProvider } from 'styled-components';
+import LayoutTheme from "@styles/Layout.theme";
 
 function LayoutConfigPage() {
     const router = useRouter();
     const { query } = router;
 
     return (
-        <React.Fragment>
+        <ThemeProvider theme={ LayoutTheme }>
             <GlobalStyle />
             <MainContainer />
-        </React.Fragment>
+        </ThemeProvider>
     );
 }
 

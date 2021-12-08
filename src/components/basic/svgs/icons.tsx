@@ -8,7 +8,7 @@ export interface IconProps {
     defaultColor?: string
 }
 type IconPropsWithSize<P> = P & {
-    size: number
+    $size: number
 }
 
 export interface SvgWrapperProps {
@@ -16,29 +16,32 @@ export interface SvgWrapperProps {
     hoverColor?: string
     defaultColor?: string
     active: boolean
-    size: number
+    $size: number
 }
 
 export const SvgWrapperStyle = styled.div<SvgWrapperProps>`
     .svg-stroke {
-        stroke: ${props => props.active ? props.activeColor : props.defaultColor || '#818181'};
+        stroke: ${props => props.active ? props.activeColor : props.defaultColor || props.theme.lesser};
     }
     .svg-fill {
-        fill: ${props => props.active ? props.activeColor : props.defaultColor || '#818181'};
+        fill: ${props => props.active ? props.activeColor : props.defaultColor || props.theme.lesser};
     }
     &:hover {
         .svg-stroke {
-            stroke: ${props => props.hoverColor || '#fff'};
+            stroke: ${props => props.hoverColor || props.theme.light};
         }
         .svg-fill {
-            fill: ${props => props.hoverColor || '#fff'};
+            fill: ${props => props.hoverColor || props.theme.light};
         }
     }
 `;
 
 const SvgWrapper = styled.div<SvgWrapperProps>`
-    width: ${props => props.size - 8}px;
-    height: ${props => props.size - 8}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: ${props => props.$size - 8}px;
+    height: ${props => props.$size - 8}px;
 `;
 
 
@@ -49,7 +52,7 @@ export function IconWrapper(props: React.PropsWithChildren<IconPropsWithSize<Ico
             activeColor={ props.activeColor }
             hoverColor={ props.hoverColor }
             active={ active }
-            size={ props.size }
+            $size={ props.$size }
             >
             { props.children }
         </SvgWrapper>

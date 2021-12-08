@@ -17,7 +17,7 @@ const TabsWrapper = styled.div`
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    background-color: #222831;
+    background-color: ${props => props.theme.main};
     overflow-y: hidden;
     overflow-x: auto;
     .append-button {

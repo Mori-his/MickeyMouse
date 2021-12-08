@@ -152,7 +152,7 @@ export default class TooltipComputed {
                 const rightWidth = window.innerWidth - targetLeft;
                 return this.toolTipWidth - rightWidth + this.targetWidth / 4;
             default:
-                return (this.toolTipWidth - this.arrowWidth) / 2;
+                return this.toolTipWidth / 2 - this.arrowWidth;
         }
     }
     getArrowTop() {

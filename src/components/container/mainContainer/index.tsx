@@ -5,6 +5,7 @@ import TabSettings from "@components/container/header/tabSettings";
 import { useRouter } from "next/router";
 import CenterContainer from "../centerContainer";
 import LeftContainer from "../leftContaienr";
+import RightContainer from "../rightContainer";
 
 
 const MainContainerWrapper = styled.div`
@@ -27,13 +28,14 @@ function MainContainer() {
     const { id } = router.query;
     return (
         <MainContainerWrapper>
-            <header>
+            <Header>
                 <Tabs />
                 <TabSettings />
-            </header>
+            </Header>
             <Article>
                 <LeftContainer />
                 <CenterContainer />
+                <RightContainer />
             </Article>
         </MainContainerWrapper>
     )

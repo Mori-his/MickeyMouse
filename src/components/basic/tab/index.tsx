@@ -12,10 +12,10 @@ const PageButtonWrapper = styled.div<{$active: boolean}>`
     width: 112px;
     height: 40px;
     flex-shrink: 0;
-    color: ${props => props.$active ? '#fff' : '#666'};
-    background-color: ${props => props.$active ? '#2a313c' : '#222831'};
+    color: ${props => props.$active ? props.theme.lightText : props.theme.lesserText};
+    background-color: ${props => props.$active ? props.theme.complementaryColor : props.theme.main};
     cursor: pointer;
-    border-right: 1px solid #141719;
+    border-right: 1px solid ${props => props.theme.primary};
     border-width: ${props => props.$active ? 0 : 1}px;
     font-size: 14px;
     box-sizing: border-box;
@@ -44,7 +44,7 @@ const TabInput = styled.input`
     outline: none;
     background-color: transparent;
     padding: 0 32px 0 8px;
-    color: #fff;
+    color: ${props => props.theme.lightText};
     font-size: 14px;
     &:active,
     &:focus {
@@ -111,7 +111,7 @@ export default function Tab(props: TabProps) {
                 <CloseButton
                     className="close-button"
                     onClick={ props.onClose }
-                    size={ 24 }
+                    size={ 20 }
                     />
             </PageButtonWrapper>
         </ToolTip>

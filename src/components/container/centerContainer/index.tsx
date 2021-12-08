@@ -2,14 +2,14 @@ import styled from "styled-components"
 
 const CenterWrapper = styled.section`
     margin: 0 auto;
-    color: #fff;
+    color: ${props => props.theme.lightText};
 `;
 const LayoutContainer = styled.div`
     position: relative;
     width: 375px;
 	height: 667px;
     border-radius: 20px;
-    background-color: #393e46;
+    background-color: ${props => props.theme.contrast};
 `;
 const LayoutTitle = styled.h1`
     margin: 68px 0 8px 8px;

@@ -8,24 +8,28 @@ const TabSettingsWrapper = styled.div`
     justify-content: flex-end;
     width: 100%;
     height: 48px;
-	background-color: #2a313c;
-	box-shadow: 0px 2px 8px 0px #222831;
 	border-radius: 2px;
     padding: 0 16px;
+	background-color: ${props => props.theme.complementaryColor};
+	box-shadow: 0px 2px 8px 0px ${props => props.theme.main};
 `;
 
 function TabSettings() {
     return (
         <TabSettingsWrapper>
             <IconButton
-                icon="import"
-                $title="导入配置项"
-                margin={{left: 8, right: 8}}
+                icon="json"
+                $title="查看当前配置项的JSON数据"
                 />
             <IconButton
                 icon="settings"
                 $title="设置当前配置项"
-            />
+                margin={{left: 8, right: 8}}
+                />
+            <IconButton
+                icon="import"
+                $title="导入配置项"
+                />
         </TabSettingsWrapper>
     );
 }
