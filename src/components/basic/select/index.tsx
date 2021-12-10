@@ -7,6 +7,7 @@ const SelectWrapper = styled.div``;
 
 interface SelectProps {
     onChangeOption?: Function
+    
 }
 
 export default function Select(props: SelectProps) {
