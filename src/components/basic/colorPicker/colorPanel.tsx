@@ -1,3 +1,5 @@
+import { IRGB } from "@/types/color";
+import Color from "@utils/color";
 import { getOffsetLeft, getOffsetTop } from "@utils/styleTool";
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
@@ -30,12 +32,7 @@ const ColorSaturation = styled(ColorPosition)`
 `;
 
 // 色相
-interface ColorHueProps {
-    hue: string
-}
-const ColorHue = styled(ColorPosition)<ColorHueProps>`
-    background-color: ${props => props.hue};
-`;
+const ColorHue = styled(ColorPosition)``;
 
 
 const ColorPointerBox = styled.div`
@@ -43,55 +40,102 @@ const ColorPointerBox = styled.div`
     cursor: pointer;
 `;
 
-interface ColorPannerProps {
-    hue?: string
+interface ColorPannerProps extends Partial<PositionProps> {
     width?: number
     height?: number
+    pointerSize?: number
+    hue: IRGB
     onDragChange?: (position: PositionProps) => any
 }
 
-interface PositionProps {
-    left: number
-    top: number
+export interface PositionProps {
+    x: number
+    y: number
 }
 
 // HSB   H色相  S饱和度 B明度
 export default function ColorPanel(props: ColorPannerProps) {
-    const { hue = '#ff0000', width = 160, height = 160 } = props;
-    const pointerSize = 12;
-    const halfPointer = pointerSize / 3;
+    const { 
+        width = 160,
+        height = 160,
+        pointerSize = 12,
+        hue
+    } = props;
+    const pointerOffset = pointerSize * 0.7;
+    const pointerDIF = pointerSize - pointerOffset
+    const x = props.x ? props.x - pointerOffset : -pointerDIF;
+    const y = props.y ? props.y - pointerOffset : -pointerDIF;
+
+    const _hue = Color.rgbToHex(hue.r, hue.g, hue.b);
     const [position, setPosition] = useState<PositionProps>({
-        left: -halfPointer,
-        top: -halfPointer
+        x,
+        y
     });
     const pointerRef = useRef<HTMLDivElement>(null);
 
+    // 面板被按下，移动当前指示标位置
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
         const targetLeft = getOffsetLeft(targetEl);
         const targetTop = getOffsetTop(targetEl);
         const currentLeft = event.clientX;
         const currentTop = event.clientY;
-        const offset = pointerSize * 0.7;
+        const offset = pointerOffset;
+        const valueLeft = currentLeft - targetLeft - offset;
+        const valueTop = currentTop - targetTop - offset;
         setPosition({
-            left: currentLeft - targetLeft - offset,
-            top: currentTop - targetTop - offset
+            x: valueLeft,
+            y: valueTop
         });
     }
 
+    // 如果色相选择指示标被拖动则向上传递指示标位置
+    // 传递位置是为了调用者计算公式不同
     const handleColorPointerChange = function(x: number, y: number) {
         setPosition((prevPosition) => {
-            if (prevPosition.left >= width - pointerSize && x >= 0) return prevPosition;
-            if (prevPosition.left <= -halfPointer && x <= 0) return prevPosition;
-            if (prevPosition.top >= height - pointerSize  && y >= 0) return prevPosition;
-            if (prevPosition.top <= -halfPointer && y <= 0) return prevPosition;
-            return {left: prevPosition.left + x, top: prevPosition.top + y};
+            let currentLeft = prevPosition.x;
+            let currentTop = prevPosition.y;
+            const minLeftTop = -pointerDIF;
+            if (prevPosition.x >= width - pointerOffset && x >= 0)
+                currentLeft = width - pointerOffset;
+            if (prevPosition.x <= minLeftTop && x <= 0)
+                currentLeft = minLeftTop;
+            if (prevPosition.y >= height - pointerOffset  && y >= 0)
+                currentTop = height - pointerOffset;
+            if (prevPosition.y <= minLeftTop && y <= 0)
+                currentTop = minLeftTop;
+            currentLeft = currentLeft + x;
+            currentTop = currentTop + y;
+            return {
+                x: currentLeft,
+                y: currentTop
+            };
         });
     }
+    useEffect(() => {
+        if (props.onDragChange) {
+            let x = position.x;
+            let y = position.y;
+            if (x < 0) x = 0;
+            if (x > 0) x += pointerOffset;
+            if (y < 0) y = 0;
+            if (y > 0) y += pointerOffset
+            // 当前移动的位置向上传递
+            props.onDragChange({
+                x,
+                y
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [position]);
 
     useEffect(() => {
-        props.onDragChange && props.onDragChange(position);
-    }, [position, props])
+        // 如果props x y变化了则设置下定位
+        setPosition({
+            x,
+            y
+        });
+    }, [props.x, props.y, x, y]);
 
     return (
         <ColorPanelWrapper
@@ -100,13 +144,13 @@ export default function ColorPanel(props: ColorPannerProps) {
             onMouseDown={ e => handlePanelMouseDown(e)}
             >
             <ColorHue
-                hue={ hue }
+                style={{backgroundColor: _hue }}
                 />
             <ColorSaturation />
             <ColorBright />
             <ColorPointerBox
                 ref={ pointerRef }
-                style={ position }
+                style={{left: position.x, top: position.y}}
                 >
                 <ColorPointer
                     onDragChange={ handleColorPointerChange }

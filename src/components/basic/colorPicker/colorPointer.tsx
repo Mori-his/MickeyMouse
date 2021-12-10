@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 interface ColorPointerWrapperProps {
@@ -7,66 +7,71 @@ interface ColorPointerWrapperProps {
 const ColorPointerWrapper = styled.div<ColorPointerWrapperProps>`
     width: ${props => props.$size}px;
 	height: ${props => props.$size}px;
-	border: solid 1px #707070;
+	border: solid 2px #fff;
+    outline: #707070 solid 1px;
     border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
 `;
 
-
-let downX: number = 0;
-let downY: number = 0;
-let isMoveLeave = true;
-
-const handleMouseDown = function(event: React.MouseEvent) {
-    event.stopPropagation();
-    event.preventDefault();
-    // 按下此元素
-    isMoveLeave = false;
-    downX = event.clientX;
-    downY = event.clientY;
-}
-const handleMouseLeave = function() {
-    // 移出此元素
-    isMoveLeave = true;
-    downX = 0;
-    downY = 0;
-}
 
 interface ColorPointerProps {
     size?: number
     onDragChange?: (x: number, y: number) => any
 }
 
-export default function ColorPointer(props: ColorPointerProps) {
+export default class ColorPointer extends React.Component<ColorPointerProps> {
+    isPointerMoveLeave: boolean = true
+    downX: number = 0
+    downY: number = 0
+    componentDidMount() {
+        this.handleDocumentMouseUp = this.handleDocumentMouseUp.bind(this);
+        this.handleMouseLeave = this.handleMouseLeave.bind(this);
+        this.handleDocumentMouseMove = this.handleDocumentMouseMove.bind(this);
+        document.addEventListener('mouseup', this.handleDocumentMouseUp);
+        document.addEventListener('mouseleave', this.handleMouseLeave);
+        document.addEventListener('mousemove', this.handleDocumentMouseMove);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('mousemove', this.handleDocumentMouseMove);
+        document.removeEventListener('mouseup', this.handleDocumentMouseUp);
+        document.removeEventListener('mouseleave', this.handleMouseLeave);
+    }
 
-    useEffect(() => {
-        const handleDocumentMouseUp = function() {
-            if (!isMoveLeave) isMoveLeave = true
+    handleMouseDown(event: React.MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        // 按下此元素
+        this.isPointerMoveLeave = false;
+        this.downX= event.clientX;
+        this.downY = event.clientY;
+    }
+    handleMouseLeave() {
+        // 移出此元素
+        this.isPointerMoveLeave = true;
+        this.downX = 0;
+        this.downY = 0;
+    }
+    handleDocumentMouseUp() {
+        if (!this.isPointerMoveLeave) this.isPointerMoveLeave = true
+    }
+    handleDocumentMouseMove(event: MouseEvent) {
+        if (!this.isPointerMoveLeave) {
+            const currentMoveX = event.clientX - this.downX;
+            const currentMoveY = event.clientY - this.downY;
+            this.props.onDragChange && this.props.onDragChange(currentMoveX, currentMoveY);
+            this.downX = event.clientX;
+            this.downY = event.clientY;
         }
-        const handleDocumentMouseMove = function(event: MouseEvent) {
-            if (!isMoveLeave) {
-                const currentMoveX = event.clientX - downX;
-                const currentMoveY = event.clientY - downY;
-                props.onDragChange && props.onDragChange(currentMoveX, currentMoveY);
-                downX = event.clientX;
-                downY = event.clientY;
-            }
-        }
-        document.addEventListener('mouseup', handleDocumentMouseUp);
-        document.addEventListener('mouseleave', handleMouseLeave);
-        document.addEventListener('mousemove', handleDocumentMouseMove);
-        return () => {
-            document.removeEventListener('mousemove', handleDocumentMouseMove);
-            document.removeEventListener('mouseup', handleDocumentMouseUp);
-            document.removeEventListener('mouseleave', handleMouseLeave);
-        }
-    }, [props]);
-
-    const { size = 12 } = props;
-    return (
-        <ColorPointerWrapper
-            $size={ size }
-            onMouseDown={e => handleMouseDown(e)}
-            />
-    );
+    }
+    render() {
+        const { size = 12 } = this.props;
+        return (
+            <ColorPointerWrapper
+                $size={ size }
+                onMouseDown={e => this.handleMouseDown(e)}
+                />
+        );
+    }
 }
 

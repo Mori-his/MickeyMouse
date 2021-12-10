@@ -1,31 +1,37 @@
-import { IRGB } from "@/types/color";
 import Color from "@utils/color";
 import { getOffsetTop } from "@utils/styleTool";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
 
-
-const HueWrapper = styled.div`
+interface ColorOpacityWrapperProps {
+    $width: number
+    $height: number
+}
+const ColorOpacityWrapper = styled.div<ColorOpacityWrapperProps>`
     position: relative;
     ${props => `
-       width: ${props.$width}px;
-       height: ${props.$height}px; 
+        width: ${props.$width}px;
+        height: ${props.$height}px;
     `};
-    overflow: hidden;
+    background-color: #a5a4a6;
+    background-image:
+        linear-gradient(45deg, #d6d6d6 25%, transparent 0, transparent 75%, #d6d6d6 0),
+		linear-gradient(45deg, #d6d6d6 25%, transparent 0, transparent 75%, #d6d6d6 0);
+    ${props => `
+        background-position: 0 0, ${props.$width / 2}px ${props.$width / 2}px;
+        background-size: ${props.$width}px ${props.$width}px;
+    `};
     border-radius: 4px;
+    overflow: hidden;
 `;
 
-const HueBox = styled.div`
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(0deg, 
-		#ff0000 0%, 
-		#ffff00 20%, 
-		#00ffff 40%, 
-		#0000ff 60%, 
-		#ff00ff 80%, 
-		#ff0000 100%);
+
+const ColorOpacityBox = styled.div`
+    ${props => `
+        width: ${props.$width}px;
+        height: ${props.$height}px;
+    `};
 `;
 
 const PointerBox = styled.div`
@@ -35,23 +41,22 @@ const PointerBox = styled.div`
     transform: translateX(-50%);
 `
 
-interface ColorHuePanelProps {
+interface ColorOpacityProps {
+    color?: string
     width?: number
     height?: number
     pointerSize?: number
+    onDragChange?: (y: number) => any
     y?: number
-    onDragChange?: (y: number, color: IRGB) => any
 }
-export default function ColorHuePanel(props: ColorHuePanelProps) {
-    const { width = 16, height = 160, pointerSize = 12 } = props;
+
+export default function ColorOpacity(props: ColorOpacityProps) {
+    const { color = '#ff0000', width = 16, height = 160, pointerSize = 12} = props;
     const halfPointer = pointerSize / 2;
     const [y, setY] = useState(-halfPointer);
     const toY = props.y ? props.y - halfPointer : -halfPointer;
-    const hsb = useRef({
-        h: 359,
-        s: 1,
-        b: 1
-    });
+    const colorRgbaStart = Color.hexToRGBA(color, 0);
+    const colorRgba = Color.hexToRGBA(color, 1);
 
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
@@ -76,26 +81,25 @@ export default function ColorHuePanel(props: ColorHuePanelProps) {
     }, [props.y, toY]);
 
     useEffect(() => {
-        const value = y + halfPointer;
-        hsb.current.h = 359 - 359 / height * value;
-        const color: IRGB | undefined = Color.hsvToRgb(
-            hsb.current.h,
-            hsb.current.s,
-            hsb.current.b
-        );
-        if (color) {
-            props.onDragChange && props.onDragChange(value, color);
-        }
+        props.onDragChange && props.onDragChange(y + halfPointer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [y])
+    }, [y]);
 
     return (
-        <HueWrapper
+        <ColorOpacityWrapper
             $width={ width }
             $height={ height }
             onMouseDown={ e => handlePanelMouseDown(e)}
             >
-            <HueBox />
+            <ColorOpacityBox
+                style={{
+                    backgroundImage: `linear-gradient(0deg, 
+                            ${colorRgbaStart} 0%, 
+                            ${colorRgba} 100%)`
+                    }}
+                $width={ width }
+                $height={ height }
+                />
             <PointerBox
                 style={{top: y}}
                 >
@@ -104,6 +108,6 @@ export default function ColorHuePanel(props: ColorHuePanelProps) {
                     onDragChange={ handlePointerDragChange}
                     />
             </PointerBox>
-        </HueWrapper>
+        </ColorOpacityWrapper>
     );
 }
