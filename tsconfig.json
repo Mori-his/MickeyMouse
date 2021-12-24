@@ -19,7 +19,7 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@layout/*": ["layout/*"],
-      "@widgets/*": ["layout/widgets/*"],
+      "@widgets/*": ["src/models/widgets/*"],
       "@models/*": ["src/models/*"],
       "@utils/*": ["src/utils/*"],
       "@public/*": ["src/public/*"],

@@ -129,7 +129,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             const childParentData = child.parentData! as ParentDataType;
             assert(!childParentData.nextSibling);
             assert(!childParentData.previousSibling);
-            this.childCount += 1;
+            this.setChildCount(this.childCount + 1);
             assert(this.childCount > 0);
             if (!after) {
                 childParentData.nextSibling = this.firstChild;
@@ -240,7 +240,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
 
             childParentData.previousSibling = undefined;
             childParentData.nextSibling = undefined;
-            this.childCount -= 1;
+            this.setChildCount(this.childCount - 1)
         }
 
         /**
@@ -267,7 +267,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             }
             this.firstChild = undefined;
             this.lastChild = undefined;
-            this.childCount = 0;
+            this.setChildCount(0);
         }
 
         /**
@@ -366,10 +366,13 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             const childParentData: ParentDataType = child.parentData! as ParentDataType;
             return childParentData.nextSibling;
         }
+
+        setChildCount(count: number) {
+            this.childCount = count;
+        }
     }
     return _ContainerNodeMixin;
 }
-
 
 // export abstract class MultiChild {
 

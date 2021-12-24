@@ -1,4 +1,6 @@
 
+import { TAngle } from "@layout/types/types";
+import { toJS } from "mobx";
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from "./object";
 
 const assert = console.assert;
@@ -48,7 +50,6 @@ export class Position {
         public right?: number,
         public bottom?: number
     ) {
-
     }
 
     static origin() {
@@ -84,9 +85,18 @@ export class AdaptivePosition extends Position {
     }
 }
 
-class Fillet {
-    
+/**
+ * 圆角
+ * @class
+ */
+export class Fillet {
+    constructor(
+        public angle: TAngle | number
+    ) {}
 }
+
+
+
 
 export class LayoutParentData extends ParentData {
     detach() {
@@ -137,8 +147,13 @@ export class Layout extends BasicNode {
     }
 }
 
-export interface WidgetOptions extends AdaptivePosition {
-    id: string // 当前控件ID
+interface AdaptiveSizeOptions {
+    width?: number
+    height?: number
+}
+
+export interface WidgetOptions extends AdaptivePositionOptions, AdaptiveSizeOptions {
+    id: string | number // 当前控件ID
     name?: string // 当前控件名称
     description?: string // 当前控件描述信息
     visible?: boolean // 显示隐藏
@@ -154,22 +169,45 @@ export class WidgetParentData extends ContainerParentDataMixin<Layout>(LayoutPar
     }
 }
 export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData>(Layout) {
-    id!: string
+    /**
+     * 节点唯一ID
+     */
+    id!: string | number
+    /**
+     * 节点名称信息
+     */
     name?: string
+    /**
+     * 节点描述信息
+     */
     description?: string
+    /**
+     * 是否默认显示， 默认： true
+     */
     visible: boolean
+    /**
+     * 是否可被点击
+     */
     attachOnClick: boolean
 
     abstract type: string
 
-    #ids: string[] = [];
+    #ids: Array<string | number> = [];
 
     constructor(options: WidgetOptions) {
-        super(new AdaptivePosition({
-            position: new Position(options.left, options.top, options.right, options.bottom),
-            horizontal: options.horizontal,
-            vertical: options.vertical
-        }));
+        super({
+            position: new AdaptivePosition({
+                position: new Position(
+                    options.position?.left,
+                    options.position?.top,
+                    options.position?.right,
+                    options.position?.bottom
+                ),
+                horizontal: options.horizontal,
+                vertical: options.vertical
+            }),
+            size: new Size(options.width || null, options.height || null)
+        });
         this.id = options.id;
         this.name = options.name;
         this.description = options.description;
@@ -198,17 +236,48 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
     }
 
     protected _insertIntoChildList(child: Widget, after?: Widget) {
-        assert(this.hasId(child.id), `不能插入相同的ID [${child.id}], 请及时修改`);
+        assert(!this.hasId(child.id), `不能插入相同的ID [${child.id}], 请及时修改`);
         this.appendId(child.id);
         super._insertIntoChildList(child, after);
     }
 
-    hasId(id: string) {
+    hasId(id: string | number) {
         return this.#ids.indexOf(id) > -1;
     }
 
-    appendId(id: string) {
+    appendId(id: string | number) {
         if (this.hasId(id)) return
         this.#ids.push(id);
+    }
+
+    abstract toJson(): Object;
+}
+
+
+
+export abstract class TreeWidget extends Widget {
+    _shrink: boolean = false
+    _lock: boolean = false
+
+
+    setLock(newState: boolean) {
+        this._lock = newState;
+    }
+
+    setShrink(newState: boolean) {
+        this._shrink = newState
+    }
+
+    setVisible(newState: boolean) {
+        this.visible = newState;
+    }
+
+
+    get lock() {
+        return this._lock;
+    }
+
+    get shrink() {
+        return this._shrink;
     }
 }

@@ -1,21 +1,25 @@
-import React, { useRef, useState } from "react";
-import ToolTipAttach, { Placement, ToolTipSize } from "./toolTipBox";
+import React, { createContext, useRef, useState } from "react";
+import ToolTipAttach, { ToolTipSize } from "./toolTipBox";
+import { Placement } from "./toolTipComputed";
 
 export interface ToolTipProps {
     title?: string
     size?: ToolTipSize,
     placement?: Placement
     children: React.ReactElement
-    nodeRef?: React.Ref<HTMLElement>
+    nodeRef?: React.RefObject<HTMLElement>
 }
+
+const ToolTipContext = createContext(null);
 
 function ToolTip(props: ToolTipProps) {
     const {
         size = 'middle',
         placement = 'top',
         title = '',
+        nodeRef
     } = props;
-    const toolRef = useRef<HTMLDivElement>(null);
+    // const toolRef = useRef<HTMLDivElement>(null);
     const [hasToolTip, setHasToolTip] = useState(false);
 
     const handleMouseEnter = function(event: React.MouseEvent) {
@@ -24,25 +28,25 @@ function ToolTip(props: ToolTipProps) {
     const handleMouseLeave = function(event: React.MouseEvent) {
         setHasToolTip(false);
     }
+ 
+    const toolRef = useRef(nodeRef?.current);
 
-    const toolEl: HTMLDivElement = toolRef.current!;
     return title ? (
-        <React.Fragment
-            >
-            { React.cloneElement(props.children, {
+        <ToolTipContext.Provider value={null}>
+            { React.cloneElement(React.Children.only(props.children), {
                 ref: toolRef,
                 onMouseEnter: (e: React.MouseEvent) => handleMouseEnter(e),
                 onMouseLeave: (e: React.MouseEvent) => handleMouseLeave(e)
             }) }
             <ToolTipAttach
                 { ...props }
-                toolTipEl={ toolEl }
+                toolTipEl={ toolRef?.current || null }
                 isAttach={ hasToolTip }
                 size={ size }
                 placement={ placement }
                 title={ title }
                 />
-        </React.Fragment>
+        </ToolTipContext.Provider>
     ) : props.children;
 }
 

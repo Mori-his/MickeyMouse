@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import ColorPicker from "@components/basic/colorPicker/colorPicker";
-import { useState } from "react";
-import { IRGB } from "@/types/color";
+import { useRef, useState } from "react";
+import { IRGBA } from "@/types/color";
 import Color from "@utils/color";
+import Tippy from '@tippyjs/react';
+import ColorPicker from "@components/basic/colorPicker/colorPicker";
+
 
 const width = 280;
 
@@ -22,19 +24,43 @@ const RightConfigPanel = styled.div`
 
 
 export default function RightContainer() {
-    const [color, setColor] = useState('#69C70C');
-    const handleColorChange = function(rgba: IRGB) {
-        const currColor = Color.rgbToHex(rgba.r, rgba.g, rgba.b);
-        // console.log(currColor);
-        setColor(currColor);
+    const [rgba, setRgba] = useState<IRGBA>({
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 1
+    });
+    const [isShowColorPicker, setIsShowColorPicker] = useState(false);
+    const selectElRef = useRef(null);
+    const handleColorChange = function(rgba: IRGBA) {
+        setRgba(rgba);
     }
     return (
         <RightWrapper>
             <RightConfigPanel>
-                <ColorPicker
-                    color={ color }
-                    onColorChange={ handleColorChange }
-                    />
+                <Tippy
+                    content={ 
+                        <ColorPicker
+                            rgba={ rgba }
+                            onColorChange={ handleColorChange }
+                            />
+                    }
+                    animation="shift-away"
+                    trigger="click"
+                    hideOnClick={ true }
+                    arrow={ true }
+                    interactive={ true }
+                    placement="left"
+                    theme="light"
+                    >
+                    <div
+                        ref={ selectElRef }
+                        style={{paddingTop: 20, color: `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`}}
+                        onClick={() => setIsShowColorPicker(!isShowColorPicker)}
+                        >
+                        选择颜色{Color.rgbToHex(rgba.r, rgba.g, rgba.b)}透明度为: {rgba.a}
+                    </div>
+                </Tippy>
             </RightConfigPanel>
         </RightWrapper>
     );

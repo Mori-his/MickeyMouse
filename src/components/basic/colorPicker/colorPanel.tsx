@@ -1,6 +1,5 @@
 import { IRGB } from "@/types/color";
 import Color from "@utils/color";
-import { getOffsetLeft, getOffsetTop } from "@utils/styleTool";
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
@@ -76,8 +75,9 @@ export default function ColorPanel(props: ColorPannerProps) {
     // 面板被按下，移动当前指示标位置
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
-        const targetLeft = getOffsetLeft(targetEl);
-        const targetTop = getOffsetTop(targetEl);
+        const clinetRect = targetEl.getBoundingClientRect();
+        const targetLeft = clinetRect.x;
+        const targetTop = clinetRect.y;
         const currentLeft = event.clientX;
         const currentTop = event.clientY;
         const offset = pointerOffset;

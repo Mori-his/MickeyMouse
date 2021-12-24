@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CloseButton } from "@components/basic/closeButton";
-import ToolTip from "@components/basic/toolTip";
+import Tippy from "@tippyjs/react";
 
 
 const PageButtonWrapper = styled.div<{$active: boolean}>`
@@ -62,6 +62,7 @@ export interface TabProps {
     active: boolean
     children: React.ReactNode
     isRename?: boolean
+    $title?: string
 }
 
 export default function Tab(props: TabProps) {
@@ -85,9 +86,11 @@ export default function Tab(props: TabProps) {
         tabInput?.select();
     }
 
-    return (
-        <ToolTip
-            title={props.children?.toString() || ''}
+    return props.$title ? (
+        <Tippy
+            content={props.$title}
+            animation="scale"
+            theme="light"
             >
             <PageButtonWrapper
                 $active={props.active}
@@ -114,7 +117,33 @@ export default function Tab(props: TabProps) {
                     size={ 20 }
                     />
             </PageButtonWrapper>
-        </ToolTip>
+        </Tippy>
+    ) : (
+        <PageButtonWrapper
+            $active={props.active}
+            onClick={e => props.onClick && props.onClick(e)}
+            >
+            {
+                // 如果按钮被双击则修改当前项的Name
+                isDoubleClick ? (
+                    <TabInput
+                        onKeyUp={e => handleInputKeyUp(e)}
+                        onBlur={e => handleInputBlur(e)}
+                        ref={handleInputFocus}
+                        defaultValue={ props.children?.toString() }
+                        />
+                ) : (
+                    <PageButton
+                        onDoubleClick={e => handleDoubleClick(e)}
+                        >{ props.children }</PageButton>
+                )
+            }
+            <CloseButton
+                className="close-button"
+                onClick={ props.onClose }
+                size={ 20 }
+                />
+        </PageButtonWrapper>
     );
 }
 

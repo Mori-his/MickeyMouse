@@ -1,5 +1,5 @@
-import ToolTip from "@components/basic/toolTip";
-import React, { useState, useEffect } from "react";
+import Tippy from "@tippyjs/react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
 const FlexibleWrapper = styled.div`
@@ -74,12 +74,17 @@ export default function Flexible(props: React.PropsWithChildren<FlexibleProps>) 
     }, [props]);
 
     return (
-        <FlexibleWrapper
-            onMouseDown={e => handleMouseDown(e)}
+        <Tippy
+            content="左右拖拽试试!"
+            animation="scale"
             >
-            <StripSmall />
-            <StripMiddle />
-            <StripLarge />
-        </FlexibleWrapper>
+            <FlexibleWrapper
+                onMouseDown={e => handleMouseDown(e)}
+                >
+                <StripSmall />
+                <StripMiddle />
+                <StripLarge />
+            </FlexibleWrapper>
+        </Tippy>
     );
 }

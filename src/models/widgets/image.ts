@@ -1,5 +1,5 @@
-import { Widget, WidgetOptions } from "../core/layout";
-import syncAttr from "../syncManage/manage";
+import { TreeWidget, WidgetOptions } from "@layout/core/layout";
+import syncAttr from "@layout/syncManage/manage";
 
 export enum IMAGE_FIT {
     COVER = 0, // 缩放后截取中间部分显示，不会变形，会有缺失，常用
@@ -13,7 +13,7 @@ export interface ImageWidgetOptions extends WidgetOptions {
     fit?: IMAGE_FIT
 }
 
-export default class ImageWidget extends Widget {
+export default class ImageWidget extends TreeWidget {
     @syncAttr
     src!: string
     @syncAttr
@@ -26,5 +26,9 @@ export default class ImageWidget extends Widget {
         this.src = options.src;
         this.blur = options.blur || false;
         this.fit = options.fit || IMAGE_FIT.COVER;
+    }
+
+    toJson() {
+        return {};
     }
 }

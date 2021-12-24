@@ -1,5 +1,7 @@
-import { action, computed, flow, makeAutoObservable, makeObservable, observable,  } from 'mobx';
+import { action, computed, makeObservable, observable,  } from 'mobx';
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from '@layout/core/object';
+import RootWidget from '@models/widgets/root';
+import { TreeWidget } from '@layout/core/layout';
 
 
 export class OwnerParentData extends ContainerParentDataMixin<BasicNode>(ParentData) {
@@ -7,15 +9,41 @@ export class OwnerParentData extends ContainerParentDataMixin<BasicNode>(ParentD
 }
 
 export class Owner extends ContainerNodeMixin<BasicNode, OwnerParentData>(BasicNode) {
-    static count: number = 1;
+    static count: number = 0;
     constructor(public name?: string) {
         super();
-        this.name ??= `未命名${Owner.count}`
-        Owner.count++;
+        this.name ??= `未命名${++Owner.count}`
         makeObservable(this, {
             name: observable,
             setName: action
         });
+        this.init();
+    }
+
+    init() {
+        const root: RootWidget = new RootWidget({
+            id: 0,
+            name: '根节点'
+        });
+
+        this.add(root);
+        const rootChild1 = new RootWidget({
+            id: 1,
+            name: '第一级子节点1'
+        })
+        root.addAll([
+            rootChild1,
+            new RootWidget({
+                id: 2,
+                name: '第一级子节点2'
+            }),
+            new RootWidget({
+                id: 3,
+                name: '第一级子节点3'
+            })
+        ]);
+        rootChild1.add(new RootWidget({id : '1-1', name: '第二级子节点1'}))
+        rootChild1.add(new RootWidget({id : '1-2', name: '第二级子节点2'}))
     }
 
     setName(name: string) {
@@ -28,16 +56,13 @@ export class Owner extends ContainerNodeMixin<BasicNode, OwnerParentData>(BasicN
 
 export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentData>(BasicNode) {
 
-    static #instance: OwnerCaretaker;
-    static getInstance() { 
-        return this.#instance ??= new OwnerCaretaker();
-    }
-
     selectIndex: number = 0;
+    _currOwner!: Owner
+    _currWidget?: TreeWidget
 
     constructor() {
         super();
-        this.#initOnwer();
+        this.initOnwer();
         makeObservable(this, {
             add: action,
             addAll: action,
@@ -45,12 +70,15 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
             move: action,
             remove: action,
             removeAll: action,
-            updateSelectedIndex: action,
             childCount: observable,
-            firstChild: observable,
-            lastChild: observable,
             selectIndex: observable,
-            visitChildren: true,
+            _currOwner: observable,
+            _currWidget: observable,
+            updateSelectedIndex: action,
+            selectedOwner: action,
+            selectedWidget: action,
+            currOwner: computed,
+            currWidget: computed,
         }, {
             deep: true
         });
@@ -67,20 +95,43 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
             this.selectIndex = this.childCount - 1;
         }
         if(this.childCount === 0) {
-            this.#initOnwer();
+            this.initOnwer();
         }
     }
 
     removeAll() {
         super.removeAll();
-        this.#initOnwer();
+        this.initOnwer();
     }
 
-    #initOnwer() {
+    selectedOwner(owner: Owner, index: number) {
+        this._currOwner = owner;
+        this.updateSelectedIndex(index);
+    }
+    selectedWidget(widget?: TreeWidget) {
+        this._currWidget = widget;
+    }
+
+    initOnwer() {
         if (this.childCount === 0) {
-            this.add(new Owner());
+            const owner = new Owner();
+            this.add(owner);
+            owner.attach(this);
             this.selectIndex = 0;
+            this.selectedOwner(owner, this.selectIndex);
+        } else if (this.lastChild) {
+            this.selectedOwner(this.lastChild as Owner, this.selectIndex);
         }
     }
+
+    get currOwner() {
+        return this._currOwner;
+    }
+
+    get currWidget() {
+        return this._currWidget;
+    }
 }
+
+export default new OwnerCaretaker();
 

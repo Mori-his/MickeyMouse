@@ -1,7 +1,15 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { IIcons, getIcon, IconWrapper, IconProps, SvgWrapperStyle } from "../svgs/icons";
-import ToolTip from "@components/basic/toolTip";
+import Tippy from '@tippyjs/react';
+
+
+type TAngleRect = {
+    topLeft: number
+    topRight: number
+    bottomLeft: number
+    bottomRight: number
+}
 
 type Margin = {
     left: number
@@ -40,13 +48,8 @@ const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
 `;
 
 type TShape = 'circle' | 'round-angle';
-type TAngleRect = {
-    topLeft: number
-    topRight: number
-    bottomLeft: number
-    bottomRight: number
-}
 type TAngle = number | Partial<TAngleRect>
+
 export interface IconButtonProps extends IconProps {
     className?: string
     onClick?: Function
@@ -56,7 +59,19 @@ export interface IconButtonProps extends IconProps {
     hoverBgColor?: string
     $title?: string
     margin?: Partial<Margin>
+    /**
+     * 设置盒子形状
+     * @param 'circle' | 'round-angle'
+     */
     shape?: TShape
+    /**
+     * border-radius的四个角  
+     * 如果设置了`shape: circle`则此属性无效
+     * @param topLeft
+     * @param topRight
+     * @param bottomLeft
+     * @param bottomRight
+     */
     angle?: TAngle
 }
 
@@ -89,11 +104,34 @@ function IconButton(props: IconButtonProps) {
     // 获取当前Icon的Svg
     const CurrentIcon = getIcon(props.icon);
     const _angle = transitionAngle(angle);
+
     return (
-        <ToolTip
-            title={ props.$title }
-            >
-            <IconButtonWrapper
+        props.$title ? 
+            <Tippy
+                content={ props.$title }
+                placement="top"
+                animation="scale"
+                theme="light"
+                >
+                <IconButtonWrapper
+                    { ...props }
+                    className={ props.className }
+                    onClick={e => props.onClick && props.onClick(e)}
+                    active={ active }
+                    $size={ size }
+                    $margin={ margin }
+                    $shape={ shape }
+                    $angle={ _angle }
+                    >
+                    <IconWrapper
+                        {...props}
+                        $size={ size }
+                        >
+                        <CurrentIcon />
+                    </IconWrapper>
+                </IconButtonWrapper>
+            </Tippy>
+        : <IconButtonWrapper
                 { ...props }
                 className={ props.className }
                 onClick={e => props.onClick && props.onClick(e)}
@@ -110,10 +148,19 @@ function IconButton(props: IconButtonProps) {
                     <CurrentIcon />
                 </IconWrapper>
             </IconButtonWrapper>
-        </ToolTip>
     );
 }
 
 export default IconButton;
 
+
+export function PureIconButton(props: IconButtonProps) {
+    return (
+        <IconButton
+            color='transparent'
+            hoverBgColor='transparent'
+            {...props}
+        />
+    );
+}
 

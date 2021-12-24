@@ -1,32 +1,54 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 
-const OptionWrapper = styled.div`
+export type OptionStyleWithProps<P = {}> = P & Partial<{
+    bgColor: string
+    hoverBgColor: string
+    hoverColor: string
+    color: string
+    selected?: boolean
+}>
+
+const selectedColor = css<OptionStyleWithProps>`
+    ${props => props.selected ? `
+        background-color: ${props.hoverBgColor || '#469ADB'};
+        color: ${props.hoverColor || props.theme.lightText};
+    ` : `
+        background-color: ${props.bgColor || props.theme.primary};
+        color: ${props.color || props.theme.lightText};
+    `}
+`;
+
+const OptionWrapper = styled.div<OptionStyleWithProps>`
+    display: flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 8px;
+    ${selectedColor};
     &:hover {
-        background-color: #469ADB;
-        color: #fff;
+        ${props => `
+            background-color: ${props.hoverBgColor || '#469ADB'};
+            color: ${props.hoverColor || props.theme.lightText};
+        `};
     }
 `;
 
-type OptionStyleWithProps<P> = P & {
-    hoverColor: string
-    color: string
-    fontSize: number
+
+interface OptionProps {
+    onClick?: Function
+    children?: React.ReactNode
 }
 
-interface OptionProps<T = string> {
-    name: string
-    value: T
-    onSelected?: Function
-}
 
-export default function Option<T = string>(props: OptionStyleWithProps<OptionProps<T>>) {
-
+export default function Option(props: OptionStyleWithProps<OptionProps>) {
+    const { selected = false } = props;
     return (
         <OptionWrapper
-            onClick={e => props.onSelected && props.onSelected(props)}
+            { ...props }
+            selected={ selected }
+            onClick={e => props.onClick && props.onClick(e)}
             >
-            <span>{ props.name }</span>
+            <span>{ props.children }</span>
         </OptionWrapper>
     );
 }
