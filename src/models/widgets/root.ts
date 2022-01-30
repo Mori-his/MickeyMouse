@@ -24,6 +24,10 @@ export default class RootWidget extends TreeWidget {
      * 圆角
      */
     fillet?: Fillet
+
+    __forbidMove: boolean = true;
+    allowSibling: boolean = false;
+
     constructor({
         gameId,
         config,

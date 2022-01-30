@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import Tree from '@components/basic/tree/tree'
 
 const CenterWrapper = styled.section`
     margin: 0 auto;
@@ -19,7 +20,9 @@ export default function CenterContainer() {
     return (
         <CenterWrapper>
             <LayoutTitle>项目名称</LayoutTitle>
-            <LayoutContainer></LayoutContainer>
+            <LayoutContainer>
+                {/* <Tree /> */}
+            </LayoutContainer>
         </CenterWrapper>
     )
 }

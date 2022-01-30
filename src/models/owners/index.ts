@@ -2,20 +2,22 @@ import { action, computed, makeObservable, observable,  } from 'mobx';
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from '@layout/core/object';
 import RootWidget from '@models/widgets/root';
 import { TreeWidget } from '@layout/core/layout';
+import ViewWidget from '@widgets/view';
 
 
-export class OwnerParentData extends ContainerParentDataMixin<BasicNode>(ParentData) {
+export class OwnerParentData extends ContainerParentDataMixin<TreeWidget>(ParentData) {
 
 }
 
-export class Owner extends ContainerNodeMixin<BasicNode, OwnerParentData>(BasicNode) {
+export class Owner extends ContainerNodeMixin<TreeWidget, OwnerParentData>(BasicNode) {
     static count: number = 0;
+
     constructor(public name?: string) {
         super();
         this.name ??= `未命名${++Owner.count}`
         makeObservable(this, {
             name: observable,
-            setName: action
+            setName: action,
         });
         this.init();
     }
@@ -27,28 +29,29 @@ export class Owner extends ContainerNodeMixin<BasicNode, OwnerParentData>(BasicN
         });
 
         this.add(root);
-        const rootChild1 = new RootWidget({
+        const ViewChild1 = new ViewWidget({
             id: 1,
             name: '第一级子节点1'
         })
         root.addAll([
-            rootChild1,
-            new RootWidget({
+            ViewChild1,
+            new ViewWidget({
                 id: 2,
                 name: '第一级子节点2'
             }),
-            new RootWidget({
+            new ViewWidget({
                 id: 3,
                 name: '第一级子节点3'
             })
         ]);
-        rootChild1.add(new RootWidget({id : '1-1', name: '第二级子节点1'}))
-        rootChild1.add(new RootWidget({id : '1-2', name: '第二级子节点2'}))
+        ViewChild1.add(new ViewWidget({id : '1-1', name: '第二级子节点1'}))
+        ViewChild1.add(new ViewWidget({id : '1-2', name: '第二级子节点2'}))
     }
-
+    strideMove() {}
     setName(name: string) {
         this.name = name;
     }
+
 
 }
 
@@ -59,6 +62,7 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
     selectIndex: number = 0;
     _currOwner!: Owner
     _currWidget?: TreeWidget
+    targetWidget?: TreeWidget
 
     constructor() {
         super();
@@ -70,18 +74,21 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
             move: action,
             remove: action,
             removeAll: action,
+            setTargetWidget: action,
+            updateSelectedIndex: action,
+            selectedOwner: action,
+            selectedWidget: action,
             childCount: observable,
             selectIndex: observable,
             _currOwner: observable,
             _currWidget: observable,
-            updateSelectedIndex: action,
-            selectedOwner: action,
-            selectedWidget: action,
+            targetWidget: observable,
             currOwner: computed,
             currWidget: computed,
         }, {
             deep: true
         });
+        this.attach(this);
     }
 
     updateSelectedIndex(index: number) {
@@ -90,12 +97,20 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
     }
 
     remove(child: Owner) {
-        super.remove(child);
-        if (this.selectIndex >= this.childCount) {
-            this.selectIndex = this.childCount - 1;
+        const childParentData = child.parentData as ContainerParentDataMixin<Owner>;
+        const previousSibling = childParentData.previousSibling;
+        const nextSibling = childParentData.nextSibling;
+        let index = this.childCount - 1;
+        if (!previousSibling && nextSibling) {
+            index = 0
         }
+        let owner = previousSibling || nextSibling;
+        super.remove(child);
         if(this.childCount === 0) {
             this.initOnwer();
+        }
+        if (this.childCount && owner) {
+            this.selectedOwner(owner, index)
         }
     }
 
@@ -116,12 +131,17 @@ export class OwnerCaretaker extends ContainerNodeMixin<BasicNode, OwnerParentDat
         if (this.childCount === 0) {
             const owner = new Owner();
             this.add(owner);
-            owner.attach(this);
             this.selectIndex = 0;
             this.selectedOwner(owner, this.selectIndex);
         } else if (this.lastChild) {
             this.selectedOwner(this.lastChild as Owner, this.selectIndex);
         }
+    }
+
+    strideMove() {}
+
+    setTargetWidget(widget?: TreeWidget) {
+        this.targetWidget = widget;
     }
 
     get currOwner() {

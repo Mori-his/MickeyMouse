@@ -48,6 +48,15 @@ export const GlobalStyle = createGlobalStyle`
     body {
         background-color: #222831;
     }
+    input[type=number] {
+        -moz-appearance:textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     .fade-enter {
         opacity: 0;
     }
@@ -80,11 +89,13 @@ export const CustomScrollbar = css`
         display: none;
         position: absolute;
         top: 0;
-        height: 4px;
+        width: 8px;
+        height: 8px;
     }
     &::-webkit-scrollbar-thumb {
         // 滚动滑块
         background-color: red;
+        border-radius: 8px;
     }
     &::-webkit-scrollbar-track {
         // 外层轨道

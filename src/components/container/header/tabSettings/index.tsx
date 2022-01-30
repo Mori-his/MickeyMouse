@@ -19,15 +19,18 @@ function TabSettings() {
         <TabSettingsWrapper>
             <IconButton
                 icon="json"
+                padding={ 8 }
                 $title="查看当前配置项的JSON数据"
                 />
             <IconButton
                 icon="settings"
+                padding={ 8 }
                 $title="设置当前配置项"
                 margin={{left: 8, right: 8}}
                 />
             <IconButton
                 icon="import"
+                padding={ 8 }
                 $title="导入配置项"
                 />
         </TabSettingsWrapper>

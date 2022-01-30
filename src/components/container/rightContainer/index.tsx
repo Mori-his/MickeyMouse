@@ -4,9 +4,14 @@ import { IRGBA } from "@/types/color";
 import Color from "@utils/color";
 import Tippy from '@tippyjs/react';
 import ColorPicker from "@components/basic/colorPicker/colorPicker";
+import BasicPanel from "./basicPanel";
+import LayoutPanel from "./layoutPanel";
+import SettingTab from "./settingTab";
+import TextPanel from "./textPanel";
+import ExteriorPanel from "./exteriorPanel";
 
 
-const width = 280;
+const width = 288;
 
 const RightWrapper = styled.div`
     position: absolute;
@@ -38,6 +43,11 @@ export default function RightContainer() {
     return (
         <RightWrapper>
             <RightConfigPanel>
+                <BasicPanel />
+                <SettingTab />
+                <LayoutPanel />
+                <TextPanel />
+                <ExteriorPanel />
                 <Tippy
                     content={ 
                         <ColorPicker

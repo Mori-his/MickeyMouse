@@ -165,11 +165,11 @@ interface Node {
 
 ### 长宽比计算公式
 
-nextWidth / width = scaleWidth 宽度放大缩小倍数
-nextHeight / height = scaleHeight 高度放大缩小倍数
+nextWidth / width = scaleWidth 宽度放大缩小倍数  
+nextHeight / height = scaleHeight 高度放大缩小倍数  
 
-newHeight = scaleWidth * height
-newWidth = scaleHeight * width
+newHeight = scaleWidth * height  
+newWidth = scaleHeight * width  
 
 
 

@@ -19,7 +19,16 @@ export default class Color {
 
     static hexToRGB(hex: string) {
         if (!this.isHex(hex)) return hex;
-        hex = hex.substr(1);
+        hex = hex.substring(1);
+        if( hex.length==3 ) {
+            let r = hex.substring(0,1);
+            let g = hex.substring(1,2);
+            let b = hex.substring(2,3);
+            r = r + r;
+            g = g + g;
+            b = b + b;
+            hex = `${r}${g}${b}`;
+        }
         const bigint = parseInt(hex, 16);
         const r = (bigint >> 16) & 255;
         const g = (bigint >> 8) & 255;
@@ -103,7 +112,7 @@ export default class Color {
         if(r > 255) r = 255;
         if(g > 255) g = 255;
         if(b > 255) b = 255;
-        let hex = 0;
+        // let hex = 0;
         if(b < 0) b = 0;
         // to hs(b/v)
         r /= 255;

@@ -1,8 +1,6 @@
 import { ClassType } from '../types/types';
+import { assert } from './assert';
 import AbstractNode from './node';
-
-
-const assert = console.assert;
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -78,7 +76,7 @@ export default class BasicNode extends AbstractNode {
 export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType extends ContainerParentDataMixin<ChildType>>(
     TargetClass: ClassType<BasicNode>
 ) {
-    class _ContainerNodeMixin extends TargetClass {
+    abstract class _ContainerNodeMixin extends TargetClass {
         constructor(...args: any[]) {
             super(...args);
         }
@@ -272,7 +270,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
 
         /**
          * 移动子节点到指定位置
-         * @param child 要移动的及诶单
+         * @param child 要移动的节点
          * @param after 移动到此节点的后面
          * @returns void
          */
@@ -282,12 +280,13 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             assert(child !== after);
             assert(child.parent === this);
             const childParentData = child.parentData! as ParentDataType;
-            
             if (childParentData.previousSibling === after) return;
             this._removeFromChildList(child);
             this._insertIntoChildList(child, after);
             // 这里要有个钩子
         }
+
+        abstract strideMove(widget: ChildType, after?: ChildType): void
 
         /**
          * 附加到目标

@@ -7,7 +7,7 @@ export const CloseWrapper = styled.div<{
     $size: number
 }>`
     position: absolute;
-    right: 4px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     width: ${ props => props.$size}px;
@@ -25,7 +25,7 @@ export interface CloseButtonProps {
 }
 
 export function CloseButton(props: React.PropsWithChildren<CloseButtonProps>) {
-    const { size = 32 } = props;
+    const { size = 24 } = props;
     return (
         <CloseWrapper
             className={ props.className }
@@ -35,6 +35,7 @@ export function CloseButton(props: React.PropsWithChildren<CloseButtonProps>) {
             <IconButton
                 icon="close"
                 size={ size }
+                padding={ 4 }
                 hoverColor="#ff0000"
                 hoverBgColor="#fff"
                 />

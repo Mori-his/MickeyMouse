@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Flexible from "./flexible";
-import Tree from "./tree";
+import Tree from "./tree/tree";
+import { CustomScrollbar } from '@styles/globals';
 
 
 let width: number = 296;
@@ -26,6 +27,8 @@ const TreeWrapper = styled.div`
     background-color: ${props => props.theme.contrast};
     box-shadow: 2px 0 8px 0 ${props => props.theme.main};
     padding: 16px 8px;
+    overflow: auto;
+    ${ CustomScrollbar }
 `;
 
 

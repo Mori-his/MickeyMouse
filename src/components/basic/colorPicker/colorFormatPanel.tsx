@@ -2,7 +2,7 @@ import Color from "@utils/color";
 import React, { useEffect, useRef, useState } from "react";
 import { IHSB, THSBSignle, TRGBSignle, IRGBA, IRGB } from '@/types/color';
 import { ColorInput, ColorInputBox, ColorValuePanel, maxOpacity } from ".";
-import Select from "../select";
+import Select from "../form/select";
 
 enum FORMAT {
     HEX = 'Hex',
@@ -50,7 +50,8 @@ export function ColorFormat(props: ColorFormatProps) {
                 const RGB = Color.hexToRGB(e.target.value);
                 if (typeof RGB !== 'string') {
                     changeColor(RGB);
-                    e.target.value = e.target.value.toLocaleUpperCase();
+                    const hex = format.serialize(rgba) as string;
+                    e.target.value = hex.toLocaleUpperCase();
                     return;
                 }
                 e.target.value = hex;
@@ -167,7 +168,7 @@ export function ColorFormat(props: ColorFormatProps) {
 export default function ColorFormatPanel(props: ColorFormatPanelProps) {
     const { rgba, colorChange = () => {} } = props;
     const [format, setFormat] = useState(formatData[0]);
-    const opacity = useRef(rgba.a)
+    const opacity = useRef(rgba.a * maxOpacity)
     const handleColorChange = function(rgb: IRGB) {
         colorChange({
             ...rgb,
@@ -189,11 +190,10 @@ export default function ColorFormatPanel(props: ColorFormatPanelProps) {
         e.target.value = `${opacity.current}%`;
     };
 
-
     return (
         <ColorValuePanel>
                 <Select
-                    $width={ 56 }
+                    width={ 56 }
                     options={ formatData }
                     defaultOptionId={format.id}
                     onChangeOption={(e: Event, option: IFormatData) => setFormat(option)}

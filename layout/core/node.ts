@@ -1,4 +1,5 @@
-const assert = console.assert;
+import { assert } from "./assert";
+
 
 
 export default abstract class AbstractNode {

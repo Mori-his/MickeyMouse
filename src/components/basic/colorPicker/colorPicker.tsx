@@ -1,8 +1,9 @@
 import { IRGB, IRGBA, IHSBA} from "@/types/color";
+import { ActionMap } from "@/types/redux.type";
 import Color from "@utils/color";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
-import Select from "../select";
+import Select from "../form/select";
 import ColorAdopePanel from "./colorAdopePanel";
 import ColorFormatPanel from "./colorFormatPanel";
 import ColorHuePanel from "./colorHuePanel";
@@ -65,21 +66,78 @@ const colorHueAndAlphaWidth = 16;
 const colorHueAndAlphaHeight = colorPanelHeight;
 const colorPointerSize = 12;
 
+export enum ColorPickerActions {
+    SET_HUE_COLOR = 'hue',
+    SET_HUE_Y = 'hueY',
+    SET_ALPHA_Y = 'alphaY',
+    SET_DEFAULT_RGBA = 'defaultRgba',
+    SET_PANEL_POSITION = 'panelPosition'
+}
+
+interface Point {
+    x: number
+    y: number
+}
+
+interface ColorPickerState {
+    [ColorPickerActions.SET_HUE_COLOR]: IRGB
+    [ColorPickerActions.SET_HUE_Y]: number
+    [ColorPickerActions.SET_ALPHA_Y]: number
+    [ColorPickerActions.SET_DEFAULT_RGBA]: IRGBA
+    [ColorPickerActions.SET_PANEL_POSITION]: Point
+}
+
+type ColorPickerAction = ActionMap<ColorPickerState>[keyof ActionMap<ColorPickerState>]
+
+
+export function ColorPickerReducer(state: ColorPickerState, action: ColorPickerAction) {
+    switch(action.type) {
+        case ColorPickerActions.SET_ALPHA_Y:
+            return {
+                ...state,
+                [ColorPickerActions.SET_ALPHA_Y]: action.payload
+            };
+        case ColorPickerActions.SET_HUE_Y:
+            return {
+                ...state,
+                [ColorPickerActions.SET_HUE_Y]: action.payload
+            };
+        case ColorPickerActions.SET_HUE_COLOR:
+            return {
+                ...state,
+                [ColorPickerActions.SET_HUE_COLOR]: action.payload
+            };
+        case ColorPickerActions.SET_DEFAULT_RGBA:
+            return {
+                ...state,
+                [ColorPickerActions.SET_DEFAULT_RGBA]: action.payload
+            };
+        case ColorPickerActions.SET_PANEL_POSITION:
+            return {
+                ...state,
+                [ColorPickerActions.SET_PANEL_POSITION]: action.payload
+            };
+    }
+}
+
 export default function ColorPicker(props: ColorPickerProps) {
+
+    const [state, dispatch] = useReducer(ColorPickerReducer, {
+        // 用于色相值
+        hue: {r: 255, g: 0, b: 0 },
+        // 用于色相定位
+        hueY: 0,
+        // 用于透明定位
+        alphaY: 0,
+        // 用于设置RGBA值
+        defaultRgba: {r: 255, g: 255, b: 255, a: 1 },
+        // 用于设置明度饱和度面板的定位
+        panelPosition: {x: 0, y: 0}
+    });
     // opacity取值范围0-100
     const { rgba, forwardedRef } = props;
-    // 用于色相值
-    const [hueColor, setHueColor] = useState<IRGB>({r: 255, g: 0, b: 0 });
-    // 用于色相定位
-    const [hueToY, setHueToY] = useState(0);
-    // 用于透明定位
-    const [alphaY, setAlphaY] = useState(0);
     // 用于设置HSBA(色相，饱和度,明度，透明度)值
     const HSBRef = useRef<IHSBA>({h: 0, s: 0, b: 0, a: 1 });
-    // 用于设置RGBA值
-    const [defaultRgba, setDefaultRgba] = useState({r: 255, g: 255, b: 255, a: 1 });
-    // 用于设置明度饱和度面板的定位
-    const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
 
     // TODO:
     // [handleColorPanelChange]、[handleColorHuePanelChange] and
@@ -112,7 +170,10 @@ export default function ColorPicker(props: ColorPickerProps) {
         const angle = maxAngle - maxAngle / colorHueAndAlphaHeight * hue
         // console.log('色相度数', angle);
         HSBRef.current.h = parseInt(angle.toString());
-        setHueColor(color);
+        dispatch({
+            type: ColorPickerActions.SET_HUE_COLOR,
+            payload: color
+        });
         setRgbaState();
     }
     const handleColorOpacityPanelChange = function(alpha: number) {
@@ -127,13 +188,22 @@ export default function ColorPicker(props: ColorPickerProps) {
         const hsbColor = Color.rgbToHsb(rgba.r, rgba.g, rgba.b);
         const hueY = hsbHToY(hsbColor.h, colorHueAndAlphaHeight);
         const panelPosition = hsbSBToPosition(hsbColor.s, hsbColor.b, colorPanelWidth, colorPanelHeight);
-        setPanelPosition({
-            x: panelPosition.x,
-            y: panelPosition.y
+        dispatch({
+            type: ColorPickerActions.SET_PANEL_POSITION,
+            payload: {
+                x: panelPosition.x,
+                y: panelPosition.y
+            }
         });
-        setHueToY(hueY);
-        const currOpacity = colorHueAndAlphaHeight - rgba.a * colorHueAndAlphaHeight;
-        setAlphaY(currOpacity);
+        dispatch({
+            type: ColorPickerActions.SET_HUE_Y,
+            payload: hueY
+        });
+        const currAlphaY = colorHueAndAlphaHeight - rgba.a * colorHueAndAlphaHeight;
+        dispatch({
+            type: ColorPickerActions.SET_ALPHA_Y,
+            payload: currAlphaY
+        });
     }
 
     // 设置RGBA
@@ -144,20 +214,22 @@ export default function ColorPicker(props: ColorPickerProps) {
             HSBRef.current.b,
             HSBRef.current.a
         );
-        setDefaultRgba({
-            r: rgba.r || 0,
-            g: rgba.g || 0,
-            b: rgba.b || 0,
-            a: rgba.a
+        dispatch({
+            type: ColorPickerActions.SET_DEFAULT_RGBA,
+            payload: {
+                r: rgba.r || 0,
+                g: rgba.g || 0,
+                b: rgba.b || 0,
+                a: rgba.a
+            }
         });
     }
 
     useEffect(() => {
         if (props.onColorChange) {
-            props.onColorChange(defaultRgba);
+            props.onColorChange(state[ColorPickerActions.SET_DEFAULT_RGBA]);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [defaultRgba]);
+    }, [props, state]);
 
     useEffect(() => {
         if (rgba) {
@@ -166,22 +238,31 @@ export default function ColorPicker(props: ColorPickerProps) {
                 const hsbColor = Color.rgbToHsb(rgbColor.r, rgbColor.g, rgbColor.b);
                 const hueY = hsbHToY(hsbColor.h, colorHueAndAlphaHeight);
                 const panelPosition = hsbSBToPosition(hsbColor.s, hsbColor.b, colorPanelWidth, colorPanelHeight);
-                setPanelPosition({
-                    x: panelPosition.x,
-                    y: panelPosition.y
+                dispatch({
+                    type: ColorPickerActions.SET_PANEL_POSITION,
+                    payload: {
+                        x: panelPosition.x,
+                        y: panelPosition.y
+                    }
                 });
-                setHueToY(hueY);
+                dispatch({
+                    type: ColorPickerActions.SET_HUE_Y,
+                    payload: hueY
+                });
             }
-            const currOpacity = rgba.a === maxOpacity ? 0 : rgba.a;
-            const currOpacityY = colorHueAndAlphaHeight - currOpacity * colorHueAndAlphaHeight
-            setAlphaY(currOpacityY)
+            const currAlpha = rgba.a === maxOpacity ? 0 : rgba.a;
+            const currAlphaY = colorHueAndAlphaHeight - currAlpha * colorHueAndAlphaHeight;
+            dispatch({
+                type: ColorPickerActions.SET_ALPHA_Y,
+                payload: currAlphaY
+            });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <ColorPickerWrapper ref={ forwardedRef }>
             <Select
-                $width={ 56 }
+                width={ 80 }
                 options={[{name: '纯色', id: 0}, {name: '线性', id: 1}]}
                 defaultOptionId={0}
                 onChangeOption={(e: Event, option: any) => console.log(option)}
@@ -193,8 +274,8 @@ export default function ColorPicker(props: ColorPickerProps) {
                     height={ colorPanelHeight }
                     pointerSize= { colorPointerSize }
                     onDragChange={ handleColorPanelChange }
-                    hue={ hueColor }
-                    {...panelPosition}
+                    hue={ state[ColorPickerActions.SET_HUE_COLOR] }
+                    {...state[ColorPickerActions.SET_PANEL_POSITION]}
                     />
                 {/* 色相面板 */}
                 <ColorHuePanel
@@ -202,7 +283,7 @@ export default function ColorPicker(props: ColorPickerProps) {
                     height={ colorHueAndAlphaHeight }
                     pointerSize= { colorPointerSize }
                     onDragChange={ handleColorHuePanelChange }
-                    y={ hueToY }
+                    y={ state[ColorPickerActions.SET_HUE_Y] }
                     />
                 {/* 透明度面板 */}
                 <ColorOpacity
@@ -210,16 +291,22 @@ export default function ColorPicker(props: ColorPickerProps) {
                     height={ colorHueAndAlphaHeight }
                     pointerSize= { colorPointerSize }
                     onDragChange={ handleColorOpacityPanelChange }
-                    y={ alphaY }
-                    color={ Color.rgbToHex(defaultRgba.r, defaultRgba.g, defaultRgba.b) }
+                    y={ state[ColorPickerActions.SET_ALPHA_Y] }
+                    color={
+                        Color.rgbToHex(
+                            state[ColorPickerActions.SET_DEFAULT_RGBA].r,
+                            state[ColorPickerActions.SET_DEFAULT_RGBA].g,
+                            state[ColorPickerActions.SET_DEFAULT_RGBA].b
+                        )
+                    }
                     />
             </ColorPickerBox>
             <ColorFormatPanel
-                rgba={ defaultRgba }
+                rgba={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
                 colorChange={ handleColorChange }
                 />
             <ColorAdopePanel
-                rgba={ defaultRgba }
+                rgba={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
                 onColorClick={ handleColorChange }
                 />
         </ColorPickerWrapper>

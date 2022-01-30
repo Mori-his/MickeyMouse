@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Option from "./option";
 import theme from "@styles/layout.theme";
-import IconButton from "../iconButton";
+import IconButton from "../../iconButton";
+import { IconProps } from "@components/basic/svgs/icons";
 
 interface SelectWrapperProps {
     isUnfold: boolean
@@ -61,6 +62,10 @@ const SelectOptionsWrapper = styled.div<SelectWrapperProps>`
     `};
 `;
 
+const ArrowIconButton = styled(IconButton)`
+    margin-right: 8px;
+`;
+
 
 export type TSelectTheme = 'dark' | 'light';
 
@@ -115,15 +120,15 @@ export interface IOption<T = {}, P = number> {
     id?: P
 }
 
-interface SelectProps<T = number> {
+type PropsWithSelect<T = number> = {
     onChangeOption?: Function
     theme?: TSelectTheme
     options: Array<IOption>
     defaultOptionId?: T
-    $width?: number
+    width?: number
 }
 
-export default function Select(props: SelectProps) {
+export default function Select(props: PropsWithSelect) {
     const { theme = 'light', defaultOptionId } = props;
     const [isUnfold, setIsUnfold] = useState(false);
     const [currOption, setCurrOption] = useState(props.options[0])
@@ -158,17 +163,17 @@ export default function Select(props: SelectProps) {
             bgColor={ currTheme.bgColor }
             activeBgColor={ currTheme.optionActiveBgColor }
             $color={ currTheme.color }
-            style={{ width: props.$width }}
+            style={{ width: props.width }}
             >
             <SelectValue>
                 { currOption.name }
-                <IconButton
+                <ArrowIconButton
                     icon="arrowDown"
                     color="transparent"
                     hoverBgColor="transparent"
-                    hoverColor="#010101"
+                    hoverColor={ currTheme.color }
                     size={24}
-                    defaultColor={ isUnfold ? '#fff' : '#010101' }
+                    defaultColor={ currTheme.color }
                     />
             </SelectValue>
             <SelectOptionsWrapper

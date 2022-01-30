@@ -1,6 +1,5 @@
 import { Alignment } from "./alignment";
-
-const assert = console.assert;
+import { assert } from "./assert";
 
 export enum TileMode {
     /**

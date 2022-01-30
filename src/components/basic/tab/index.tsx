@@ -86,11 +86,12 @@ export default function Tab(props: TabProps) {
         tabInput?.select();
     }
 
-    return props.$title ? (
+    return (
         <Tippy
             content={props.$title}
             animation="scale"
             theme="light"
+            disabled={ !props.$title }
             >
             <PageButtonWrapper
                 $active={props.active}
@@ -114,36 +115,10 @@ export default function Tab(props: TabProps) {
                 <CloseButton
                     className="close-button"
                     onClick={ props.onClose }
-                    size={ 20 }
+                    size={ 16 }
                     />
             </PageButtonWrapper>
         </Tippy>
-    ) : (
-        <PageButtonWrapper
-            $active={props.active}
-            onClick={e => props.onClick && props.onClick(e)}
-            >
-            {
-                // 如果按钮被双击则修改当前项的Name
-                isDoubleClick ? (
-                    <TabInput
-                        onKeyUp={e => handleInputKeyUp(e)}
-                        onBlur={e => handleInputBlur(e)}
-                        ref={handleInputFocus}
-                        defaultValue={ props.children?.toString() }
-                        />
-                ) : (
-                    <PageButton
-                        onDoubleClick={e => handleDoubleClick(e)}
-                        >{ props.children }</PageButton>
-                )
-            }
-            <CloseButton
-                className="close-button"
-                onClick={ props.onClose }
-                size={ 20 }
-                />
-        </PageButtonWrapper>
     );
 }
 

@@ -21,6 +21,7 @@ export default function AppendButton(props: React.PropsWithChildren<AppendButton
             <IconButton
                 icon="add"
                 $title="增加配置项"
+                padding={ 8 }
                 />
         </AppendButtonWrapper>
     );

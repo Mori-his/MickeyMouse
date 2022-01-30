@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { IIcons, getIcon, IconWrapper, IconProps, SvgWrapperStyle } from "../svgs/icons";
 import Tippy from '@tippyjs/react';
 
@@ -11,7 +11,7 @@ type TAngleRect = {
     bottomRight: number
 }
 
-type Margin = {
+type Edge = {
     left: number
     top: number
     right: number
@@ -21,7 +21,8 @@ type Margin = {
 type IconButtonWrapperProps = {
     $size: number
     hoverBgColor?: string
-    $margin: Margin
+    $margin: Edge
+    $padding: number
     $shape: TShape
     $angle: TAngleRect
 }
@@ -29,8 +30,8 @@ const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${ props => props.$size }px;
-    height: ${ props => props.$size }px;
+    width: ${ props => props.$size + props.$padding }px;
+    height: ${ props => props.$size + props.$padding}px;
     background: ${ props => props.color || props.theme.primary};
     margin: ${props => props.$margin.top}px ${props => props.$margin.right}px ${props => props.$margin.bottom}px ${props => props.$margin.left}px;
     cursor: pointer;
@@ -42,6 +43,68 @@ const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
         border-bottom-left-radius: ${props.$angle.bottomLeft}px;
         border-bottom-right-radius: ${props.$angle.bottomRight}px;
     `};
+
+    /* position: relative;
+    box-sizing: border-box;
+    text-transform: uppercase;
+    background-color: transparent;
+    font-weight: 500;
+    overflow: hidden;
+    outline: none;
+
+    &::-moz-focus-inner {
+        border: none;
+    }
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: ${ props => props.hoverBgColor || props.theme.assist};
+        opacity: 0;
+        transition: opacity 2s;
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        border-radius: 50%;
+        padding: 50%;
+        width: 32px;
+        height: 32px;
+        background-color: ${ props => props.hoverBgColor || props.theme.assist};
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+        transition: opacity 1s, transform 0.5s;
+    }
+    &:hover::before {
+        opacity: 0.04;
+    }
+    &:focus::before {
+        opacity: 0.12;
+    }
+    &:hover:focus::before {
+        opacity: 0.16;
+    }
+    &:active::after {
+        opacity: 0.16;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0s;
+    }
+    &:disabled {
+        background-color: transparent;
+        cursor: initial;
+    }
+    &::before {
+        opacity: 0;
+    }
+    &:disabled::after {
+        opacity: 0;
+    } */
+
     &:hover {
         background: ${ props => props.hoverBgColor || props.theme.assist};
     }
@@ -58,7 +121,8 @@ export interface IconButtonProps extends IconProps {
     color?: string
     hoverBgColor?: string
     $title?: string
-    margin?: Partial<Margin>
+    margin?: Partial<Edge>
+    padding?: number
     /**
      * 设置盒子形状
      * @param 'circle' | 'round-angle'
@@ -93,12 +157,13 @@ function transitionAngle(angle: TAngle): TAngleRect {
 }
 
 function IconButton(props: IconButtonProps) {
-    if (!props.icon) return <React.Fragment></React.Fragment>
+    if (!props.icon) return null;
     const {
-        size = 32,
+        size = 24,
         active = false,
         shape = 'circle',
-        angle = 8
+        angle = 8,
+        padding = 0
     } = props;
     const margin = Object.assign({ left: 0, top: 0, right: 0, bottom: 0}, props.margin);
     // 获取当前Icon的Svg
@@ -106,38 +171,21 @@ function IconButton(props: IconButtonProps) {
     const _angle = transitionAngle(angle);
 
     return (
-        props.$title ? 
-            <Tippy
-                content={ props.$title }
-                placement="top"
-                animation="scale"
-                theme="light"
-                >
-                <IconButtonWrapper
-                    { ...props }
-                    className={ props.className }
-                    onClick={e => props.onClick && props.onClick(e)}
-                    active={ active }
-                    $size={ size }
-                    $margin={ margin }
-                    $shape={ shape }
-                    $angle={ _angle }
-                    >
-                    <IconWrapper
-                        {...props}
-                        $size={ size }
-                        >
-                        <CurrentIcon />
-                    </IconWrapper>
-                </IconButtonWrapper>
-            </Tippy>
-        : <IconButtonWrapper
+        <Tippy
+            content={ props.$title }
+            placement="top"
+            animation="scale"
+            theme="light"
+            disabled={ !props.$title }
+            >
+            <IconButtonWrapper
                 { ...props }
                 className={ props.className }
                 onClick={e => props.onClick && props.onClick(e)}
                 active={ active }
                 $size={ size }
                 $margin={ margin }
+                $padding={ padding }
                 $shape={ shape }
                 $angle={ _angle }
                 >
@@ -148,6 +196,7 @@ function IconButton(props: IconButtonProps) {
                     <CurrentIcon />
                 </IconWrapper>
             </IconButtonWrapper>
+        </Tippy>
     );
 }
 

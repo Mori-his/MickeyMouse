@@ -1,9 +1,8 @@
 
 import { TAngle } from "@layout/types/types";
-import { toJS } from "mobx";
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from "./object";
-
-const assert = console.assert;
+import cloneDeep from 'loadsh/cloneDeep';
+import { assert } from "./assert";
 
 export class Size {
     constructor(public width: number | null, public height: number | null) {}
@@ -192,8 +191,6 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
 
     abstract type: string
 
-    #ids: Array<string | number> = [];
-
     constructor(options: WidgetOptions) {
         super({
             position: new AdaptivePosition({
@@ -235,19 +232,17 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
         super.adoptChild(child);
     }
 
-    protected _insertIntoChildList(child: Widget, after?: Widget) {
-        assert(!this.hasId(child.id), `不能插入相同的ID [${child.id}], 请及时修改`);
-        this.appendId(child.id);
-        super._insertIntoChildList(child, after);
+    setAttachOnClick(newValue: boolean) {
+        this.attachOnClick = newValue;
     }
 
-    hasId(id: string | number) {
-        return this.#ids.indexOf(id) > -1;
+    setVisible(newValue: boolean) {
+        this.visible = newValue;
     }
 
-    appendId(id: string | number) {
-        if (this.hasId(id)) return
-        this.#ids.push(id);
+
+    setType(newType: string) {
+        // 需要抽象工厂创建此类型Widget
     }
 
     abstract toJson(): Object;
@@ -256,12 +251,33 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
 
 
 export abstract class TreeWidget extends Widget {
-    _shrink: boolean = false
-    _lock: boolean = false
+    _shrink: boolean = false;
+    _lock: boolean = false;
+    __forbidMove: boolean = false
+    
+    _isDragEnter: boolean = false;
+    __el?: HTMLElement;
+    __root_depth: number = 0;
+    // 不能产生兄弟节点
+    allowSibling: boolean = true
+    // 不能移动
 
 
+    strideMove(widget: TreeWidget, after?: TreeWidget) {
+        if (after && !after.allowSibling) return;
+        const parent = widget.parent as TreeWidget;
+        if (!parent) return;
+        parent.remove(widget);
+        this.insert(widget, after);
+    }
+
+    
     setLock(newState: boolean) {
         this._lock = newState;
+        this.visitChildren(child => {
+            const currChild = child as TreeWidget;
+            currChild.setLock(newState);
+        });
     }
 
     setShrink(newState: boolean) {
@@ -272,6 +288,28 @@ export abstract class TreeWidget extends Widget {
         this.visible = newState;
     }
 
+    setDragEnte(newState: boolean) {
+        this._isDragEnter = newState;
+    }
+
+    clone() {
+        const cloneThis: TreeWidget = cloneDeep(this);
+        cloneThis.parent = null;
+        cloneThis.parentData = null;
+        cloneThis.detach();
+        return cloneThis;
+    }
+
+    // redepthChild(child: TreeWidget) {
+    //     assert(child.owner === this.owner);
+    //     child.depth = this.depth + 1;
+    //     // [child]深度变了children的深度也要变
+    //     child.redepthChildren();
+    // }
+
+    get forbidMove() {
+        return this._lock || this.__forbidMove;
+    }
 
     get lock() {
         return this._lock;
