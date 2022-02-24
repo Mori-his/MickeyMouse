@@ -21,17 +21,27 @@ export interface SvgWrapperProps {
 
 export const SvgWrapperStyle = styled.div<SvgWrapperProps>`
     .svg-stroke {
-        stroke: ${props => props.active ? props.activeColor : props.defaultColor || props.theme.lesser};
+        color: ${props => props.activeColor};
+        stroke: ${props => props.active ? props.activeColor : props.defaultColor};
     }
     .svg-fill {
-        fill: ${props => props.active ? props.activeColor : props.defaultColor || props.theme.lesser};
+        color: blue;
+        fill: ${props => props.active ? props.activeColor : props.defaultColor};
     }
+    
     &:hover {
         .svg-stroke {
-            stroke: ${props => props.hoverColor || props.theme.light};
+            stroke: ${
+                props => props.active
+                ? props.activeColor
+                : props.hoverColor
+            };
         }
         .svg-fill {
-            fill: ${props => props.hoverColor || props.theme.light};
+            fill: ${
+                props => props.active ? props.activeColor
+                : props.hoverColor || props.theme.light
+            };
         }
     }
 `;
@@ -42,6 +52,10 @@ const SvgWrapper = styled.div<SvgWrapperProps>`
     justify-content: center;
     width: ${props => props.$size}px;
     height: ${props => props.$size}px;
+    svg {
+        width: ${props => props.$size}px;
+        height: ${props => props.$size}px;
+    }
 `;
 
 
@@ -51,6 +65,7 @@ export function IconWrapper(props: React.PropsWithChildren<IconPropsWithSize<Ico
         <SvgWrapper
             activeColor={ props.activeColor }
             hoverColor={ props.hoverColor }
+            defaultColor={ props.defaultColor }
             active={ active }
             $size={ props.$size }
             >

@@ -9,6 +9,8 @@ import LayoutPanel from "./layoutPanel";
 import SettingTab from "./settingTab";
 import TextPanel from "./textPanel";
 import ExteriorPanel from "./exteriorPanel";
+import { CustomScrollbar } from "@styles/globals";
+import EffectsPanel from "./effects";
 
 
 const width = 288;
@@ -25,21 +27,14 @@ const RightConfigPanel = styled.div`
     height: 100%;
     background-color: ${props => props.theme.contrast};
     box-shadow: -2px 0 8px 0 ${props => props.theme.main};
+    overflow-x: hidden;
+    overflow-y: overlay;
+    ${ CustomScrollbar };
+    padding-bottom: 16px;
 `;
 
-
 export default function RightContainer() {
-    const [rgba, setRgba] = useState<IRGBA>({
-        r: 255,
-        g: 255,
-        b: 255,
-        a: 1
-    });
-    const [isShowColorPicker, setIsShowColorPicker] = useState(false);
-    const selectElRef = useRef(null);
-    const handleColorChange = function(rgba: IRGBA) {
-        setRgba(rgba);
-    }
+
     return (
         <RightWrapper>
             <RightConfigPanel>
@@ -48,29 +43,7 @@ export default function RightContainer() {
                 <LayoutPanel />
                 <TextPanel />
                 <ExteriorPanel />
-                <Tippy
-                    content={ 
-                        <ColorPicker
-                            rgba={ rgba }
-                            onColorChange={ handleColorChange }
-                            />
-                    }
-                    animation="shift-away"
-                    trigger="click"
-                    hideOnClick={ true }
-                    arrow={ true }
-                    interactive={ true }
-                    placement="left"
-                    theme="light"
-                    >
-                    <div
-                        ref={ selectElRef }
-                        style={{paddingTop: 20, color: `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`}}
-                        onClick={() => setIsShowColorPicker(!isShowColorPicker)}
-                        >
-                        选择颜色{Color.rgbToHex(rgba.r, rgba.g, rgba.b)}透明度为: {rgba.a}
-                    </div>
-                </Tippy>
+                <EffectsPanel />
             </RightConfigPanel>
         </RightWrapper>
     );

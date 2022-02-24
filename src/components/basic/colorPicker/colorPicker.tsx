@@ -1,7 +1,7 @@
 import { IRGB, IRGBA, IHSBA} from "@/types/color";
 import { ActionMap } from "@/types/redux.type";
 import Color from "@utils/color";
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useImperativeHandle, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
 import Select from "../form/select";
 import ColorAdopePanel from "./colorAdopePanel";
@@ -56,7 +56,11 @@ interface ColorPickerProps {
     opacity?: number
     onColorChange?: (rgba: IRGBA) => any
     rgba?: IRGBA
-    forwardedRef?: React.ForwardedRef<HTMLDivElement>
+}
+
+export type ColorPickerRef<T = {}> = {
+    setRGBA(rgba: IRGBA): void
+    colorPickerEl: React.RefObject<T>
 }
 
 
@@ -120,7 +124,7 @@ export function ColorPickerReducer(state: ColorPickerState, action: ColorPickerA
     }
 }
 
-export default function ColorPicker(props: ColorPickerProps) {
+function ColorPicker(props: ColorPickerProps, ref: React.ForwardedRef<ColorPickerRef<HTMLDivElement>>) {
 
     const [state, dispatch] = useReducer(ColorPickerReducer, {
         // 用于色相值
@@ -135,9 +139,10 @@ export default function ColorPicker(props: ColorPickerProps) {
         panelPosition: {x: 0, y: 0}
     });
     // opacity取值范围0-100
-    const { rgba, forwardedRef } = props;
+    const { rgba } = props;
     // 用于设置HSBA(色相，饱和度,明度，透明度)值
     const HSBRef = useRef<IHSBA>({h: 0, s: 0, b: 0, a: 1 });
+    const colorPickerElRef = useRef(null);
 
     // TODO:
     // [handleColorPanelChange]、[handleColorHuePanelChange] and
@@ -225,31 +230,41 @@ export default function ColorPicker(props: ColorPickerProps) {
         });
     }
 
+    useImperativeHandle(
+      ref,
+      () => ({
+        setRGBA(rgba: IRGBA) {
+            handleColorChange(rgba);
+        },
+        colorPickerEl: colorPickerElRef
+      })
+    );
+    
+
     useEffect(() => {
         if (props.onColorChange) {
             props.onColorChange(state[ColorPickerActions.SET_DEFAULT_RGBA]);
         }
-    }, [props, state]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state]);
 
     useEffect(() => {
         if (rgba) {
             const rgbColor = rgba;
-            if (typeof rgbColor !== 'string') {
-                const hsbColor = Color.rgbToHsb(rgbColor.r, rgbColor.g, rgbColor.b);
-                const hueY = hsbHToY(hsbColor.h, colorHueAndAlphaHeight);
-                const panelPosition = hsbSBToPosition(hsbColor.s, hsbColor.b, colorPanelWidth, colorPanelHeight);
-                dispatch({
-                    type: ColorPickerActions.SET_PANEL_POSITION,
-                    payload: {
-                        x: panelPosition.x,
-                        y: panelPosition.y
-                    }
-                });
-                dispatch({
-                    type: ColorPickerActions.SET_HUE_Y,
-                    payload: hueY
-                });
-            }
+            const hsbColor = Color.rgbToHsb(rgbColor.r, rgbColor.g, rgbColor.b);
+            const hueY = hsbHToY(hsbColor.h, colorHueAndAlphaHeight);
+            const panelPosition = hsbSBToPosition(hsbColor.s, hsbColor.b, colorPanelWidth, colorPanelHeight);
+            dispatch({
+                type: ColorPickerActions.SET_PANEL_POSITION,
+                payload: {
+                    x: panelPosition.x,
+                    y: panelPosition.y
+                }
+            });
+            dispatch({
+                type: ColorPickerActions.SET_HUE_Y,
+                payload: hueY
+            });
             const currAlpha = rgba.a === maxOpacity ? 0 : rgba.a;
             const currAlphaY = colorHueAndAlphaHeight - currAlpha * colorHueAndAlphaHeight;
             dispatch({
@@ -260,7 +275,7 @@ export default function ColorPicker(props: ColorPickerProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <ColorPickerWrapper ref={ forwardedRef }>
+        <ColorPickerWrapper ref={ colorPickerElRef }>
             <Select
                 width={ 80 }
                 options={[{name: '纯色', id: 0}, {name: '线性', id: 1}]}
@@ -313,39 +328,4 @@ export default function ColorPicker(props: ColorPickerProps) {
     );
 }
 
-// export const ColorPickerRef = React.forwardRef(
-//     function ColorPickerForwardRef(props: ColorPickerProps, ref: React.ForwardedRef<HTMLDivElement>) {
-//         return (<ColorPicker { ...props } forwardedRef={ ref } />);
-//     }
-// );
-
-
-// const ColorPickerFloatWrapper = styled.div`
-//     position: absolute;
-//     top: 0;
-//     z-index: 4;
-//     `;
-// export type ColorPickerPropsWithFloat<P = {}> = P & {
-//     isShow?: boolean
-//     targetRef: React.RefObject<HTMLElement>
-// }
-
-// export function ColorPickerFloat(props: ColorPickerPropsWithFloat<ColorPickerProps>) {
-//     const { isShow = false, targetRef, ...ColorPickerProps } = props;
-//     const colorPickerRef = useRef(null);
-
-//     useEffect(() => {
-//         console.log(colorPickerRef);
-//     }, [isShow]);
-//     return isShow ? createPortal(
-//         (
-//             <ColorPickerFloatWrapper>
-//                 <ColorPickerRef
-//                     { ...ColorPickerProps }
-//                     ref={ colorPickerRef }
-//                     />
-//             </ColorPickerFloatWrapper>
-//         ),
-//         document.body
-//     ) : null
-// }
+export default React.forwardRef(ColorPicker);

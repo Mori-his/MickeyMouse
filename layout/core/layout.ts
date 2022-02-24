@@ -1,8 +1,7 @@
 
 import { TAngle } from "@layout/types/types";
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from "./object";
-import cloneDeep from 'loadsh/cloneDeep';
-import { assert } from "./assert";
+import cloneDeep from 'lodash/cloneDeep';
 
 export class Size {
     constructor(public width: number | null, public height: number | null) {}
@@ -251,16 +250,20 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
 
 
 export abstract class TreeWidget extends Widget {
+    // 伸缩状态
     _shrink: boolean = false;
+    // 锁定状态
     _lock: boolean = false;
+    // 禁止移动
     __forbidMove: boolean = false
-    
+
     _isDragEnter: boolean = false;
+    // 当前节点绑定的元素
     __el?: HTMLElement;
+    // 根节点深度
     __root_depth: number = 0;
     // 不能产生兄弟节点
     allowSibling: boolean = true
-    // 不能移动
 
 
     strideMove(widget: TreeWidget, after?: TreeWidget) {
@@ -288,7 +291,7 @@ export abstract class TreeWidget extends Widget {
         this.visible = newState;
     }
 
-    setDragEnte(newState: boolean) {
+    setIsDragEnter(newState: boolean) {
         this._isDragEnter = newState;
     }
 

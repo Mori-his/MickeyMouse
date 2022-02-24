@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Option from "./option";
 import theme from "@styles/layout.theme";
 import IconButton from "../../iconButton";
-import { IconProps } from "@components/basic/svgs/icons";
 
 interface SelectWrapperProps {
     isUnfold: boolean

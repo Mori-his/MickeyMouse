@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, FormEvent, useCallback } from "react";
 import styled from "styled-components";
 
 
@@ -9,11 +9,13 @@ const InputWrapper = styled.div`
     width: ${props => props.$width && `${props.$width}px`};
 `;
 
-const InputBackground = styled.div`
+const InputBackground = styled.div<{
+    backgroundColor?: string
+}>`
     flex: 1;
     display: flex;
     align-items: center;
-    background-color: ${props => props.theme.primary};
+    background-color: ${props => props.backgroundColor || props.theme.primary};
     border-radius: 8px;
 `;
 type InputSelfProps = {
@@ -53,13 +55,13 @@ type PropsInputWith<P = {}> = P & {
     width?: number
     height?: number
     center?: boolean
+    backgroundColor?: string
     after?: React.ReactChild
     before?: React.ReactChild
 };
 
-function Input(props: PropsInputWith<React.ComponentProps<'input'>>, InputRef: React.ForwardedRef<HTMLInputElement>) {
+const Input = React.forwardRef(function Input(props: PropsInputWith<React.ComponentProps<'input'>>, InputRef: React.ForwardedRef<HTMLInputElement>) {
     const {
-        ref,
         label,
         width,
         height = 32,
@@ -67,27 +69,43 @@ function Input(props: PropsInputWith<React.ComponentProps<'input'>>, InputRef: R
         center = false,
         before,
         after,
+        onInput = () => {},
+        type = 'text',
+        backgroundColor,
         ...propsAll
     } = props;
+
+
+    const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        if (type === 'number') {
+            // 替换非0-9的字符
+            event.target.value = event.target.value.replace(/[^0-9]/, '');
+        }
+        onInput(event);
+    }, [onInput, type]);
 
     return (
         <InputWrapper
             $width={ width }
             >
             { label && (<InputLabel>{ label }</InputLabel>) }
-            <InputBackground>
+            <InputBackground
+                backgroundColor={ backgroundColor }
+                >
                 { before }
                 <InputSelf
-                    ref={ InputRef }
+                    { ...propsAll }
+                    type={type === 'number' ? 'text' : type}
+                    onInput={ (e: ChangeEvent<HTMLInputElement>) => handleInput(e) }
                     name={ name }
                     $height={ height }
                     center={ center }
-                    { ...propsAll }
+                    ref={ InputRef }
                     />
                 { after }
             </InputBackground>
         </InputWrapper>
     );
-}
+});
 
-export default React.forwardRef(Input);
+export default Input;

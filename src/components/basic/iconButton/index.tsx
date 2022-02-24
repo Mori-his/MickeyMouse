@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useContext } from "react";
+import styled, { ThemeContext } from "styled-components";
 import { IIcons, getIcon, IconWrapper, IconProps, SvgWrapperStyle } from "../svgs/icons";
-import Tippy from '@tippyjs/react';
+import Tippy, { TippyProps } from '@tippyjs/react';
 
 
 type TAngleRect = {
@@ -30,18 +30,20 @@ const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${ props => props.$size + props.$padding }px;
-    height: ${ props => props.$size + props.$padding}px;
-    background: ${ props => props.color || props.theme.primary};
-    margin: ${props => props.$margin.top}px ${props => props.$margin.right}px ${props => props.$margin.bottom}px ${props => props.$margin.left}px;
     cursor: pointer;
-    ${props => props.$shape === 'circle' ? `
-        border-radius: 50%;
-    ` : `
-        border-top-left-radius: ${props.$angle.topLeft}px;
-        border-top-right-radius: ${props.$angle.topRight}px;
-        border-bottom-left-radius: ${props.$angle.bottomLeft}px;
-        border-bottom-right-radius: ${props.$angle.bottomRight}px;
+    ${props => `
+        width: ${ props.$size + props.$padding }px;
+        height: ${ props.$size + props.$padding}px;
+        background: ${ props.color || props.theme.primary};
+        margin: ${props.$margin.top}px ${props.$margin.right}px ${props.$margin.bottom}px ${props.$margin.left}px;
+        ${props.$shape === 'circle' ? `
+            border-radius: 50%;
+        ` : `
+            border-top-left-radius: ${props.$angle.topLeft}px;
+            border-top-right-radius: ${props.$angle.topRight}px;
+            border-bottom-left-radius: ${props.$angle.bottomLeft}px;
+            border-bottom-right-radius: ${props.$angle.bottomRight}px;
+        `};
     `};
 
     /* position: relative;
@@ -137,6 +139,7 @@ export interface IconButtonProps extends IconProps {
      * @param bottomRight
      */
     angle?: TAngle
+    tippyProps?: TippyProps
 }
 
 function transitionAngle(angle: TAngle): TAngleRect {
@@ -157,26 +160,35 @@ function transitionAngle(angle: TAngle): TAngleRect {
 }
 
 function IconButton(props: IconButtonProps) {
+    const theme = useContext(ThemeContext);
     if (!props.icon) return null;
     const {
         size = 24,
         active = false,
         shape = 'circle',
         angle = 8,
-        padding = 0
+        padding = 0,
+        tippyProps = {}
     } = props;
+
+    const activeColor = props.activeColor || theme.assist;
+    const defaultColor = props.defaultColor || theme.lesser;
+    const hoverColor = props.hoverColor || theme.light;
     const margin = Object.assign({ left: 0, top: 0, right: 0, bottom: 0}, props.margin);
     // 获取当前Icon的Svg
     const CurrentIcon = getIcon(props.icon);
     const _angle = transitionAngle(angle);
-
+    Object.assign(tippyProps, {
+        content: props.$title
+    });
     return (
         <Tippy
-            content={ props.$title }
+            content={ tippyProps.content }
             placement="top"
             animation="scale"
             theme="light"
-            disabled={ !props.$title }
+            disabled={ !tippyProps.content }
+            { ...tippyProps }
             >
             <IconButtonWrapper
                 { ...props }
@@ -188,6 +200,9 @@ function IconButton(props: IconButtonProps) {
                 $padding={ padding }
                 $shape={ shape }
                 $angle={ _angle }
+                defaultColor={ defaultColor }
+                hoverColor={ hoverColor }
+                activeColor={ activeColor }
                 >
                 <IconWrapper
                     {...props}

@@ -31,7 +31,6 @@ export default observer(function Tree() {
         y: 0
     });
     useEffect(() => {
-        console.log('注册了')
         const dragEventSignle = DragEventSignle.getInstance();
         const handleDrop = function(event: Event){
             event.preventDefault();
@@ -161,7 +160,6 @@ export default observer(function Tree() {
         dragEventSignle.on('dragEnd', handleDragEnd);
         dragEventSignle.on('dragOver', handleDragOver);
         return () => {
-            console.log('卸载了')
             dragEventSignle.removeListener('drop', handleDrop);
             dragEventSignle.removeListener('drag', handleDrag);
             dragEventSignle.removeListener('dragStart', handleDragStart);
