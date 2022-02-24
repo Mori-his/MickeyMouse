@@ -14,15 +14,15 @@ export interface AppendButtonProps {
 
 export default function AppendButton(props: React.PropsWithChildren<AppendButtonProps>) {
     return (
-        <ToolTip
-            title="添加一个配置项"
+        <AppendButtonWrapper
+            className={ props.className }
+            onClick={e => props.onClick && props.onClick(e)}
             >
-            <AppendButtonWrapper
-                className={ props.className }
-                onClick={e => props.onClick && props.onClick(e)}
-                >
-                <IconButton icon="add" />
-            </AppendButtonWrapper>
-        </ToolTip>
+            <IconButton
+                icon="add"
+                $title="增加配置项"
+                padding={ 8 }
+                />
+        </AppendButtonWrapper>
     );
 }

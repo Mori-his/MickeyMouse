@@ -55,7 +55,7 @@ export default function ColorHuePanel(props: ColorHuePanelProps) {
 
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
-        const targetTop = getOffsetTop(targetEl);
+        const targetTop = targetEl.getBoundingClientRect().y;
         const currentTop = event.clientY;
         const offset = pointerSize * 0.7;
         const value = currentTop - targetTop - offset;

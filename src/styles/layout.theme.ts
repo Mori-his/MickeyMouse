@@ -20,6 +20,8 @@ const LayoutTheme = {
     contrast: '#393e46',
     lightContrast: '#e2e2e2', 
     lightContrastText: '#5b5b5b',
+    white50: '#d8d8d8',
+    white30: '#7F7F7F'
 }
 
 

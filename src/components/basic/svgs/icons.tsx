@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export interface IconProps {
     active?: boolean
@@ -21,17 +21,27 @@ export interface SvgWrapperProps {
 
 export const SvgWrapperStyle = styled.div<SvgWrapperProps>`
     .svg-stroke {
-        stroke: ${props => props.active ? props.activeColor : props.defaultColor || props.theme.lesser};
+        color: ${props => props.activeColor};
+        stroke: ${props => props.active ? props.activeColor : props.defaultColor};
     }
     .svg-fill {
-        fill: ${props => props.active ? props.activeColor : props.defaultColor || props.theme.lesser};
+        color: blue;
+        fill: ${props => props.active ? props.activeColor : props.defaultColor};
     }
+    
     &:hover {
         .svg-stroke {
-            stroke: ${props => props.hoverColor || props.theme.light};
+            stroke: ${
+                props => props.active
+                ? props.activeColor
+                : props.hoverColor
+            };
         }
         .svg-fill {
-            fill: ${props => props.hoverColor || props.theme.light};
+            fill: ${
+                props => props.active ? props.activeColor
+                : props.hoverColor || props.theme.light
+            };
         }
     }
 `;
@@ -40,8 +50,12 @@ const SvgWrapper = styled.div<SvgWrapperProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${props => props.$size - 8}px;
-    height: ${props => props.$size - 8}px;
+    width: ${props => props.$size}px;
+    height: ${props => props.$size}px;
+    svg {
+        width: ${props => props.$size}px;
+        height: ${props => props.$size}px;
+    }
 `;
 
 
@@ -51,6 +65,7 @@ export function IconWrapper(props: React.PropsWithChildren<IconPropsWithSize<Ico
         <SvgWrapper
             activeColor={ props.activeColor }
             hoverColor={ props.hoverColor }
+            defaultColor={ props.defaultColor }
             active={ active }
             $size={ props.$size }
             >
@@ -255,6 +270,25 @@ const icons = {
             </svg>
         );
     },
+    mouseHover() {
+        return (
+            <svg id="鼠标点击" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path id="FontAwsome_mouse_" data-name="FontAwsome (mouse)" d="M0,11a5,5,0,0,0,5,5H7a5,5,0,0,0,5-5V7H0ZM7,0H6.5V6H12V5A5,5,0,0,0,7,0Z" transform="translate(6 4)" fill="#818181"/>
+                <path id="FontAwsome_mouse_2" data-name="FontAwsome (mouse)" d="M5.5,0H5A5,5,0,0,0,0,5V6H5.5Z" transform="translate(6 4)" fill="#fff"/>
+                <rect id="delete_容器" data-name="delete 容器" width="100%" height="100%" fill="none"/>
+            </svg>
+        );
+    },
+    mouseActive() {
+        return (
+            <svg id="鼠标点击" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path id="FontAwsome_mouse_" data-name="FontAwsome (mouse)" d="M0,11a5,5,0,0,0,5,5H7a5,5,0,0,0,5-5V7H0ZM7,0H6.5V6H12V5A5,5,0,0,0,7,0Z" transform="translate(6 4)" fill="#818181"/>
+                <path id="FontAwsome_mouse_2" data-name="FontAwsome (mouse)" d="M5.5,0H5A5,5,0,0,0,0,5V6H5.5Z" transform="translate(6 4)" fill="#469adb"/>
+                <rect id="delete_容器" data-name="delete 容器" width="100%" height="100%" fill="none"/>
+            </svg>
+
+        );
+    },
     /**
      * 删除
      * ![删除](https://p4.ssl.qhimg.com/t01b43068c126d1baba.jpg)
@@ -389,10 +423,13 @@ const icons = {
         return (
             <svg id="icon-基础" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <rect id="矩形_433" data-name="矩形 433" width="100%" height="100%" fill="none"/>
-                <path id="联合_9" className="svg-stroke" data-name="联合 9" d="M2495.5,1318h0a1.5,1.5,0,0,1,3,0h0a1.5,1.5,0,1,1-3,0Z" transform="translate(-2486.5 -1313)" fill="rgba(0,0,0,0)" stroke="#707070" strokeWidth="2"/>
-                <path id="联合_10" className="svg-stroke" data-name="联合 10" d="M2498.5,1318h0a1.5,1.5,0,0,1,3,0h0a1.5,1.5,0,1,1-3,0Z" transform="translate(-2486.5 -1306)" fill="none" stroke="#707070" strokeWidth="2"/>
-                <path id="联合_11" className="svg-stroke" data-name="联合 11" d="M2495.5,1318h0a1.5,1.5,0,0,1,3,0h0a1.5,1.5,0,1,1-3,0Z" transform="translate(-2486.5 -1299)" fill="none" stroke="#707070" strokeWidth="2"/>
+                <path id="联合_9" data-name="联合 9" d="M2495.5,1318h0a1.5,1.5,0,0,1,3,0h0a1.5,1.5,0,1,1-3,0Z" transform="translate(-2486.5 -1313)" fill="rgba(0,0,0,0)"/>
+                <path id="联合_9_-_轮廓" className="svg-fill" data-name="联合 9 - 轮廓" d="M2497,1315.5a2.5,2.5,0,0,1,2.291,1.5H2506v2h-6.708a2.5,2.5,0,0,1-4.582,0H2491v-2h3.709A2.5,2.5,0,0,1,2497,1315.5Zm0,3a.5.5,0,1,0-.5-.5A.5.5,0,0,0,2497,1318.5Z" transform="translate(-2486.5 -1313)" fill="#707070"/>
+                <path id="联合_10" className="svg-fill" data-name="联合 10" d="M2500,1315.5a2.5,2.5,0,0,1,2.291,1.5H2506v2h-3.709a2.5,2.5,0,0,1-4.582,0H2491v-2h6.709A2.5,2.5,0,0,1,2500,1315.5Zm0,3a.5.5,0,1,0-.5-.5A.5.5,0,0,0,2500,1318.5Z" transform="translate(-2486.5 -1306)" fill="#707070"/>
+                <path id="联合_11" className="svg-fill" data-name="联合 11" d="M2497,1315.5a2.5,2.5,0,0,1,2.291,1.5H2506v2h-6.708a2.5,2.5,0,0,1-4.582,0H2491v-2h3.709A2.5,2.5,0,0,1,2497,1315.5Zm0,3a.5.5,0,1,0-.5-.5A.5.5,0,0,0,2497,1318.5Z" transform="translate(-2486.5 -1299)" fill="#707070"/>
             </svg>
+
+
         );
     },
     /**
@@ -416,13 +453,16 @@ const icons = {
     substr() {
         return (
             <svg id="截取字符串" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <rect id="矩形_361" data-name="矩形 361" width="24" height="24" rx="8" fill="none"/>
-                <path id="联合_5" className="svg-stroke" data-name="联合 5" d="M2530,1340h0v0h0v0Z" transform="translate(-2524.5 -1330.5)" fill="none" stroke="#707070" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
-                <path id="联合_6" className="svg-stroke" data-name="联合 6" d="M2,2H2V2H2V2Z" transform="translate(15.5 20.5) rotate(180)" fill="none" stroke="#707070" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
-                <path id="联合_7" className="svg-stroke" data-name="联合 7" d="M2530,1338v0Zm-2,0h0Z" transform="translate(-2520.5 -1325.5)" fill="none" stroke="#707070" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+                <rect id="矩形_361" data-name="矩形 361" width="100%" height="100%" rx="8" fill="none"/>
                 <circle id="椭圆_1" className="svg-fill" data-name="椭圆 1" cx="1" cy="1" r="1" transform="translate(12 5)" fill="#707070"/>
                 <circle id="椭圆_2" className="svg-fill" data-name="椭圆 2" cx="1" cy="1" r="1" transform="translate(15 5)" fill="#707070"/>
                 <circle id="椭圆_3" className="svg-fill" data-name="椭圆 3" cx="1" cy="1" r="1" transform="translate(18 5)" fill="#707070"/>
+                <path id="联合_15" className="svg-fill" data-name="联合 15" d="M2453,1157.25V1152h-1.249a.75.75,0,1,1,0-1.5H2453v-1.75a.75.75,0,0,1,1.5,0v1.75h5.75a.75.75,0,0,1,0,1.5h-5.75v5.25a.75.75,0,1,1-1.5,0Z" transform="translate(-2447 -1141.501)" fill="#707070"/>
+                <path id="联合_16" className="svg-fill" data-name="联合 16" d="M2,9.25V4H.751a.75.75,0,1,1,0-1.5H2V.751a.75.75,0,1,1,1.5,0V2.5H9.25a.75.75,0,0,1,0,1.5H3.5V9.25a.75.75,0,1,1-1.5,0Z" transform="translate(18 22.001) rotate(180)" fill="#707070"/>
+                <g id="联合_17" data-name="联合 17" transform="translate(-2443 -1136.5)" fill="none">
+                    <path d="M2453.25,1153.25v-3.75h-1.5a.75.75,0,1,1,0-1.5h4.5a.75.75,0,1,1,0,1.5h-1.5v3.75a.75.75,0,0,1-1.5,0Z" stroke="none"/>
+                    <path className="svg-fill" d="M 2454.000244140625 1153.999877929688 C 2453.58544921875 1153.999877929688 2453.249755859375 1153.664184570312 2453.249755859375 1153.250122070312 L 2453.249755859375 1149.499877929688 L 2451.750244140625 1149.499877929688 C 2451.33544921875 1149.499877929688 2450.999755859375 1149.164184570312 2450.999755859375 1148.750122070312 C 2450.999755859375 1148.336181640625 2451.33544921875 1148.00048828125 2451.750244140625 1148.00048828125 L 2456.250244140625 1148.00048828125 C 2456.664306640625 1148.00048828125 2457 1148.336181640625 2457 1148.750122070312 C 2457 1149.164184570312 2456.664306640625 1149.499877929688 2456.250244140625 1149.499877929688 L 2454.75 1149.499877929688 L 2454.75 1153.250122070312 C 2454.75 1153.664184570312 2454.414306640625 1153.999877929688 2454.000244140625 1153.999877929688 Z" stroke="none" fill="#707070"/>
+                </g>
             </svg>
         );
     },

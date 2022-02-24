@@ -1,5 +1,5 @@
-import { AdaptivePosition, AdaptiveSize, Widget } from "../core/layout";
-import { AbstractClass } from "../types/types";
+import { AdaptivePosition, AdaptiveSize, Widget } from "@layout/core/layout";
+import { AbstractClass } from "@layout/types/types";
 
 
 export function ContainerMixin(Base: AbstractClass) {
@@ -18,6 +18,10 @@ export interface ContainerOptions {
 export default class ContainerWidget extends ContainerMixin(Widget) {
     constructor(options: ContainerOptions) {
         super(options)
+    }
+
+    toJson() {
+        return '{}';
     }
 }
 

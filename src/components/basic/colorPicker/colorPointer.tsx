@@ -4,14 +4,17 @@ import styled from "styled-components";
 interface ColorPointerWrapperProps {
     $size: number
 }
+const ColorPointerOuter = styled.div`
+    border-radius: 50%;
+    border: #707070 solid 1px;
+    cursor: pointer;
+`;
 const ColorPointerWrapper = styled.div<ColorPointerWrapperProps>`
     width: ${props => props.$size}px;
 	height: ${props => props.$size}px;
 	border: solid 2px #fff;
-    outline: #707070 solid 1px;
-    border-radius: 50%;
     background-color: transparent;
-    cursor: pointer;
+    border-radius: 50%;
 `;
 
 
@@ -67,10 +70,12 @@ export default class ColorPointer extends React.Component<ColorPointerProps> {
     render() {
         const { size = 12 } = this.props;
         return (
-            <ColorPointerWrapper
-                $size={ size }
-                onMouseDown={e => this.handleMouseDown(e)}
-                />
+            <ColorPointerOuter>
+                <ColorPointerWrapper
+                    $size={ size }
+                    onMouseDown={e => this.handleMouseDown(e)}
+                    />
+            </ColorPointerOuter>
         );
     }
 }

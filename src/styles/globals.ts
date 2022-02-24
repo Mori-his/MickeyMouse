@@ -1,6 +1,44 @@
 import { createGlobalStyle, css } from 'styled-components';
 
 
+export const CustomScrollbar = css`
+    &::-webkit-scrollbar {
+        display: none;
+        position: absolute;
+        top: 0;
+        width: 4px;
+        height: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        // 滚动滑块
+        background-color: #f7f7f7;
+        border-radius: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        // 外层轨道
+        background-color: transparent;
+        
+    }
+    &::-webkit-scrollbar-track-piece {
+        // 内层轨道
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-corner {
+        // 边角
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-button {
+        width: 0;
+        // 两端按钮
+        background-color: transparent;
+    }
+    &:hover {
+        &::-webkit-scrollbar {
+            display: block;
+        }
+    }
+`;
+
 export const GlobalStyle = createGlobalStyle`
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -47,7 +85,18 @@ export const GlobalStyle = createGlobalStyle`
     }
     body {
         background-color: #222831;
+        overflow: overlay;
+        ${ CustomScrollbar };
     }
+    input[type=number] {
+        -moz-appearance:textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     .fade-enter {
         opacity: 0;
     }
@@ -67,6 +116,10 @@ export const GlobalStyle = createGlobalStyle`
     .tooltip-transition {
         z-index: 10;
     }
+    /* Tippy主题部分 */
+    .tippy-box[data-theme~='transparent'] {
+        background-color: transparent;
+    }
 `;
 
 export const HiddenScrollbar = css`
@@ -75,38 +128,3 @@ export const HiddenScrollbar = css`
     }
 `
 
-export const CustomScrollbar = css`
-    &::-webkit-scrollbar {
-        display: none;
-        position: absolute;
-        top: 0;
-        height: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-        // 滚动滑块
-        background-color: red;
-    }
-    &::-webkit-scrollbar-track {
-        // 外层轨道
-        background-color: transparent;
-        
-    }
-    &::-webkit-scrollbar-track-piece {
-        // 内层轨道
-        background-color: transparent;
-    }
-    &::-webkit-scrollbar-corner {
-        // 边角
-        background-color: transparent;
-    }
-    &::-webkit-scrollbar-button {
-        width: 0;
-        // 两端按钮
-        background-color: transparent;
-    }
-    &:hover {
-        &::-webkit-scrollbar {
-            display: block;
-        }
-    }
-`;

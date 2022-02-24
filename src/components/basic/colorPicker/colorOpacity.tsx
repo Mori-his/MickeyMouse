@@ -1,5 +1,4 @@
 import Color from "@utils/color";
-import { getOffsetTop } from "@utils/styleTool";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
@@ -60,7 +59,7 @@ export default function ColorOpacity(props: ColorOpacityProps) {
 
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
-        const targetTop = getOffsetTop(targetEl);
+        const targetTop = targetEl.getBoundingClientRect().y;
         const currentTop = event.clientY;
         const offset = pointerSize * 0.7;
         const value = currentTop - targetTop - offset;

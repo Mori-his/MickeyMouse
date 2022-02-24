@@ -2,17 +2,12 @@ import React, { useRef, useEffect, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { createPortal } from 'react-dom';
 import styled, { css } from "styled-components";
-import TooltipComputed from "./toolTipComputed";
+import FloatComputed, { Placement } from "./toolTipComputed";
 
 const transitionName = 'fade';
 const transitionTime = 300;
 const arrowSize = 8;
 
-export type Placement = 'top' | 'bottom';
-// 'top' | 'top-start' | 'top-end' |
-// 'bottom' | 'bottom-start' | 'bottom-end' |
-// 'right' | 'right-start' | 'right-end' |
-// 'left' | 'left-start' | 'left-end';
 
 export type ToolTipSize = 'small' | 'middle' | 'large';
 const sizeData: {[P in ToolTipSize]: number} = {
@@ -82,7 +77,7 @@ const ToolTipBox = styled.div<ToolTipBoxProps>`
 
 export interface ToolTipAttachProps {
     title: string
-    toolTipEl: HTMLDivElement
+    toolTipEl: HTMLElement | null
     isAttach: boolean
     size: ToolTipSize
     placement: Placement
@@ -103,10 +98,10 @@ function ToolTipAttach(props: React.PropsWithChildren<ToolTipAttachProps>) {
     const [statePlacement, setStatePlacement] = useState(placement);
     const nodeRef = useRef(null);
     const toolTipBoxRef = useRef(null);
-
+    
     useEffect(() => {
-        if (props.isAttach && toolTipBoxRef.current) {
-            const tooltipComputed = new TooltipComputed(toolTipEl, toolTipBoxRef.current, placement);
+        if (props.isAttach && toolTipBoxRef.current && toolTipEl) {
+            const tooltipComputed = new FloatComputed(toolTipEl, toolTipBoxRef.current, placement);
             setToolTipTop(tooltipComputed.top);
             setToolTipLeft(typeof tooltipComputed.left === 'number' ? {
                 isLeft: true,

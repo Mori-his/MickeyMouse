@@ -1,7 +1,10 @@
-import { getOffsetLeft, getOffsetTop, getStyleAttr } from "@utils/styleTool"
-import { Placement } from "./toolTipBox"
+import { getStyleAttr } from "@utils/styleTool"
 
-
+export type Placement = 'top' | 'bottom' | 'left' | 'right';
+// 'top' | 'top-start' | 'top-end' |
+// 'bottom' | 'bottom-start' | 'bottom-end' |
+// 'right' | 'right-start' | 'right-end' |
+// 'left' | 'left-start' | 'left-end';
 export interface IExceedScrollAttrs {
     scrollX: number
     scrollY: number
@@ -15,46 +18,52 @@ export type OffsetLeft = number | {
     value: number
 }
 
-export default class TooltipComputed {
+export default class FloatComputed {
 
     private targetElStyles!: CSSStyleDeclaration
-    private toolTipElStyles!: CSSStyleDeclaration
+    private floatElStyles!: CSSStyleDeclaration
     private targetWidth!: number
     private targetHeight!: number
     private targetOffsetTop!: number
     private targetOffsetLeft!: number
-    private toolTipWidth!: number
-    private toolTipHeight!: number
+    private floatElWidth!: number
+    private floatElHeight!: number
     private exceedScrollAttrs!: IExceedScrollAttrs
     // 箭头是否贴边
     #arrowWelt: 'left' | 'right' | 'center' = 'center';
     private arrowWidth: number = 8
     private arrowHeight: number = 8
-    private offset: number = 12
 
     left: OffsetLeft = 0
     top: number = 0
     arrowLeft: number = 0
     arrowTop: number = 0
 
-    constructor(public targetEl: HTMLElement, public toolTipEl: HTMLElement, public placement: Placement) {
+    constructor(
+        public targetEl: HTMLElement,
+        public toolTipEl: HTMLElement,
+        public placement: Placement,
+        public offset: number = 12
+    ) {
         this.init();
     }
 
     init() {
         this.targetElStyles = getStyleAttr(this.targetEl) as CSSStyleDeclaration;
-        this.toolTipElStyles = getStyleAttr(this.toolTipEl) as CSSStyleDeclaration;
+        this.floatElStyles = getStyleAttr(this.toolTipEl) as CSSStyleDeclaration;
 
         this.targetWidth = parseFloat(this.targetElStyles.width);
         this.targetHeight = parseFloat(this.targetElStyles.height);
 
-        this.targetOffsetTop = getOffsetTop(this.targetEl);
-        this.targetOffsetLeft = getOffsetLeft(this.targetEl);
+        const targetClientRect = this.targetEl.getBoundingClientRect();
 
-        this.toolTipWidth = parseFloat(this.toolTipElStyles.width);
-        this.toolTipHeight = parseFloat(this.toolTipElStyles.height);
+        this.targetOffsetTop = targetClientRect.y;
+        this.targetOffsetLeft = targetClientRect.x;
 
-        if (window.innerHeight < this.toolTipHeight + this.targetHeight) return;
+        this.floatElWidth = parseFloat(this.floatElStyles.width);
+        this.floatElHeight = parseFloat(this.floatElStyles.height);
+
+        if (window.innerHeight < this.floatElHeight + this.targetHeight) return;
 
         this.exceedScrollAttrs = this.scrollAttrs();
         this.left = this.getOffsetLeft();
@@ -71,8 +80,8 @@ export default class TooltipComputed {
     isExceedEdges(left: number, top: number) {
         if (left > 0) return true;
         const { innerHeight, innerWidth } = window;
-        if (left + this.toolTipWidth > innerWidth) return true;
-        if (top + this.toolTipHeight > innerHeight) return true;
+        if (left + this.floatElWidth > innerWidth) return true;
+        if (top + this.floatElHeight > innerHeight) return true;
     }
     scrollAttrs() {
         let parentEl = this.targetEl.parentElement;
@@ -103,7 +112,7 @@ export default class TooltipComputed {
         switch(this.placement) {
             case 'top':
                 let top = this.targetOffsetTop - this.targetHeight - scrollY - this.offset;
-                if (top < this.toolTipHeight) {
+                if (top < this.floatElHeight) {
                     // 居上的位置小于当前提示框的宽度改变方向为下方
                     this.placement = 'bottom';
                     return this.getOffsetTop();
@@ -111,27 +120,23 @@ export default class TooltipComputed {
                 return top;
             case 'bottom':
                 let topToBottom = this.targetOffsetTop + this.targetHeight - scrollY + this.offset;
-                if (topToBottom + this.toolTipHeight > window.innerHeight) {
+                if (topToBottom + this.floatElHeight > window.innerHeight) {
                     this.placement = 'top';
                     topToBottom -= this.targetHeight - this.arrowHeight;
                 }
                 return topToBottom;
         }   
+        return 0;
     }
     getOffsetLeft() {
-        /**
-         * TODO
-         * 文档流贴右边
-         * 1、改变left属性为right属性
-         */
         const { scrollX } = this.exceedScrollAttrs;
-        let left: OffsetLeft = (this.targetWidth - this.toolTipWidth) / 2 + this.targetOffsetLeft - scrollX;
+        let left: OffsetLeft = (this.targetWidth - this.floatElWidth) / 2 + this.targetOffsetLeft - scrollX;
         if (left < 0) {
             left = 0;
             this.#arrowWelt = 'left';
         }
-        if (left + this.toolTipWidth >= window.innerWidth) {
-            left = window.innerWidth - this.toolTipWidth - this.offset;
+        if (left + this.floatElWidth >= window.innerWidth) {
+            left = window.innerWidth - this.floatElWidth - this.offset;
             left = {
                 isLeft: false,
                 value: 0
@@ -150,19 +155,19 @@ export default class TooltipComputed {
                 return targetCenter + (targetLeft <= 0 ? 0 : this.arrowWidth * 0.4);
             case 'right':
                 const rightWidth = window.innerWidth - targetLeft;
-                return this.toolTipWidth - rightWidth + this.targetWidth / 4;
+                return this.floatElWidth - rightWidth + this.targetWidth / 4;
             default:
-                return this.toolTipWidth / 2 - this.arrowWidth;
+                return this.floatElWidth / 2 - this.arrowWidth;
         }
     }
     getArrowTop() {
         switch(this.placement) {
             case 'top':
-                return this.toolTipHeight;
+                return this.floatElHeight;
             case 'bottom':
                 return -(this.arrowHeight * 2);
             default:
-                return this.toolTipHeight;
+                return this.floatElHeight;
         }
     }
 }

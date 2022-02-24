@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CloseButton } from "@components/basic/closeButton";
-import ToolTip from "@components/basic/toolTip";
+import Tippy from "@tippyjs/react";
 
 
 const PageButtonWrapper = styled.div<{$active: boolean}>`
@@ -62,6 +62,7 @@ export interface TabProps {
     active: boolean
     children: React.ReactNode
     isRename?: boolean
+    $title?: string
 }
 
 export default function Tab(props: TabProps) {
@@ -86,8 +87,11 @@ export default function Tab(props: TabProps) {
     }
 
     return (
-        <ToolTip
-            title={props.children?.toString() || ''}
+        <Tippy
+            content={props.$title}
+            animation="scale"
+            theme="light"
+            disabled={ !props.$title }
             >
             <PageButtonWrapper
                 $active={props.active}
@@ -111,10 +115,10 @@ export default function Tab(props: TabProps) {
                 <CloseButton
                     className="close-button"
                     onClick={ props.onClose }
-                    size={ 20 }
+                    size={ 16 }
                     />
             </PageButtonWrapper>
-        </ToolTip>
+        </Tippy>
     );
 }
 

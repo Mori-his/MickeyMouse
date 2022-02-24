@@ -1,10 +1,11 @@
-import { observer } from 'mobx-react';
-import React, { ReactElement, useState } from "react";
+// import { observer } from 'mobx-react';
+import React, { ReactElement } from "react";
 import styled from "styled-components";
-import { Owner, OwnerCaretaker } from "@models/owners";
+import ownerCaretaker, { Owner } from "@models/owners";
 import { HiddenScrollbar } from "@styles/globals";
 import AppendButton from "@components/basic/appendButton";
 import Tab, { TabProps } from "@components/basic/tab";
+import { observer } from "mobx-react";
 
 /**
  * ===========================================================
@@ -28,15 +29,6 @@ const TabsWrapper = styled.div`
 const HideScrollbarTabsWrapper = styled(TabsWrapper)`
     ${HiddenScrollbar}
 `
-/**
- * ===========================================================
- *                  获取[Owner]管理者
- * 1、OwnerCaretaker是个单例
- * ===========================================================
- */
-
-const ownerCaretaker = OwnerCaretaker.getInstance();
-
 
 /**
  * ===========================================================
@@ -46,9 +38,10 @@ const ownerCaretaker = OwnerCaretaker.getInstance();
  * 3、TabList接受[tabIndex]默认选中索引，下标从0开始
  * ===========================================================
  */
+type TagCallback = (event: Event, owner: Owner, index: number) => any
 export interface TagListProps {
-    onChange?: Function
-    onClose?: Function
+    onChange?: TagCallback
+    onClose?: TagCallback
     tabIndex: number
 }
 export const TagList = observer((props: React.PropsWithChildren<TagListProps>) => {
@@ -59,8 +52,8 @@ export const TagList = observer((props: React.PropsWithChildren<TagListProps>) =
     if (ownerCaretaker.childCount === 0) return <React.Fragment />
     
     // 当前tab选中状态被改变
-    const onChangeIndex = function(event: Event, index: number) {
-        props.onChange && props.onChange(event, index);
+    const onChangeIndex = function(event: Event, childNode: Owner, index: number) {
+        props.onChange && props.onChange(event, childNode, index);
     }
 
     // 当前tab名称被改变
@@ -75,9 +68,10 @@ export const TagList = observer((props: React.PropsWithChildren<TagListProps>) =
             <Tab
                 key={index}
                 active={index === props.tabIndex}
-                onClick={(e: Event) => onChangeIndex(e, index)}
+                onClick={(e: Event) => onChangeIndex(e, childNode, index)}
                 onClose={(e: Event) => props.onClose && props.onClose(e, childNode, index)}
                 onNameChange={ (name: string) => handleNameChange(name, childNode) }
+                $title={ childNode.name }
             >{ childNode.name }</Tab>
         );
     })
@@ -87,7 +81,7 @@ export const TagList = observer((props: React.PropsWithChildren<TagListProps>) =
             { tabs }
         </React.Fragment>
     )
-})
+});
 
 
 export interface TabsProps {
@@ -99,7 +93,7 @@ const handleApeendClick = function(event: Event) {
     event.stopPropagation();
     const owner = new Owner();
     ownerCaretaker.add(owner);
-    ownerCaretaker.updateSelectedIndex(ownerCaretaker.childCount - 1);
+    ownerCaretaker.selectedOwner(owner, ownerCaretaker.childCount - 1);
 }
 
 
@@ -109,9 +103,9 @@ const Tabs = observer((props: React.PropsWithChildren<TabsProps>) => {
         ownerCaretaker.remove(owner);
         props.onClose && props.onClose(event, owner, index)
     }
-    const handleTabChange = function(event: Event, activeIndex: number) {
+    const handleTabChange = function(event: Event, owner: Owner, activeIndex: number) {
         event.stopPropagation();
-        ownerCaretaker.updateSelectedIndex(activeIndex)
+        ownerCaretaker.selectedOwner(owner, activeIndex);
     }
     return (
         <HideScrollbarTabsWrapper>
@@ -126,7 +120,7 @@ const Tabs = observer((props: React.PropsWithChildren<TabsProps>) => {
                 />
         </HideScrollbarTabsWrapper>
     );
-})
+});
 
 export default Tabs;
 

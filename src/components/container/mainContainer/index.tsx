@@ -11,6 +11,12 @@ import RightContainer from "../rightContainer";
 const MainContainerWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: ${props => props.theme.main};
 `;
 
 const Header = styled.header`

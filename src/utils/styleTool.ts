@@ -1,3 +1,4 @@
+import { HTMLWithWidgetAttr } from "@/types/components/leftContainer/tree/tree";
 
 export function getStyleAttr(el: HTMLElement, attr?: keyof CSSStyleDeclaration) {
     try {
@@ -29,3 +30,16 @@ export function getOffsetLeft(el: HTMLElement) {
     return left;
 }
 
+export const widgetAttrName = '@@__widget';
+
+export function isBody(el: HTMLElement) {
+    return document.body === el;
+}
+
+export function getDragElement(el: HTMLWithWidgetAttr) {
+    let _el: HTMLWithWidgetAttr | null = el;
+    while (_el && !isBody(_el as unknown as HTMLElement) && !_el[widgetAttrName]) {
+        _el = _el.parentNode as unknown as HTMLWithWidgetAttr;
+    }
+    return !isBody(_el as unknown as HTMLElement) && _el;
+}

@@ -44,7 +44,7 @@ export class Caretaker {
 
     addMemento<State>(memento: Memento<State>) {
         if (this._mementoCount >= this._maxMemento) {
-            // 查过最大存储量先进先出
+            // 超过最大存储量先进先出
             this._mementos.shift();
         }
         this._mementos.push(memento);

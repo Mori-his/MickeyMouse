@@ -1,4 +1,5 @@
-const assert = console.assert;
+import { assert } from "./assert";
+
 
 
 export default abstract class AbstractNode {
@@ -55,7 +56,7 @@ export default abstract class AbstractNode {
             return true;
         })());
         // 给子节点指定父节点
-        child.parent = this;
+        child.setParent(this);
         if (this.attached)
             // 给子节点附加owner
             child.attach(this.owner!);
@@ -67,10 +68,14 @@ export default abstract class AbstractNode {
         assert(child !== null);
         assert(child.parent === this);
         assert(child.attached === this.attached);
-        child.parent = null;
+        child.setParent(null);
         if (this.attached)
             // 如果当前节点有[owner],则脱离owner
             child.detach();
+    }
+
+    public setParent(parent: AbstractNode | null) {
+        this.parent = parent;
     }
 
     /**

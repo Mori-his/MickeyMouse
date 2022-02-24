@@ -1,7 +1,7 @@
 
+import { TAngle } from "@layout/types/types";
 import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, ParentData } from "./object";
-
-const assert = console.assert;
+import cloneDeep from 'lodash/cloneDeep';
 
 export class Size {
     constructor(public width: number | null, public height: number | null) {}
@@ -48,7 +48,6 @@ export class Position {
         public right?: number,
         public bottom?: number
     ) {
-
     }
 
     static origin() {
@@ -84,9 +83,18 @@ export class AdaptivePosition extends Position {
     }
 }
 
-class Fillet {
-    
+/**
+ * 圆角
+ * @class
+ */
+export class Fillet {
+    constructor(
+        public angle: TAngle | number
+    ) {}
 }
+
+
+
 
 export class LayoutParentData extends ParentData {
     detach() {
@@ -137,8 +145,13 @@ export class Layout extends BasicNode {
     }
 }
 
-export interface WidgetOptions extends AdaptivePosition {
-    id: string // 当前控件ID
+interface AdaptiveSizeOptions {
+    width?: number
+    height?: number
+}
+
+export interface WidgetOptions extends AdaptivePositionOptions, AdaptiveSizeOptions {
+    id: string | number // 当前控件ID
     name?: string // 当前控件名称
     description?: string // 当前控件描述信息
     visible?: boolean // 显示隐藏
@@ -154,22 +167,43 @@ export class WidgetParentData extends ContainerParentDataMixin<Layout>(LayoutPar
     }
 }
 export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData>(Layout) {
-    id!: string
+    /**
+     * 节点唯一ID
+     */
+    id!: string | number
+    /**
+     * 节点名称信息
+     */
     name?: string
+    /**
+     * 节点描述信息
+     */
     description?: string
+    /**
+     * 是否默认显示， 默认： true
+     */
     visible: boolean
+    /**
+     * 是否可被点击
+     */
     attachOnClick: boolean
 
     abstract type: string
 
-    #ids: string[] = [];
-
     constructor(options: WidgetOptions) {
-        super(new AdaptivePosition({
-            position: new Position(options.left, options.top, options.right, options.bottom),
-            horizontal: options.horizontal,
-            vertical: options.vertical
-        }));
+        super({
+            position: new AdaptivePosition({
+                position: new Position(
+                    options.position?.left,
+                    options.position?.top,
+                    options.position?.right,
+                    options.position?.bottom
+                ),
+                horizontal: options.horizontal,
+                vertical: options.vertical
+            }),
+            size: new Size(options.width || null, options.height || null)
+        });
         this.id = options.id;
         this.name = options.name;
         this.description = options.description;
@@ -197,18 +231,94 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
         super.adoptChild(child);
     }
 
-    protected _insertIntoChildList(child: Widget, after?: Widget) {
-        assert(this.hasId(child.id), `不能插入相同的ID [${child.id}], 请及时修改`);
-        this.appendId(child.id);
-        super._insertIntoChildList(child, after);
+    setAttachOnClick(newValue: boolean) {
+        this.attachOnClick = newValue;
     }
 
-    hasId(id: string) {
-        return this.#ids.indexOf(id) > -1;
+    setVisible(newValue: boolean) {
+        this.visible = newValue;
     }
 
-    appendId(id: string) {
-        if (this.hasId(id)) return
-        this.#ids.push(id);
+
+    setType(newType: string) {
+        // 需要抽象工厂创建此类型Widget
+    }
+
+    abstract toJson(): Object;
+}
+
+
+
+export abstract class TreeWidget extends Widget {
+    // 伸缩状态
+    _shrink: boolean = false;
+    // 锁定状态
+    _lock: boolean = false;
+    // 禁止移动
+    __forbidMove: boolean = false
+
+    _isDragEnter: boolean = false;
+    // 当前节点绑定的元素
+    __el?: HTMLElement;
+    // 根节点深度
+    __root_depth: number = 0;
+    // 不能产生兄弟节点
+    allowSibling: boolean = true
+
+
+    strideMove(widget: TreeWidget, after?: TreeWidget) {
+        if (after && !after.allowSibling) return;
+        const parent = widget.parent as TreeWidget;
+        if (!parent) return;
+        parent.remove(widget);
+        this.insert(widget, after);
+    }
+
+    
+    setLock(newState: boolean) {
+        this._lock = newState;
+        this.visitChildren(child => {
+            const currChild = child as TreeWidget;
+            currChild.setLock(newState);
+        });
+    }
+
+    setShrink(newState: boolean) {
+        this._shrink = newState
+    }
+
+    setVisible(newState: boolean) {
+        this.visible = newState;
+    }
+
+    setIsDragEnter(newState: boolean) {
+        this._isDragEnter = newState;
+    }
+
+    clone() {
+        const cloneThis: TreeWidget = cloneDeep(this);
+        cloneThis.parent = null;
+        cloneThis.parentData = null;
+        cloneThis.detach();
+        return cloneThis;
+    }
+
+    // redepthChild(child: TreeWidget) {
+    //     assert(child.owner === this.owner);
+    //     child.depth = this.depth + 1;
+    //     // [child]深度变了children的深度也要变
+    //     child.redepthChildren();
+    // }
+
+    get forbidMove() {
+        return this._lock || this.__forbidMove;
+    }
+
+    get lock() {
+        return this._lock;
+    }
+
+    get shrink() {
+        return this._shrink;
     }
 }
