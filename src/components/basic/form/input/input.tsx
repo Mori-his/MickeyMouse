@@ -1,12 +1,12 @@
-import React, { ChangeEvent, FormEvent, useCallback } from "react";
+import React, { ChangeEvent, ReactNode, useCallback, useRef } from "react";
 import styled from "styled-components";
 
 
 const InputWrapper = styled.div`
     display: flex;
     align-items: center;
-    width: 100%;
-    width: ${props => props.$width && `${props.$width}px`};
+    width: ${props => props.$width ? `${props.$width}px` : '100%'};
+    font-size: 14px;
 `;
 
 const InputBackground = styled.div<{
@@ -27,7 +27,7 @@ const InputSelf = styled.input<InputSelfProps>`
         height: ${props.$height}px;
         line-height: ${props.$height}px;
         color: ${props.theme.lightText};
-        ${props.center && `text-align: center;`};
+        ${props.center ? `text-align: center;` : ''};
     `};
     background-color: transparent;
     padding: 8px;
@@ -50,31 +50,38 @@ export const InputLabel = styled.span`
 `;
 
 type PropsInputWith<P = {}> = P & {
-    label?: string
+    label?: ReactNode
     name?: string
     width?: number
     height?: number
     center?: boolean
     backgroundColor?: string
-    after?: React.ReactChild
-    before?: React.ReactChild
+    after?: ReactNode
+    before?: ReactNode
+    select?: boolean
 };
 
-const Input = React.forwardRef(function Input(props: PropsInputWith<React.ComponentProps<'input'>>, InputRef: React.ForwardedRef<HTMLInputElement>) {
+const Input = React.forwardRef(function Input(
+    props: PropsInputWith<React.ComponentProps<'input'>>,
+    inputRef: React.ForwardedRef<HTMLInputElement>
+) {
     const {
         label,
         width,
         height = 32,
         name,
         center = false,
+        select = false,
         before,
         after,
-        onInput = () => {},
         type = 'text',
         backgroundColor,
+        onInput = () => {},
+        onFocus = () => {},
         ...propsAll
     } = props;
 
+    const ref = useRef<HTMLInputElement | null>(null);
 
     const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         if (type === 'number') {
@@ -83,6 +90,20 @@ const Input = React.forwardRef(function Input(props: PropsInputWith<React.Compon
         }
         onInput(event);
     }, [onInput, type]);
+
+    const handleFocus = function(event: React.FocusEvent<HTMLInputElement>) {
+        select && ref.current?.select();
+        onFocus(event);
+    }
+
+    const handleRef = function(el: HTMLInputElement) {
+        if (typeof inputRef === 'function') {
+            inputRef(el);
+        } else {
+            inputRef && (inputRef.current = el);
+        }
+        ref.current = el;
+    }
 
     return (
         <InputWrapper
@@ -95,12 +116,13 @@ const Input = React.forwardRef(function Input(props: PropsInputWith<React.Compon
                 { before }
                 <InputSelf
                     { ...propsAll }
+                    ref={ handleRef }
                     type={type === 'number' ? 'text' : type}
-                    onInput={ (e: ChangeEvent<HTMLInputElement>) => handleInput(e) }
                     name={ name }
                     $height={ height }
                     center={ center }
-                    ref={ InputRef }
+                    onInput={ (e: ChangeEvent<HTMLInputElement>) => handleInput(e) }
+                    onFocus={ handleFocus }
                     />
                 { after }
             </InputBackground>

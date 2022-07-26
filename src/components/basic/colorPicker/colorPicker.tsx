@@ -1,35 +1,47 @@
-import { IRGB, IRGBA, IHSBA} from "@/types/color";
+import { IRGB, IRGBA, IHSBA } from "@/types/color";
 import { ActionMap } from "@/types/redux.type";
-import Color from "@utils/color";
-import React, { useEffect, useImperativeHandle, useReducer, useRef, useState } from "react";
+import { assert } from "@layout/core/assert";
+import { LinearGradientdirection } from "@layout/core/gradient";
+import Color from "@layout/utils/color";
+import React, {
+    useEffect,
+    useImperativeHandle,
+    useReducer,
+    useRef,
+} from "react";
 import styled from "styled-components";
-import Select from "../form/select";
+import Select, { IOption } from "../form/select";
 import ColorAdopePanel from "./colorAdopePanel";
 import ColorFormatPanel from "./colorFormatPanel";
-import ColorHuePanel from "./colorHuePanel";
-import ColorOpacity from "./colorOpacity";
-import ColorPanel, { PositionProps } from "./colorPanel";
+import { ColorGradientPanel } from "./colorGradientPanel";
+import ColorHuePanel, { ColorHuePanelRef } from "./colorHuePanel";
+import ColorOpacity, { ColorOpacityRef } from "./colorOpacity";
+import ColorPanel, { ColorPanelRef, PositionProps } from "./colorPanel";
 import { ColorPickerBox } from "./colorPickerPanelBox";
 
-
-export const maxAngle = 360;
+export const maxAngle = 359;
 export const SAndH = 1;
 export const maxOpacity = 100;
 
 /**
  * 饱和度/明度转为二维坐标系
- * @param s 饱和度
- * @param b 明度
+ * @param s 饱和度0-100
+ * @param b 明度0-100
  * @param scopeWidth 所在空间宽度
  * @param scopeHeight 所在控件高度
  * @returns x,y坐标
  */
-function hsbSBToPosition(s: number, b: number, scopeWidth: number, scopeHeight: number) {
-    const x = s * scopeWidth;
-    const y = (1 - b) * scopeHeight;
+function hsbSBToPosition(
+    s: number,
+    b: number,
+    scopeWidth: number,
+    scopeHeight: number
+) {
+    const x = s / 100 * scopeWidth;
+    const y = (1 - b / 100) * scopeHeight;
     return {
         x,
-        y
+        y,
     };
 }
 /**
@@ -39,110 +51,120 @@ function hsbSBToPosition(s: number, b: number, scopeWidth: number, scopeHeight: 
  * @returns y
  */
 function hsbHToY(h: number, scopeHeight: number) {
-    return (maxAngle - h) / maxAngle * scopeHeight;
+    return ((maxAngle - h) / maxAngle) * scopeHeight;
 }
-
 
 const ColorPickerWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 224px;
-    padding: 0 8px 8px;
-    background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  width: 224px;
+  padding: 0 8px 8px;
+  background-color: #fff;
 `;
 
-interface ColorPickerProps {
-    color?: string
-    opacity?: number
-    onColorChange?: (rgba: IRGBA) => any
-    rgba?: IRGBA
-}
 
-export type ColorPickerRef<T = {}> = {
-    setRGBA(rgba: IRGBA): void
+export type ColorPickerRef<T extends HTMLElement = HTMLElement> = {
+    setColor(color: Color): void
+    setLinear(linear: LinearGradientdirection): void
     colorPickerEl: React.RefObject<T>
-}
+};
 
-
+// 面板的宽度减去滑动点宽度的一半
 const colorPanelWidth = 160;
 const colorPanelHeight = 160;
 const colorHueAndAlphaWidth = 16;
+
 const colorHueAndAlphaHeight = colorPanelHeight;
 const colorPointerSize = 12;
 
-export enum ColorPickerActions {
-    SET_HUE_COLOR = 'hue',
-    SET_HUE_Y = 'hueY',
-    SET_ALPHA_Y = 'alphaY',
-    SET_DEFAULT_RGBA = 'defaultRgba',
-    SET_PANEL_POSITION = 'panelPosition'
+export enum ColorType {
+    PURE,
+    LINEAR,
 }
 
+export enum ColorPickerActions {
+    SET_HUE_COLOR = "hue",
+    SET_HUE_Y = "hueY",
+    SET_ALPHA_Y = "alphaY",
+    SET_DEFAULT_RGBA = "defaultColor",
+    SET_PANEL_POSITION = "panelPosition",
+    SET_COLOR_TYPE = 'colorType',
+    SET_COLORS = 'colors',
+    SET_IS_GRADIENT = 'isGradient',
+    SET_GRADIENT_INDEX = 'gradientIndex'
+}
+
+
+export const ColorPickerGradientOptions: IOption<string, ColorType> [] = [
+    { name: "纯色", id: ColorType.PURE },
+    { name: "线性", id: ColorType.LINEAR },
+];
+
 interface Point {
-    x: number
-    y: number
+    x: number;
+    y: number;
 }
 
 interface ColorPickerState {
-    [ColorPickerActions.SET_HUE_COLOR]: IRGB
-    [ColorPickerActions.SET_HUE_Y]: number
-    [ColorPickerActions.SET_ALPHA_Y]: number
-    [ColorPickerActions.SET_DEFAULT_RGBA]: IRGBA
-    [ColorPickerActions.SET_PANEL_POSITION]: Point
+    [ColorPickerActions.SET_HUE_COLOR]: IRGB;
+    [ColorPickerActions.SET_HUE_Y]: number;
+    [ColorPickerActions.SET_ALPHA_Y]: number;
+    [ColorPickerActions.SET_DEFAULT_RGBA]: Color;
+    [ColorPickerActions.SET_PANEL_POSITION]: Point;
+    [ColorPickerActions.SET_COLOR_TYPE]: ColorType;
+    [ColorPickerActions.SET_COLORS]: Color[];
+    [ColorPickerActions.SET_IS_GRADIENT]: boolean;
+    [ColorPickerActions.SET_GRADIENT_INDEX]: number;
 }
 
-type ColorPickerAction = ActionMap<ColorPickerState>[keyof ActionMap<ColorPickerState>]
+type ColorPickerAction =
+    ActionMap<ColorPickerState>[keyof ActionMap<ColorPickerState>];
 
-
-export function ColorPickerReducer(state: ColorPickerState, action: ColorPickerAction) {
-    switch(action.type) {
-        case ColorPickerActions.SET_ALPHA_Y:
-            return {
-                ...state,
-                [ColorPickerActions.SET_ALPHA_Y]: action.payload
-            };
-        case ColorPickerActions.SET_HUE_Y:
-            return {
-                ...state,
-                [ColorPickerActions.SET_HUE_Y]: action.payload
-            };
-        case ColorPickerActions.SET_HUE_COLOR:
-            return {
-                ...state,
-                [ColorPickerActions.SET_HUE_COLOR]: action.payload
-            };
-        case ColorPickerActions.SET_DEFAULT_RGBA:
-            return {
-                ...state,
-                [ColorPickerActions.SET_DEFAULT_RGBA]: action.payload
-            };
-        case ColorPickerActions.SET_PANEL_POSITION:
-            return {
-                ...state,
-                [ColorPickerActions.SET_PANEL_POSITION]: action.payload
-            };
-    }
+export function ColorPickerReducer(
+    state: ColorPickerState,
+    action: ColorPickerAction
+) {
+    return {
+        ...state,
+        [action.type]: action.payload,
+    };
 }
 
-function ColorPicker(props: ColorPickerProps, ref: React.ForwardedRef<ColorPickerRef<HTMLDivElement>>) {
 
-    const [state, dispatch] = useReducer(ColorPickerReducer, {
-        // 用于色相值
-        hue: {r: 255, g: 0, b: 0 },
-        // 用于色相定位
-        hueY: 0,
-        // 用于透明定位
-        alphaY: 0,
-        // 用于设置RGBA值
-        defaultRgba: {r: 255, g: 255, b: 255, a: 1 },
-        // 用于设置明度饱和度面板的定位
-        panelPosition: {x: 0, y: 0}
-    });
+interface ColorPickerProps {
+    linear?: LinearGradientdirection;
+    opacity?: number;
+    onColorChange(color: IRGBA | Color[]): any;
+    rgba?: IRGBA
+    isGradient?: boolean
+}
+
+function ColorPicker(
+    props: ColorPickerProps,
+    ref: React.ForwardedRef<ColorPickerRef<HTMLDivElement>>
+) {
+
     // opacity取值范围0-100
-    const { rgba } = props;
+    const { rgba, linear, isGradient = true, onColorChange = () => {} } = props;
+    assert(rgba === undefined || linear === undefined, 'rgba or color只能传递一个')
+    const [state, dispatch] = useReducer(ColorPickerReducer, {
+        hue: { r: 255, g: 0, b: 0 }, // 用于色相值
+        hueY: 0, // 用于色相定位
+        alphaY: 0, // 用于透明定位
+        defaultColor: new Color(100, 0, 0, 1), // 用于设置RGBA值
+        panelPosition: { x: 0, y: 0 }, // 用于设置明度饱和度面板的定位
+        colorType: linear?.colors ? ColorType.LINEAR : ColorType.PURE, // 颜色类型: 0-纯色, 1-线性渐变
+        colors: linear?.colors || [], // 线性渐变队列
+        isGradient: isGradient, // 是否支持渐变
+        gradientIndex: 0, // 当前选中的渐变色
+    });
     // 用于设置HSBA(色相，饱和度,明度，透明度)值
-    const HSBRef = useRef<IHSBA>({h: 0, s: 0, b: 0, a: 1 });
+    const HSBRef = useRef<IHSBA>({ h: 0, s: 0, b: 0, a: 1 });
+    const colorHuePanelRef = useRef<ColorHuePanelRef<HTMLDivElement>>(null);
+    const colorPanelRef = useRef<ColorPanelRef<HTMLDivElement>>(null);
+    const colorOpacityRef = useRef<ColorOpacityRef<HTMLDivElement>>(null);
     const colorPickerElRef = useRef(null);
+    const gradientColorChange = useRef<Color | null>(null);
 
     // TODO:
     // [handleColorPanelChange]、[handleColorHuePanelChange] and
@@ -150,180 +172,256 @@ function ColorPicker(props: ColorPickerProps, ref: React.ForwardedRef<ColorPicke
     const handleColorPanelChange = function(position: PositionProps) {
         // 明度 和 饱和度 被选择   值范围为0-1
         // 明度是y轴  饱和度是x轴
-        const x = position.x;
-        const y = position.y;
-
+        const {x, y} = position;
         let saturation = x / colorPanelWidth * SAndH;
-        let brightness = SAndH - y / colorPanelHeight * SAndH;
+        let brightness = SAndH - (y / colorPanelHeight) * SAndH;
 
-        
-        saturation = saturation > SAndH ? SAndH : saturation;
-        saturation = saturation < 0 ? 0 : saturation;
-        brightness = brightness > SAndH ? SAndH : brightness;
-        brightness = brightness < 0 ? 0 : brightness;
+        saturation = Math.max(0, Math.min(saturation, SAndH));
+        brightness = Math.max(0, Math.min(brightness, SAndH));
 
         // console.log('明度:', saturation);
         // console.log('饱和度:', brightness);
-        
-        HSBRef.current.s = saturation;
-        HSBRef.current.b = brightness;
+
+        HSBRef.current.s = saturation * 100;
+        HSBRef.current.b = brightness * 100;
         setRgbaState();
-    }
-    const handleColorHuePanelChange = function(hue: number, color: IRGB) {
-        // 色相被选择 值范围0 - 360°
+    };
+    const handleColorHuePanelChange = function(hue: number, hueColor: IRGB) {
+        // 色相被选择 值范围0 - 359°
         // 转成度数值
-        const angle = maxAngle - maxAngle / colorHueAndAlphaHeight * hue
+        const angle = maxAngle - maxAngle / colorHueAndAlphaHeight * hue;
         // console.log('色相度数', angle);
         HSBRef.current.h = parseInt(angle.toString());
         dispatch({
             type: ColorPickerActions.SET_HUE_COLOR,
-            payload: color
+            payload: hueColor,
         });
         setRgbaState();
-    }
+    };
     const handleColorOpacityPanelChange = function(alpha: number) {
         // 透明度
 
-        HSBRef.current.a = (100 - alpha / colorHueAndAlphaHeight * 100) / 100;
-        // console.log(HSBRef.current.a);
+        HSBRef.current.a = (100 - (alpha / colorHueAndAlphaHeight) * 100) / 100;
         setRgbaState();
-    }
 
-    const handleColorChange = function(rgba: IRGBA) {
-        const hsbColor = Color.rgbToHsb(rgba.r, rgba.g, rgba.b);
-        const hueY = hsbHToY(hsbColor.h, colorHueAndAlphaHeight);
-        const panelPosition = hsbSBToPosition(hsbColor.s, hsbColor.b, colorPanelWidth, colorPanelHeight);
-        dispatch({
-            type: ColorPickerActions.SET_PANEL_POSITION,
-            payload: {
-                x: panelPosition.x,
-                y: panelPosition.y
-            }
-        });
-        dispatch({
-            type: ColorPickerActions.SET_HUE_Y,
-            payload: hueY
-        });
-        const currAlphaY = colorHueAndAlphaHeight - rgba.a * colorHueAndAlphaHeight;
-        dispatch({
-            type: ColorPickerActions.SET_ALPHA_Y,
-            payload: currAlphaY
-        });
-    }
+    };
+
+    const handleColorChange = function(color: Color) {
+        const hueY = hsbHToY(color.h, colorHueAndAlphaHeight);
+        const panelPosition = hsbSBToPosition(
+            color.s,
+            color.b,
+            colorPanelWidth,
+            colorPanelHeight
+        );
+        const halfPointer = colorPointerSize / 2
+        const currAlphaY = colorHueAndAlphaHeight - color.a * colorHueAndAlphaHeight;
+        colorPanelRef.current?.setPosition(panelPosition.x - halfPointer, panelPosition.y - halfPointer);
+        colorHuePanelRef.current?.setHueY(hueY - halfPointer);
+        colorOpacityRef.current?.setOpacityY(currAlphaY - halfPointer);
+    };
 
     // 设置RGBA
     const setRgbaState = function() {
-        const rgba = Color.hsbToRgba(
-            HSBRef.current.h,
-            HSBRef.current.s,
-            HSBRef.current.b,
-            HSBRef.current.a
-        );
-        dispatch({
-            type: ColorPickerActions.SET_DEFAULT_RGBA,
-            payload: {
-                r: rgba.r || 0,
-                g: rgba.g || 0,
-                b: rgba.b || 0,
-                a: rgba.a
+        requestAnimationFrame(() => {
+            const color = new Color(
+                HSBRef.current.h,
+                HSBRef.current.s,
+                +HSBRef.current.b,
+                HSBRef.current.a
+            );
+            dispatch({
+                type: ColorPickerActions.SET_DEFAULT_RGBA,
+                payload: color,
+            });
+
+            if (state[ColorPickerActions.SET_COLOR_TYPE] === ColorType.LINEAR) {
+                const colors = state[ColorPickerActions.SET_COLORS];
+                const currIndex = state[ColorPickerActions.SET_GRADIENT_INDEX];
+                colors[currIndex] = color;
+                // 如果是渐变
+                dispatch({
+                    type: ColorPickerActions.SET_COLORS,
+                    payload: colors
+                });
+                onColorChange(colors);
+            } else {
+                // 通知引用层颜色变化了
+                onColorChange(color.rgba);
             }
+
         });
+    };
+    // 渐变颜色添加事件被触发
+    const handleAddColor = function(color: Color, index: number) {
+        const colors = state[ColorPickerActions.SET_COLORS];
+        const backwardColor = colors[index];
+        colors.splice(index, 1, color, backwardColor);
+        // 更改当前渐变颜色列表
+        dispatch({
+            type: ColorPickerActions.SET_COLORS,
+            payload: colors
+        });
+        // 改变当前索引为刚插入的颜色
+        dispatch({
+            type: ColorPickerActions.SET_GRADIENT_INDEX,
+            payload: index
+        });
+        // 通知调用者颜色变更
+        onColorChange(colors);
+    }
+    // 删除渐变中某个颜色
+    // 如果渐变小于2则不删除
+    const handleRemoveColor = function(index: number) {
+        const colors = state[ColorPickerActions.SET_COLORS];
+        if (colors.length <= 2) return;
+        colors.splice(index, 1);
+        dispatch({
+            type: ColorPickerActions.SET_COLORS,
+            payload: colors
+        });
+        const currIndex = state[ColorPickerActions.SET_GRADIENT_INDEX];
+        if (currIndex === index) {
+            // 如果当前删除的索引是选中的所以
+            // 则重置索引为0
+            dispatch({
+                type: ColorPickerActions.SET_GRADIENT_INDEX,
+                payload: 0,
+            });
+        }
+    }
+    // 渐变颜色默认索引被改变
+    const handleIndexChange = function(index: number, color: Color) {
+        dispatch({
+            type: ColorPickerActions.SET_GRADIENT_INDEX,
+            payload: index,
+        });
+        gradientColorChange.current = color;
     }
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        setRGBA(rgba: IRGBA) {
-            handleColorChange(rgba);
+    // 渐变类型被改变
+    const handleGradientOptionChange = function(option: IOption<{}, ColorType>) {
+        let colors = state[ColorPickerActions.SET_COLORS];
+
+        if (option.id === ColorType.LINEAR && colors.length < 2) {
+            colors = [
+                new Color(HSBRef.current.h, HSBRef.current.s, HSBRef.current.b, HSBRef.current.a),
+                new Color(0, 0, 100, 1)
+            ]
+            dispatch({
+                type: ColorPickerActions.SET_COLORS,
+                payload: colors
+            });
+        }
+        // 貌似这个状态用处不大 后面优化掉
+        dispatch({
+            type: ColorPickerActions.SET_IS_GRADIENT,
+            // 如果不等于纯色那就是渐变色
+            payload: option.id !== ColorType.PURE
+        });
+        dispatch({
+            type: ColorPickerActions.SET_COLOR_TYPE,
+            payload: option.id!
+        });
+    }
+    // 监听当前渐变索引被改变
+    useEffect(() => {
+        if (gradientColorChange.current) {
+            handleColorChange(gradientColorChange.current);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state[ColorPickerActions.SET_GRADIENT_INDEX]]);
+
+
+    useImperativeHandle(ref, () => ({
+        setColor(color: Color) {
+            // 只有和[state[ColorPickerActions.SET_DEFAULT_RGBA]]不相同时才更新
+            const isEqual = Color.is(color, state[ColorPickerActions.SET_DEFAULT_RGBA]);
+            !isEqual && handleColorChange(color);
         },
-        colorPickerEl: colorPickerElRef
-      })
-    );
-    
+        setLinear(linear: LinearGradientdirection) {
+            const colors = linear.colors;
+            if (colors.length < 2) return;
+            dispatch({
+                type: ColorPickerActions.SET_COLORS,
+                payload: colors
+            });
+            dispatch({
+                type: ColorPickerActions.SET_COLOR_TYPE,
+                payload: ColorType.LINEAR
+            });
+            // 刷新调色板
+            handleColorChange(colors[0]);
+        },
+        colorPickerEl: colorPickerElRef,
+    }));
 
-    useEffect(() => {
-        if (props.onColorChange) {
-            props.onColorChange(state[ColorPickerActions.SET_DEFAULT_RGBA]);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state]);
-
-    useEffect(() => {
-        if (rgba) {
-            const rgbColor = rgba;
-            const hsbColor = Color.rgbToHsb(rgbColor.r, rgbColor.g, rgbColor.b);
-            const hueY = hsbHToY(hsbColor.h, colorHueAndAlphaHeight);
-            const panelPosition = hsbSBToPosition(hsbColor.s, hsbColor.b, colorPanelWidth, colorPanelHeight);
-            dispatch({
-                type: ColorPickerActions.SET_PANEL_POSITION,
-                payload: {
-                    x: panelPosition.x,
-                    y: panelPosition.y
-                }
-            });
-            dispatch({
-                type: ColorPickerActions.SET_HUE_Y,
-                payload: hueY
-            });
-            const currAlpha = rgba.a === maxOpacity ? 0 : rgba.a;
-            const currAlphaY = colorHueAndAlphaHeight - currAlpha * colorHueAndAlphaHeight;
-            dispatch({
-                type: ColorPickerActions.SET_ALPHA_Y,
-                payload: currAlphaY
-            });
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
     return (
-        <ColorPickerWrapper ref={ colorPickerElRef }>
-            <Select
-                width={ 80 }
-                options={[{name: '纯色', id: 0}, {name: '线性', id: 1}]}
-                defaultOptionId={0}
-                onChangeOption={(e: Event, option: any) => console.log(option)}
-                />
+        <ColorPickerWrapper ref={colorPickerElRef}>
+            {
+                // 只有传入参数是渐变的参数才可以显示选择渐变
+                isGradient && (
+                <>
+                    <Select
+                        width={ 80 }
+                        options={ ColorPickerGradientOptions }
+                        defaultOptionId={ state[ColorPickerActions.SET_COLOR_TYPE] }
+                        onChangeOption={ (_e, option) => handleGradientOptionChange(option) }
+                    />
+                    {
+                        state[ColorPickerActions.SET_COLOR_TYPE] === ColorType.LINEAR &&
+                        <ColorGradientPanel
+                            colors={ state[ColorPickerActions.SET_COLORS] }
+                            selectIndex={ state[ColorPickerActions.SET_GRADIENT_INDEX] }
+                            onAdd={ (color, index) => handleAddColor(color, index) }
+                            onRemove={ index => handleRemoveColor(index) }
+                            onIndexChange={ (index, color) => handleIndexChange(index, color) }
+                            />
+                    }
+                </>
+                )
+            }
             <ColorPickerBox>
                 {/* 明度饱和度面板 */}
                 <ColorPanel
-                    width={ colorPanelWidth }
-                    height={ colorPanelHeight }
-                    pointerSize= { colorPointerSize }
-                    onDragChange={ handleColorPanelChange }
-                    hue={ state[ColorPickerActions.SET_HUE_COLOR] }
+                    ref={ colorPanelRef }
+                    width={colorPanelWidth}
+                    height={colorPanelHeight}
+                    pointerSize={colorPointerSize}
+                    onDragChange={handleColorPanelChange}
+                    hue={state[ColorPickerActions.SET_HUE_COLOR]}
                     {...state[ColorPickerActions.SET_PANEL_POSITION]}
-                    />
+                    color={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
+                />
                 {/* 色相面板 */}
                 <ColorHuePanel
-                    width={ colorHueAndAlphaWidth }
-                    height={ colorHueAndAlphaHeight }
-                    pointerSize= { colorPointerSize }
-                    onDragChange={ handleColorHuePanelChange }
-                    y={ state[ColorPickerActions.SET_HUE_Y] }
-                    />
+                    ref={ colorHuePanelRef }
+                    width={colorHueAndAlphaWidth}
+                    height={colorHueAndAlphaHeight}
+                    pointerSize={colorPointerSize}
+                    onDragChange={handleColorHuePanelChange}
+                    y={state[ColorPickerActions.SET_HUE_Y]}
+                    color={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
+                />
                 {/* 透明度面板 */}
                 <ColorOpacity
-                    width={ colorHueAndAlphaWidth }
-                    height={ colorHueAndAlphaHeight }
-                    pointerSize= { colorPointerSize }
-                    onDragChange={ handleColorOpacityPanelChange }
-                    y={ state[ColorPickerActions.SET_ALPHA_Y] }
-                    color={
-                        Color.rgbToHex(
-                            state[ColorPickerActions.SET_DEFAULT_RGBA].r,
-                            state[ColorPickerActions.SET_DEFAULT_RGBA].g,
-                            state[ColorPickerActions.SET_DEFAULT_RGBA].b
-                        )
-                    }
-                    />
+                    ref= { colorOpacityRef }
+                    width={colorHueAndAlphaWidth}
+                    height={colorHueAndAlphaHeight}
+                    pointerSize={colorPointerSize}
+                    onDragChange={handleColorOpacityPanelChange}
+                    y={state[ColorPickerActions.SET_ALPHA_Y]}
+                    color={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
+                />
             </ColorPickerBox>
             <ColorFormatPanel
-                rgba={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
-                colorChange={ handleColorChange }
-                />
+                color={state[ColorPickerActions.SET_DEFAULT_RGBA]}
+                colorChange={handleColorChange}
+            />
             <ColorAdopePanel
-                rgba={ state[ColorPickerActions.SET_DEFAULT_RGBA] }
-                onColorClick={ handleColorChange }
-                />
+                color={state[ColorPickerActions.SET_DEFAULT_RGBA]}
+                onColorClick={handleColorChange}
+            />
         </ColorPickerWrapper>
     );
 }

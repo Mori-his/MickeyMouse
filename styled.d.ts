@@ -1,5 +1,6 @@
 import React from 'react';
-import {} from 'styled-components/cssprop'
+import {} from 'styled-components/cssprop';
+
 interface SizeConfigs {
     $width: number
     $height: number

@@ -1,4 +1,5 @@
-import Color from "@utils/color";
+import Color from "@layout/utils/color";
+import React, { useImperativeHandle, useRef } from "react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
@@ -40,8 +41,13 @@ const PointerBox = styled.div`
     transform: translateX(-50%);
 `
 
+export type ColorOpacityRef<T extends HTMLElement = HTMLElement> = {
+    setOpacityY(y: number): void;
+    colorOpacityEl: React.RefObject<T>;
+};
+
 interface ColorOpacityProps {
-    color?: string
+    color?: Color
     width?: number
     height?: number
     pointerSize?: number
@@ -49,13 +55,23 @@ interface ColorOpacityProps {
     y?: number
 }
 
-export default function ColorOpacity(props: ColorOpacityProps) {
-    const { color = '#ff0000', width = 16, height = 160, pointerSize = 12} = props;
+function ColorOpacity(
+    props: ColorOpacityProps,
+    ref: React.ForwardedRef<ColorOpacityRef<HTMLDivElement>>
+) {
+    const {
+        color = new Color(100, 0, 0, 1),
+        width = 16,
+        height = 160,
+        pointerSize = 12,
+        onDragChange = () => {},
+        y: opacityY = 0
+    } = props;
     const halfPointer = pointerSize / 2;
-    const [y, setY] = useState(-halfPointer);
-    const toY = props.y ? props.y - halfPointer : -halfPointer;
-    const colorRgbaStart = Color.hexToRGBA(color, 0);
-    const colorRgba = Color.hexToRGBA(color, 1);
+    const [y, setY] = useState(-halfPointer + opacityY);
+    const colorOpacityEl = useRef(null);
+    const colorRgbaStart = Color.hexToRGBA(color.hex, 0);
+    const colorRgba = Color.hexToRGBA(color.hex, 1);
 
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
@@ -63,29 +79,49 @@ export default function ColorOpacity(props: ColorOpacityProps) {
         const currentTop = event.clientY;
         const offset = pointerSize * 0.7;
         const value = currentTop - targetTop - offset;
-        setY(value);
+        handleValueChange(value);
+        setY(+(value.toFixed(1)));
     }
 
     const handlePointerDragChange = function(x: number, y: number) {
         setY(prevY => {
             if (prevY >= height - halfPointer  && y >= 0) return height - halfPointer;
             if (prevY <= -halfPointer && y <= 0) return -halfPointer;
-            const value = prevY + y;
-            return value;
+            let value = prevY + y;
+            if (value < -halfPointer) value = -halfPointer;
+            if (value > height - halfPointer) value = height - halfPointer;
+            const a = value + halfPointer;
+            handleValueChange(a);
+            return +(value.toFixed(1));
         });
     }
 
-    useEffect(() => {
-        setY(toY);
-    }, [props.y, toY]);
+    /**
+     * 更新透明度值
+     * @param value 通明度Y轴的值是加上指示器高度一半的值
+     */
+    const handleValueChange = function(value: number) {
+        requestAnimationFrame(() => {
+            onDragChange(value);
+        });
+    }
 
-    useEffect(() => {
-        props.onDragChange && props.onDragChange(y + halfPointer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [y]);
+    useImperativeHandle(ref, () => ({
+        /**
+         * 设置透明度位置
+         * @param y 传入进来的是减去指示器高度的一半的值
+         */
+        setOpacityY(y) {
+            y = +y.toFixed(1);
+            setY(y);
+            handleValueChange(y + halfPointer);
+        },
+        colorOpacityEl,
+    }));
 
     return (
         <ColorOpacityWrapper
+            ref={ colorOpacityEl }
             $width={ width }
             $height={ height }
             onMouseDown={ e => handlePanelMouseDown(e)}
@@ -110,3 +146,6 @@ export default function ColorOpacity(props: ColorOpacityProps) {
         </ColorOpacityWrapper>
     );
 }
+
+
+export default React.forwardRef(ColorOpacity)

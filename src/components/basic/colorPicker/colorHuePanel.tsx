@@ -1,6 +1,6 @@
 import { IRGB } from "@/types/color";
-import Color from "@utils/color";
-import { getOffsetTop } from "@utils/styleTool";
+import Color from "@layout/utils/color";
+import React, { useImperativeHandle } from "react";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
@@ -34,24 +34,38 @@ const PointerBox = styled.div`
     left: 50%;
     transform: translateX(-50%);
 `
-
+export type ColorHuePanelRef<T extends HTMLElement = HTMLElement> = {
+    setHueY(y: number): void;
+    colorHuePanelEl: React.RefObject<T>;
+};
 interface ColorHuePanelProps {
     width?: number
     height?: number
     pointerSize?: number
     y?: number
-    onDragChange?: (y: number, color: IRGB) => any
+    color?: Color
+    onDragChange?: (y: number, hueColor: IRGB) => any
 }
-export default function ColorHuePanel(props: ColorHuePanelProps) {
-    const { width = 16, height = 160, pointerSize = 12 } = props;
+function ColorHuePanel(
+    props: ColorHuePanelProps,
+    ref: React.ForwardedRef<ColorHuePanelRef<HTMLDivElement>>
+) {
+    const {
+        width = 16,
+        height = 160,
+        pointerSize = 12,
+        y: propY = 0,
+        onDragChange = () => {}
+    } = props;
+    const colorHuePanelEl = useRef(null);
     const halfPointer = pointerSize / 2;
-    const [y, setY] = useState(-halfPointer);
-    const toY = props.y ? props.y - halfPointer : -halfPointer;
+    const [y, setY] = useState(-halfPointer + propY);
     const hsb = useRef({
         h: 359,
-        s: 1,
-        b: 1
+        s: 100,
+        b: 100
     });
+
 
     const handlePanelMouseDown = function(event: React.MouseEvent) {
         const targetEl: HTMLDivElement = event.currentTarget as HTMLDivElement;
@@ -59,7 +73,8 @@ export default function ColorHuePanel(props: ColorHuePanelProps) {
         const currentTop = event.clientY;
         const offset = pointerSize * 0.7;
         const value = currentTop - targetTop - offset;
-        setY(value);
+        handleValueChange(value);
+        setY(+(value.toFixed(1)));
     }
 
     const handlePointerDragChange = function(x: number, y: number) {
@@ -67,30 +82,36 @@ export default function ColorHuePanel(props: ColorHuePanelProps) {
             if (prevY >= height - halfPointer  && y >= 0) return height - halfPointer;
             if (prevY <= -halfPointer && y <= 0) return -halfPointer;
             const value = prevY + y;
-            return value;
+            const h = value + halfPointer;
+            handleValueChange(h < 0 ? 0 : h);
+            return +(value.toFixed(1));
         });
     }
 
-    useEffect(() => {
-        setY(toY);
-    }, [props.y, toY]);
+    const handleValueChange = function(value: number) {
+        requestAnimationFrame(() => {
+            hsb.current.h = 359 - 359 / (height - halfPointer) * value;
+            const color: IRGB | undefined = Color.hsvToRgb(
+                hsb.current.h,
+                hsb.current.s,
+                hsb.current.b
+            );
+            onDragChange(value, color);
+        })
+    }
 
-    useEffect(() => {
-        const value = y + halfPointer;
-        hsb.current.h = 359 - 359 / height * value;
-        const color: IRGB | undefined = Color.hsvToRgb(
-            hsb.current.h,
-            hsb.current.s,
-            hsb.current.b
-        );
-        if (color) {
-            props.onDragChange && props.onDragChange(value, color);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [y])
+    useImperativeHandle(ref, () => ({
+        setHueY(y: number) {
+            y = +y.toFixed(1);
+            setY(y);
+            handleValueChange(y + halfPointer)
+        },
+        colorHuePanelEl: colorHuePanelEl,
+    }));
 
     return (
         <HueWrapper
+            ref={ colorHuePanelEl }
             $width={ width }
             $height={ height }
             onMouseDown={ e => handlePanelMouseDown(e)}
@@ -101,9 +122,11 @@ export default function ColorHuePanel(props: ColorHuePanelProps) {
                 >
                 <ColorPointer
                     size={ pointerSize }
-                    onDragChange={ handlePointerDragChange}
+                    onDragChange={ handlePointerDragChange }
                     />
             </PointerBox>
         </HueWrapper>
     );
 }
+
+export default React.forwardRef(ColorHuePanel);

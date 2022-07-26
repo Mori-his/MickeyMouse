@@ -1,3 +1,4 @@
+import { Theme } from "react-select";
 
 
 const LayoutTheme = {
@@ -21,8 +22,71 @@ const LayoutTheme = {
     lightContrast: '#e2e2e2', 
     lightContrastText: '#5b5b5b',
     white50: '#d8d8d8',
-    white30: '#7F7F7F'
+    white40: '#a7a7a7',
+    white30: '#7F7F7F',
+    buttons: {
+        primary: {
+            color: '#fff',
+            backgroundColor: '#141719',
+        },
+        secondary: {
+            color: '#fff',
+            backgroundColor: '#6c757d',
+        },
+        success: {
+            color: '#fff',
+            backgroundColor: '#28a745',
+        },
+        warning: {
+            color: '#212529',
+            backgroundColor: '#ffc107',
+        },
+        danger: {
+            color: '#fff',
+            backgroundColor: '#dc3545',
+        },
+        info: {
+            color: '#fff',
+            backgroundColor: '#17a2b8',
+        },
+        light: {
+            color: '#212529',
+            backgroundColor: '#f8f9fa',
+        },
+        dark: {
+            color: '#fff',
+            backgroundColor: '#343a40',
+        }
+    }
 }
+
+ 
+// primary
+// primary75
+// primary50
+// primary25
+// danger
+// dangerLight
+// neutral0
+// neutral5
+// neutral10
+// neutral20
+// neutral30
+// neutral40
+// neutral50
+// neutral60
+// neutral70
+// neutral80
+// neutral90
+export const selectCustomTheme = (customTheme: Theme) => ({
+    ...customTheme,
+    colors: {
+        ...customTheme.colors,
+        primary: LayoutTheme.assist,
+        primary75: LayoutTheme.assist,
+        neutral0: LayoutTheme.lightText,
+    }
+});
 
 
 

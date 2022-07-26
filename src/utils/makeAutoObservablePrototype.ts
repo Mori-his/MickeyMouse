@@ -1,4 +1,4 @@
-import { TreeWidget } from "@layout/core/layout";
+import { TreeWidget } from "@widgets/treeWidget";
 import * as mobx from "mobx";
 
 const annotationsSymbol = Symbol('');
@@ -50,14 +50,40 @@ export  function makeObservableWithWidget<T extends TreeWidget, AdditionalKeys e
       setVisible: mobx.action,
       setChildCount: mobx.action,
       setParent: mobx.action,
+      
+      setId: mobx.action,
+      setName: mobx.action,
+      setAttachOnClick: mobx.action,
+      setHorizontal: mobx.action,
+      setVertical: mobx.action,
+      setBottom: mobx.action,
+      setLeft: mobx.action,
+      setRight: mobx.action,
+      setTop: mobx.action,
+      setWidth: mobx.action,
+      setHeight: mobx.action,
+      setWidthAdaptive: mobx.action,
+      setHeightAdaptive: mobx.action,
+      setIsDragEnter: mobx.action,
+      setSyncs: mobx.action,
+      
+      id: mobx.observable,
+      name: mobx.observable,
+      position: mobx.observable,
+      size: mobx.observable,
+      attachOnClick: mobx.observable,
       childCount: mobx.observable,
       parent: mobx.observable,
       lastChild: mobx.observable,
       _shrink: mobx.observable,
       _lock: mobx.observable,
       visible: mobx.observable,
+      syncs: mobx.observable,
       shrink: mobx.computed,
       lock: mobx.computed,
       ...annotations,
-  }, options);
+  }, {
+    deep: true,
+    ...options
+  });
 }

@@ -1,0 +1,1992 @@
+{
+    "name": "root",
+    "id": "root",
+    "game": "17",
+    "prop": {
+        "layout": {
+            "l": 0,
+            "t": 0,
+            "w": 375,
+            "h": 700,
+            "___layout": 0
+        }
+    },
+    "child": [
+        {
+            "data": {
+                "seatInfo": "sync:p_user.users[seat=0]"
+            },
+            "child": [
+                {
+                    "data": [],
+                    "___labelComponent": "",
+                    "name": "label",
+                    "id": "",
+                    "desc": "",
+                    "prop": {
+                        "text": "",
+                        "textSize": 0,
+                        "gravity": "0",
+                        "textColor": {
+                            "color": "#000000",
+                            "___color": ""
+                        },
+                        "layout": {
+                            "l": 0,
+                            "t": 0,
+                            "w": 0,
+                            "h": 0,
+                            "___layoutSupportAutoWidthHeight": null
+                        }
+                    }
+                }
+            ],
+            "___seatViewComponent": "",
+            "name": "seatView",
+            "id": "zuowei_0",
+            "desc": "主持人座位",
+            "prop": {
+                "seat": 0,
+                "states": {
+                    "empty": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "zuoweikongtupian_0",
+                                "desc": "主持人座位为空图片",
+                                "prop": {
+                                    "src": "https://p4.ssl.qhimg.com/t017eb4b14bf6223d99.png",
+                                    "defaultSrc": "http://p5.qhimg.com/t01e6d254bc24b3c497.png",
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 12,
+                                        "w": 48,
+                                        "h": 48,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___labelComponent": "",
+                                "name": "label",
+                                "id": "kongzuoweizuoweihao_0",
+                                "desc": "主持人空座位的座位号",
+                                "prop": {
+                                    "text": "虚位以待",
+                                    "textSize": "12",
+                                    "gravity": "0",
+                                    "textColor": {
+                                        "color": "#ffffff",
+                                        "___color": ""
+                                    },
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 67,
+                                        "h": 15,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "r": 0,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "___round": ""
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "emptyView",
+                        "id": "zuoweikong_0",
+                        "desc": "主持人座位为空",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "w": 72,
+                                "h": 82,
+                                "___layout": 0
+                            }
+                        }
+                    },
+                    "audio": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___lottieComponent": "",
+                                "name": "audioAnim",
+                                "id": "huxideng_0",
+                                "desc": "主持人座呼吸灯动画",
+                                "prop": {
+                                    "url": "https://static.s3.huajiao.com/Object.access/hj-video/MTYxNjA1NzE4OTYwNTY2Lmpzb24=",
+                                    "layout": {
+                                        "t": 0,
+                                        "w": 72,
+                                        "h": 72,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": {
+                                    "src": "sync:p_user.users[seat=0].user.avatar"
+                                },
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "touxiang_0",
+                                "desc": "主持人头像",
+                                "prop": {
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 12,
+                                        "w": 48,
+                                        "h": 48,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "radius": "24",
+                                        "___round": ""
+                                    }
+                                }
+                            },
+                            {
+                                "name": "keyframePro",
+                                "desc": "主持人座位麦序头像框",
+                                "id": "touxiangkuang_0",
+                                "prop": {
+                                    "layout": {
+                                        "w": 64,
+                                        "h": 64,
+                                        "t": 4,
+                                        "centerLand": 1
+                                    }
+                                },
+                                "data": {
+                                    "res": "sync:p_avatar_frame.avatar_frames[uid=$sync:p_user.users[seat=0].user.uid]"
+                                }
+                            },
+                            {
+                                "name": "image",
+                                "desc": "主持人上麦动画",
+                                "id": "shangmaidonghua_0",
+                                "prop": {
+                                    "layout": {
+                                        "w": 68,
+                                        "h": 80,
+                                        "l": 0,
+                                        "t": 0
+                                    },
+                                    "src": ""
+                                },
+                                "data": {
+                                    "src": "sync:p_user.users[seat=0].user.equipments.activity.link_voice.url_animation"
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___muteButtonComponent": "",
+                                "name": "muteButton",
+                                "id": "jingyinanniu_0",
+                                "desc": "主持人座位静音按钮",
+                                "prop": {
+                                    "layout": {
+                                        "l": 51,
+                                        "t": 36,
+                                        "w": 10,
+                                        "h": 10,
+                                        "___layout": 0
+                                    },
+                                    "onSrc": "https://p5.ssl.qhimg.com/t01ba008db41b27cbca.png",
+                                    "offSrc": "https://p2.ssl.qhimg.com/t01bc751151e9f884fa.png"
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": {
+                                            "genter": "sync:p_user.users[seat=0].user.gender"
+                                        },
+                                        "___genderComponent": "",
+                                        "name": "genderView",
+                                        "id": "xingbie_0",
+                                        "desc": "主持人座位性别",
+                                        "prop": {
+                                            "layout": {
+                                                "l": 0,
+                                                "w": 20,
+                                                "h": 10,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            },
+                                            "genderUrl": {
+                                                "M": "https://p1.ssl.qhimg.com/t011658e94a362c226a.png",
+                                                "F": "https://p1.ssl.qhimg.com/t011658e94a362c226a.png",
+                                                "N": "https://p1.ssl.qhimg.com/t011658e94a362c226a.png"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_user.users[seat=0].user.nickname"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "nicheng_0",
+                                        "desc": "主持人座昵称",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 21,
+                                                "h": 16,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "widthAuto": 1,
+                                                "r": 0
+                                            },
+                                            "maxWidth": "52"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "xingbienicheng_0",
+                                "desc": "主持人座位性别和昵称",
+                                "prop": {
+                                    "layout": {
+                                        "t": 63,
+                                        "h": 16,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": [],
+                                        "___imageComponent": "",
+                                        "name": "image",
+                                        "id": "shouyitubiao_0",
+                                        "desc": "主持人位收入图标",
+                                        "prop": {
+                                            "src": "https://p5.ssl.qhimg.com/t016399991337152adf.png",
+                                            "mode": "0",
+                                            "layout": {
+                                                "l": 2,
+                                                "t": 3,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_t_score_monopoly.scores[uid=$sync:p_user.users[seat=0].user.uid].score"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "shouyi_0",
+                                        "desc": "主持人位收益",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 15,
+                                                "t": 0,
+                                                "h": 12,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "centerPort": 1,
+                                                "widthAuto": 1,
+                                                "r": 3
+                                            },
+                                            "maxWidth": 60,
+                                            "format": "1",
+                                            "fontName": "cyrillic"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "shouru_0",
+                                "desc": "主持人位收入图标加收入",
+                                "prop": {
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 48,
+                                        "h": 12,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1,
+                                        "r": 0
+                                    },
+                                    "round": {
+                                        "radius": 6,
+                                        "___round": ""
+                                    },
+                                    "bgColor": {
+                                        "color": "#000000",
+                                        "alpha": 0.3
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "audioView",
+                        "id": "yinpinmoshi_0",
+                        "desc": "主持人位音频模式",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "___layout": 0,
+                                "r": 0,
+                                "b": 0
+                            }
+                        }
+                    }
+                },
+                "layout": {
+                    "l": 17,
+                    "t": 60,
+                    "w": 68,
+                    "h": 78,
+                    "___layout": 0
+                },
+                "round": {
+                    "radius": 0,
+                    "___round": ""
+                },
+                "video": "4",
+                "asHost": "1",
+                "asGuest": "0"
+            },
+            "emoticon": {
+                "w": "58",
+                "l": "5",
+                "t": "4"
+            }
+        },
+        {
+            "data": {
+                "seatInfo": "sync:p_user.users[seat=1]"
+            },
+            "child": [
+                {
+                    "data": [],
+                    "___labelComponent": "",
+                    "name": "label",
+                    "id": "",
+                    "desc": "",
+                    "prop": {
+                        "text": "",
+                        "textSize": 0,
+                        "gravity": "0",
+                        "textColor": {
+                            "color": "#000000",
+                            "___color": ""
+                        },
+                        "layout": {
+                            "l": 0,
+                            "t": 0,
+                            "w": 0,
+                            "h": 0,
+                            "___layoutSupportAutoWidthHeight": ""
+                        }
+                    }
+                }
+            ],
+            "___seatViewComponent": "",
+            "name": "seatView",
+            "id": "zuowei_1",
+            "desc": "1号座位",
+            "prop": {
+                "seat": 1,
+                "states": {
+                    "empty": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "zuoweikongtupian_1",
+                                "desc": "1号座位为空图片",
+                                "prop": {
+                                    "src": "https://p4.ssl.qhimg.com/t017eb4b14bf6223d99.png",
+                                    "defaultSrc": "http://p1.qhimg.com/t0138b2dac3d69cb672.png",
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___labelComponent": "",
+                                "name": "label",
+                                "id": "kongzuoweizuoweihao_1",
+                                "desc": "1号位空座位的座位号",
+                                "prop": {
+                                    "text": "1号麦",
+                                    "textSize": "12",
+                                    "gravity": "0",
+                                    "textColor": {
+                                        "color": "#ffffff",
+                                        "___color": ""
+                                    },
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 64,
+                                        "h": 15,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "r": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "___round": ""
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "emptyView",
+                        "id": "zuoweikong_1",
+                        "desc": "1号座位为空",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "w": 73,
+                                "h": 85,
+                                "___layout": 0
+                            }
+                        }
+                    },
+                    "audio": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___lottieComponent": "",
+                                "name": "audioAnim",
+                                "id": "huxideng_1",
+                                "desc": "1号座呼吸灯动画",
+                                "prop": {
+                                    "url": "https://static.s3.huajiao.com/Object.access/hj-video/MTYxNjA1NzE4OTYwNTY2Lmpzb24=",
+                                    "layout": {
+                                        "t": 0,
+                                        "w": 73,
+                                        "h": 73,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": {
+                                    "src": "sync:p_user.users[seat=1].user.avatar"
+                                },
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "touxiang_1",
+                                "desc": "1号位头像",
+                                "prop": {
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "radius": "23.5",
+                                        "___round": ""
+                                    }
+                                }
+                            },
+                            {
+                                "name": "keyframePro",
+                                "desc": "1号座位麦序头像框",
+                                "id": "touxiangkuang_1",
+                                "prop": {
+                                    "layout": {
+                                        "w": 64,
+                                        "h": 64,
+                                        "t": 4,
+                                        "centerLand": 1
+                                    }
+                                },
+                                "data": {
+                                    "res": "sync:p_avatar_frame.avatar_frames[uid=$sync:p_user.users[seat=1].user.uid]"
+                                }
+                            },
+                            {
+                                "name": "image",
+                                "desc": "1号上麦动画",
+                                "id": "shangmaidonghua_1",
+                                "prop": {
+                                    "layout": {
+                                        "w": 73,
+                                        "h": 81,
+                                        "l": 0,
+                                        "t": 0
+                                    },
+                                    "src": ""
+                                },
+                                "data": {
+                                    "src": "sync:p_user.users[seat=1].user.equipments.activity.link_voice.url_animation"
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___muteButtonComponent": "",
+                                "name": "muteButton",
+                                "id": "jingyinanniu_1",
+                                "desc": "1号座位静音按钮",
+                                "prop": {
+                                    "layout": {
+                                        "l": 51,
+                                        "t": 36,
+                                        "w": 10,
+                                        "h": 10,
+                                        "___layout": 0
+                                    },
+                                    "onSrc": "https://p5.ssl.qhimg.com/t01ba008db41b27cbca.png",
+                                    "offSrc": "https://p2.ssl.qhimg.com/t01bc751151e9f884fa.png"
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": {
+                                            "gender": "sync:p_user.users[seat=1].user.gender"
+                                        },
+                                        "___genderComponent": "",
+                                        "name": "genderView",
+                                        "id": "xingbie_1",
+                                        "desc": "1号座位性别",
+                                        "prop": {
+                                            "layout": {
+                                                "l": 0,
+                                                "t": 0,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            },
+                                            "genderUrl": {
+                                                "M": "https://p1.ssl.qhimg.com/t012d696b5ae60f346e.png",
+                                                "F": "https://p1.ssl.qhimg.com/t012d696b5ae60f346e.png",
+                                                "N": "https://p1.ssl.qhimg.com/t012d696b5ae60f346e.png"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_user.users[seat=1].user.nickname"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "nicheng_1",
+                                        "desc": "1号座昵称",
+                                        "prop": {
+                                            "textSize": "9",
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 14,
+                                                "t": 0,
+                                                "h": 15,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "widthAuto": 1,
+                                                "r": 0
+                                            },
+                                            "maxWidth": "55"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "xingbienicheng_1",
+                                "desc": "1号座位性别和昵称",
+                                "prop": {
+                                    "layout": {
+                                        "t": 64,
+                                        "h": 16,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": [],
+                                        "___imageComponent": "",
+                                        "name": "image",
+                                        "id": "shouyitubiao_1",
+                                        "desc": "1号位收入图标",
+                                        "prop": {
+                                            "src": "https://p5.ssl.qhimg.com/t016399991337152adf.png",
+                                            "mode": "0",
+                                            "layout": {
+                                                "l": 2,
+                                                "t": 3,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_t_score_monopoly.scores[uid=$sync:p_user.users[seat=1].user.uid].score"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "shouyi_1",
+                                        "desc": "1号位收益",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 15,
+                                                "t": 0,
+                                                "h": 12,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "centerPort": 1,
+                                                "widthAuto": 1,
+                                                "r": 3
+                                            },
+                                            "maxWidth": 60,
+                                            "format": "1",
+                                            "fontName": "cyrillic"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "shouru_1",
+                                "desc": "1号位收入图标加收入",
+                                "prop": {
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 48,
+                                        "h": 12,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1,
+                                        "r": 0
+                                    },
+                                    "round": {
+                                        "radius": 6,
+                                        "___round": ""
+                                    },
+                                    "bgColor": {
+                                        "color": "#000000",
+                                        "alpha": 0.3
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "audioView",
+                        "id": "yinpinmoshi_1",
+                        "desc": "1号位音频模式",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "___layout": 0,
+                                "r": 0,
+                                "b": 0
+                            }
+                        }
+                    }
+                },
+                "layout": {
+                    "l": 20,
+                    "t": 330,
+                    "w": 73,
+                    "h": 85,
+                    "___layout": 0
+                },
+                "round": {
+                    "radius": 0,
+                    "___round": ""
+                },
+                "video": "4",
+                "asHost": "0",
+                "asGuest": "1"
+            },
+            "emoticon": {
+                "w": "60",
+                "l": "6",
+                "t": "5"
+            }
+        },
+        {
+            "data": {
+                "seatInfo": "sync:p_user.users[seat=2]"
+            },
+            "child": [
+                {
+                    "data": [],
+                    "___labelComponent": "",
+                    "name": "label",
+                    "id": "",
+                    "desc": "",
+                    "prop": {
+                        "text": "",
+                        "textSize": 0,
+                        "gravity": "0",
+                        "textColor": {
+                            "color": "#000000",
+                            "___color": ""
+                        },
+                        "layout": {
+                            "l": 0,
+                            "t": 0,
+                            "w": 0,
+                            "h": 0,
+                            "___layoutSupportAutoWidthHeight": ""
+                        }
+                    }
+                }
+            ],
+            "___seatViewComponent": "",
+            "name": "seatView",
+            "id": "zuowei_2",
+            "desc": "2号座位",
+            "prop": {
+                "seat": "2",
+                "states": {
+                    "empty": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "zuoweikongtupian_2",
+                                "desc": "2号座位为空图片",
+                                "prop": {
+                                    "src": "https://p4.ssl.qhimg.com/t017eb4b14bf6223d99.png",
+                                    "defaultSrc": "http://p1.qhimg.com/t0138b2dac3d69cb672.png",
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___labelComponent": "",
+                                "name": "label",
+                                "id": "kongzuoweizuoweihao_2",
+                                "desc": "2号位空座位的座位号",
+                                "prop": {
+                                    "text": "2号麦",
+                                    "textSize": "12",
+                                    "gravity": "0",
+                                    "textColor": {
+                                        "color": "#ffffff",
+                                        "___color": ""
+                                    },
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 64,
+                                        "h": 15,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "r": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "___round": ""
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "emptyView",
+                        "id": "zuoweikong_2",
+                        "desc": "2号座位为空",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "w": 73,
+                                "h": 85,
+                                "___layout": 0
+                            }
+                        }
+                    },
+                    "audio": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___lottieComponent": "",
+                                "name": "audioAnim",
+                                "id": "huxideng_2",
+                                "desc": "2号座呼吸灯动画",
+                                "prop": {
+                                    "url": "https://static.s3.huajiao.com/Object.access/hj-video/MTYxNjA1NzE4OTYwNTY2Lmpzb24=",
+                                    "layout": {
+                                        "t": 0,
+                                        "w": 73,
+                                        "h": 73,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": {
+                                    "src": "sync:p_user.users[seat=2].user.avatar"
+                                },
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "touxiang_2",
+                                "desc": "2号位头像",
+                                "prop": {
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "radius": "23.5",
+                                        "___round": ""
+                                    }
+                                }
+                            },
+                            {
+                                "name": "keyframePro",
+                                "desc": "2号座位麦序头像框",
+                                "id": "touxiangkuang_2",
+                                "prop": {
+                                    "layout": {
+                                        "w": 64,
+                                        "h": 64,
+                                        "t": 4,
+                                        "centerLand": 1
+                                    }
+                                },
+                                "data": {
+                                    "res": "sync:p_avatar_frame.avatar_frames[uid=$sync:p_user.users[seat=2].user.uid]"
+                                }
+                            },
+                            {
+                                "name": "image",
+                                "desc": "2号上麦动画",
+                                "id": "shangmaidonghua_2",
+                                "prop": {
+                                    "layout": {
+                                        "w": 73,
+                                        "h": 81,
+                                        "l": 0,
+                                        "t": 0
+                                    }
+                                },
+                                "data": {
+                                    "src": "sync:p_user.users[seat=2].user.equipments.activity.link_voice.url_animation"
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___muteButtonComponent": "",
+                                "name": "muteButton",
+                                "id": "jingyinanniu_2",
+                                "desc": "2号座位静音按钮",
+                                "prop": {
+                                    "layout": {
+                                        "l": 51,
+                                        "t": 36,
+                                        "w": 10,
+                                        "h": 10,
+                                        "___layout": 0
+                                    },
+                                    "onSrc": "https://p5.ssl.qhimg.com/t01ba008db41b27cbca.png",
+                                    "offSrc": "https://p2.ssl.qhimg.com/t01bc751151e9f884fa.png"
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": {
+                                            "gender": "sync:p_user.users[seat=2].user.gender"
+                                        },
+                                        "___genderComponent": "",
+                                        "name": "genderView",
+                                        "id": "xingbie_2",
+                                        "desc": "2号座位性别",
+                                        "prop": {
+                                            "layout": {
+                                                "l": 0,
+                                                "t": 0,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            },
+                                            "genderUrl": {
+                                                "M": "https://p3.ssl.qhimg.com/t019f078bed4ffa7148.png",
+                                                "F": "https://p3.ssl.qhimg.com/t019f078bed4ffa7148.png",
+                                                "N": "https://p3.ssl.qhimg.com/t019f078bed4ffa7148.png"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_user.users[seat=2].user.nickname"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "nicheng_2",
+                                        "desc": "2号座昵称",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 14,
+                                                "t": 0,
+                                                "h": 15,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "widthAuto": 1,
+                                                "r": 0
+                                            },
+                                            "maxWidth": "55"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "xingbienicheng_2",
+                                "desc": "2号座位性别和昵称",
+                                "prop": {
+                                    "layout": {
+                                        "t": 64,
+                                        "h": 16,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": [],
+                                        "___imageComponent": "",
+                                        "name": "image",
+                                        "id": "shouyitubiao_2",
+                                        "desc": "2号位收入图标",
+                                        "prop": {
+                                            "src": "https://p5.ssl.qhimg.com/t016399991337152adf.png",
+                                            "mode": "0",
+                                            "layout": {
+                                                "l": 2,
+                                                "t": 3,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_t_score_monopoly.scores[uid=$sync:p_user.users[seat=2].user.uid].score"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "shouyi_2",
+                                        "desc": "2号位收益",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 15,
+                                                "t": 0,
+                                                "h": 12,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "centerPort": 1,
+                                                "widthAuto": 1,
+                                                "r": 3
+                                            },
+                                            "maxWidth": 60,
+                                            "format": "1",
+                                            "fontName": "cyrillic"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "shouru_2",
+                                "desc": "2号位收入图标加收入",
+                                "prop": {
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 48,
+                                        "h": 12,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1,
+                                        "r": 0
+                                    },
+                                    "round": {
+                                        "radius": 6,
+                                        "___round": ""
+                                    },
+                                    "bgColor": {
+                                        "color": "#000000",
+                                        "alpha": 0.3
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "audioView",
+                        "id": "yinpinmoshi_2",
+                        "desc": "2号位音频模式",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "___layout": 0,
+                                "r": 0,
+                                "b": 0
+                            }
+                        }
+                    }
+                },
+                "layout": {
+                    "l": 107,
+                    "t": 330,
+                    "w": 73,
+                    "h": 85,
+                    "___layout": 0
+                },
+                "round": {
+                    "radius": 0,
+                    "___round": ""
+                },
+                "video": "4",
+                "asHost": "0",
+                "asGuest": "1"
+            },
+            "emoticon": {
+                "w": "60",
+                "l": "6",
+                "t": "5"
+            }
+        },
+        {
+            "data": {
+                "seatInfo": "sync:p_user.users[seat=3]"
+            },
+            "child": [
+                {
+                    "data": [],
+                    "___labelComponent": "",
+                    "name": "label",
+                    "id": "",
+                    "desc": "",
+                    "prop": {
+                        "text": "",
+                        "textSize": 0,
+                        "gravity": "0",
+                        "textColor": {
+                            "color": "#000000",
+                            "___color": ""
+                        },
+                        "layout": {
+                            "l": 0,
+                            "t": 0,
+                            "w": 0,
+                            "h": 0,
+                            "___layoutSupportAutoWidthHeight": ""
+                        }
+                    }
+                }
+            ],
+            "___seatViewComponent": "",
+            "name": "seatView",
+            "id": "zuowei_3",
+            "desc": "3号座位",
+            "prop": {
+                "seat": "3",
+                "states": {
+                    "empty": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "zuoweikongtupian_3",
+                                "desc": "3号座位为空图片",
+                                "prop": {
+                                    "src": "https://p4.ssl.qhimg.com/t017eb4b14bf6223d99.png",
+                                    "defaultSrc": "http://p1.qhimg.com/t0138b2dac3d69cb672.png",
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___labelComponent": "",
+                                "name": "label",
+                                "id": "kongzuoweizuoweihao_3",
+                                "desc": "3号位空座位的座位号",
+                                "prop": {
+                                    "text": "3号麦",
+                                    "textSize": "12",
+                                    "gravity": "0",
+                                    "textColor": {
+                                        "color": "#ffffff",
+                                        "___color": ""
+                                    },
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 64,
+                                        "h": 15,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "r": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "___round": ""
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "emptyView",
+                        "id": "zuoweikong_3",
+                        "desc": "3号座位为空",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "w": 73,
+                                "h": 85,
+                                "___layout": 0
+                            }
+                        }
+                    },
+                    "audio": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___lottieComponent": "",
+                                "name": "audioAnim",
+                                "id": "huxideng_3",
+                                "desc": "3号座呼吸灯动画",
+                                "prop": {
+                                    "url": "https://static.s3.huajiao.com/Object.access/hj-video/MTYxNjA1NzE4OTYwNTY2Lmpzb24=",
+                                    "layout": {
+                                        "t": 0,
+                                        "w": 73,
+                                        "h": 73,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": {
+                                    "src": "sync:p_user.users[seat=3].user.avatar"
+                                },
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "touxiang_3",
+                                "desc": "3号位头像",
+                                "prop": {
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "radius": "23.5",
+                                        "___round": ""
+                                    }
+                                }
+                            },
+                            {
+                                "name": "keyframePro",
+                                "desc": "3号座位麦序头像框",
+                                "id": "touxiangkuang_3",
+                                "prop": {
+                                    "layout": {
+                                        "w": 64,
+                                        "h": 64,
+                                        "t": 4,
+                                        "centerLand": 1
+                                    }
+                                },
+                                "data": {
+                                    "res": "sync:p_avatar_frame.avatar_frames[uid=$sync:p_user.users[seat=3].user.uid]"
+                                }
+                            },
+                            {
+                                "name": "image",
+                                "desc": "3号上麦动画",
+                                "id": "shangmaidonghua_3",
+                                "prop": {
+                                    "layout": {
+                                        "w": 73,
+                                        "h": 81,
+                                        "l": 0,
+                                        "t": 0
+                                    }
+                                },
+                                "data": {
+                                    "src": "sync:p_user.users[seat=3].user.equipments.activity.link_voice.url_animation"
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___muteButtonComponent": "",
+                                "name": "muteButton",
+                                "id": "jingyinanniu_3",
+                                "desc": "3号座位静音按钮",
+                                "prop": {
+                                    "layout": {
+                                        "l": 51,
+                                        "t": 36,
+                                        "w": 10,
+                                        "h": 10,
+                                        "___layout": 0
+                                    },
+                                    "onSrc": "https://p5.ssl.qhimg.com/t01ba008db41b27cbca.png",
+                                    "offSrc": "https://p2.ssl.qhimg.com/t01bc751151e9f884fa.png"
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": {
+                                            "gender": "sync:p_user.users[seat=3].user.gender"
+                                        },
+                                        "___genderComponent": "",
+                                        "name": "genderView",
+                                        "id": "xingbie_3",
+                                        "desc": "3号座位性别",
+                                        "prop": {
+                                            "layout": {
+                                                "l": 0,
+                                                "t": 0,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            },
+                                            "genderUrl": {
+                                                "M": "https://p4.ssl.qhimg.com/t01e12a80780e623f87.png",
+                                                "F": "https://p4.ssl.qhimg.com/t01e12a80780e623f87.png",
+                                                "N": "https://p4.ssl.qhimg.com/t01e12a80780e623f87.png"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_user.users[seat=3].user.nickname"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "nicheng_3",
+                                        "desc": "3号座昵称",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 14,
+                                                "t": 0,
+                                                "h": 15,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "widthAuto": 1,
+                                                "r": 0
+                                            },
+                                            "maxWidth": "55"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "xingbienicheng_3",
+                                "desc": "3号座位性别和昵称",
+                                "prop": {
+                                    "layout": {
+                                        "t": 64,
+                                        "h": 16,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": [],
+                                        "___imageComponent": "",
+                                        "name": "image",
+                                        "id": "shouyitubiao_3",
+                                        "desc": "3号位收入图标",
+                                        "prop": {
+                                            "src": "https://p5.ssl.qhimg.com/t016399991337152adf.png",
+                                            "mode": "0",
+                                            "layout": {
+                                                "l": 2,
+                                                "t": 3,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_t_score_monopoly.scores[uid=$sync:p_user.users[seat=3].user.uid].score"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "shouyi_3",
+                                        "desc": "3号位收益",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 15,
+                                                "t": 0,
+                                                "h": 12,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "centerPort": 1,
+                                                "widthAuto": 1,
+                                                "r": 3
+                                            },
+                                            "maxWidth": 60,
+                                            "format": "1",
+                                            "fontName": "cyrillic"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "shouru_3",
+                                "desc": "3号位收入图标加收入",
+                                "prop": {
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 48,
+                                        "h": 12,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1,
+                                        "r": 0
+                                    },
+                                    "round": {
+                                        "radius": 6,
+                                        "___round": ""
+                                    },
+                                    "bgColor": {
+                                        "color": "#000000",
+                                        "alpha": 0.3
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "audioView",
+                        "id": "yinpinmoshi_3",
+                        "desc": "3号位音频模式",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "___layout": 0,
+                                "r": 0,
+                                "b": 0
+                            }
+                        }
+                    }
+                },
+                "layout": {
+                    "l": 195,
+                    "t": 330,
+                    "w": 73,
+                    "h": 85,
+                    "___layout": 0
+                },
+                "round": {
+                    "radius": 0,
+                    "___round": ""
+                },
+                "video": "4",
+                "asHost": "0",
+                "asGuest": "1"
+            },
+            "emoticon": {
+                "w": "60",
+                "l": "6",
+                "t": "5"
+            }
+        },
+        {
+            "data": {
+                "seatInfo": "sync:p_user.users[seat=4]"
+            },
+            "child": [
+                {
+                    "data": [],
+                    "___labelComponent": "",
+                    "name": "label",
+                    "id": "",
+                    "desc": "",
+                    "prop": {
+                        "text": "",
+                        "textSize": 0,
+                        "gravity": "0",
+                        "textColor": {
+                            "color": "#000000",
+                            "___color": ""
+                        },
+                        "layout": {
+                            "l": 0,
+                            "t": 0,
+                            "w": 0,
+                            "h": 0,
+                            "___layoutSupportAutoWidthHeight": ""
+                        }
+                    }
+                }
+            ],
+            "___seatViewComponent": "",
+            "name": "seatView",
+            "id": "zuowei_4",
+            "desc": "4号座位",
+            "prop": {
+                "seat": "4",
+                "states": {
+                    "empty": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "zuoweikongtupian_4",
+                                "desc": "4号座位为空图片",
+                                "prop": {
+                                    "src": "https://p4.ssl.qhimg.com/t017eb4b14bf6223d99.png",
+                                    "defaultSrc": "http://p1.qhimg.com/t0138b2dac3d69cb672.png",
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___labelComponent": "",
+                                "name": "label",
+                                "id": "kongzuoweizuoweihao_4",
+                                "desc": "4号位空座位的座位号",
+                                "prop": {
+                                    "text": "4号麦",
+                                    "textSize": "12",
+                                    "gravity": "0",
+                                    "textColor": {
+                                        "color": "#ffffff",
+                                        "___color": ""
+                                    },
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 64,
+                                        "h": 15,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "r": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "___round": ""
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "emptyView",
+                        "id": "zuoweikong_4",
+                        "desc": "4号座位为空",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "w": 73,
+                                "h": 85,
+                                "___layout": 0
+                            }
+                        }
+                    },
+                    "audio": {
+                        "child": [
+                            {
+                                "data": [],
+                                "___lottieComponent": "",
+                                "name": "audioAnim",
+                                "id": "huxideng_4",
+                                "desc": "4号座呼吸灯动画",
+                                "prop": {
+                                    "url": "https://static.s3.huajiao.com/Object.access/hj-video/MTYxNjA1NzE4OTYwNTY2Lmpzb24=",
+                                    "layout": {
+                                        "t": 0,
+                                        "w": 73,
+                                        "h": 73,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "data": {
+                                    "src": "sync:p_user.users[seat=4].user.avatar"
+                                },
+                                "___imageComponent": "",
+                                "name": "image",
+                                "id": "touxiang_4",
+                                "desc": "4号位头像",
+                                "prop": {
+                                    "mode": "0",
+                                    "layout": {
+                                        "t": 13,
+                                        "w": 47,
+                                        "h": 47,
+                                        "___layout": 0,
+                                        "centerLand": 1
+                                    },
+                                    "round": {
+                                        "radius": "23.5",
+                                        "___round": ""
+                                    }
+                                }
+                            },
+                            {
+                                "name": "keyframePro",
+                                "desc": "4号座位麦序头像框",
+                                "id": "touxiangkuang_4",
+                                "prop": {
+                                    "layout": {
+                                        "w": 64,
+                                        "h": 64,
+                                        "t": 4,
+                                        "centerLand": 1
+                                    }
+                                },
+                                "data": {
+                                    "res": "sync:p_avatar_frame.avatar_frames[uid=$sync:p_user.users[seat=4].user.uid]"
+                                }
+                            },
+                            {
+                                "name": "image",
+                                "desc": "4号上麦动画",
+                                "id": "shangmaidonghua_4",
+                                "prop": {
+                                    "layout": {
+                                        "w": 73,
+                                        "h": 81,
+                                        "l": 0,
+                                        "t": 0
+                                    },
+                                    "src": ""
+                                },
+                                "data": {
+                                    "src": "sync:p_user.users[seat=4].user.equipments.activity.link_voice.url_animation"
+                                }
+                            },
+                            {
+                                "data": [],
+                                "___muteButtonComponent": "",
+                                "name": "muteButton",
+                                "id": "jingyinanniu_4",
+                                "desc": "4号座位静音按钮",
+                                "prop": {
+                                    "layout": {
+                                        "l": 51,
+                                        "t": 36,
+                                        "w": 10,
+                                        "h": 10,
+                                        "___layout": 0
+                                    },
+                                    "onSrc": "https://p5.ssl.qhimg.com/t01ba008db41b27cbca.png",
+                                    "offSrc": "https://p2.ssl.qhimg.com/t01bc751151e9f884fa.png"
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": {
+                                            "gender": "sync:p_user.users[seat=4].user.gender"
+                                        },
+                                        "___genderComponent": "",
+                                        "name": "genderView",
+                                        "id": "xingbie_4",
+                                        "desc": "4号座位性别",
+                                        "prop": {
+                                            "layout": {
+                                                "l": 0,
+                                                "t": 0,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            },
+                                            "genderUrl": {
+                                                "M": "https://p2.ssl.qhimg.com/t01fc4d1c7e32b46476.png",
+                                                "F": "https://p2.ssl.qhimg.com/t01fc4d1c7e32b46476.png",
+                                                "N": "https://p2.ssl.qhimg.com/t01fc4d1c7e32b46476.png"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_user.users[seat=4].user.nickname"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "nicheng_4",
+                                        "desc": "4号座昵称",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 14,
+                                                "t": 0,
+                                                "h": 15,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "widthAuto": 1,
+                                                "r": 0
+                                            },
+                                            "maxWidth": "55"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "xingbienicheng_4",
+                                "desc": "4号座位性别和昵称",
+                                "prop": {
+                                    "layout": {
+                                        "t": 64,
+                                        "h": 16,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1
+                                    }
+                                }
+                            },
+                            {
+                                "child": [
+                                    {
+                                        "data": [],
+                                        "___imageComponent": "",
+                                        "name": "image",
+                                        "id": "shouyitubiao_4",
+                                        "desc": "4号位收入图标",
+                                        "prop": {
+                                            "src": "https://p5.ssl.qhimg.com/t016399991337152adf.png",
+                                            "mode": "0",
+                                            "layout": {
+                                                "l": 2,
+                                                "t": 3,
+                                                "w": 11,
+                                                "h": 11,
+                                                "___layout": 0,
+                                                "centerPort": 1
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "data": {
+                                            "text": "sync:p_t_score_monopoly.scores[uid=$sync:p_user.users[seat=4].user.uid].score"
+                                        },
+                                        "___labelComponent": "",
+                                        "name": "label",
+                                        "id": "shouyi_4",
+                                        "desc": "4号位收益",
+                                        "prop": {
+                                            "textSize": 10,
+                                            "gravity": "0",
+                                            "textColor": {
+                                                "color": "#ffffff",
+                                                "___color": ""
+                                            },
+                                            "layout": {
+                                                "l": 15,
+                                                "t": 0,
+                                                "h": 12,
+                                                "___layoutSupportAutoWidthHeight": 0,
+                                                "centerPort": 1,
+                                                "widthAuto": 1,
+                                                "r": 3
+                                            },
+                                            "maxWidth": 60,
+                                            "format": "1",
+                                            "fontName": "cyrillic"
+                                        }
+                                    }
+                                ],
+                                "___viewComponentWithoutSeat": "",
+                                "name": "view",
+                                "id": "shouru_4",
+                                "desc": "4号位收入图标加收入",
+                                "prop": {
+                                    "layout": {
+                                        "l": 0,
+                                        "t": 48,
+                                        "h": 12,
+                                        "___layoutSupportAutoWidthHeight": 0,
+                                        "widthAuto": 1,
+                                        "centerLand": 1,
+                                        "r": 0
+                                    },
+                                    "round": {
+                                        "radius": 6,
+                                        "___round": ""
+                                    },
+                                    "bgColor": {
+                                        "color": "#000000",
+                                        "alpha": 0.3
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "audioView",
+                        "id": "yinpinmoshi_4",
+                        "desc": "4号位音频模式",
+                        "prop": {
+                            "layout": {
+                                "l": 0,
+                                "t": 0,
+                                "___layout": 0,
+                                "r": 0,
+                                "b": 0
+                            }
+                        }
+                    }
+                },
+                "layout": {
+                    "l": 282,
+                    "t": 330,
+                    "w": 73,
+                    "h": 85,
+                    "___layout": 0
+                },
+                "round": {
+                    "radius": 0,
+                    "___round": ""
+                },
+                "video": "4",
+                "asHost": "0",
+                "asGuest": "1"
+            },
+            "emoticon": {
+                "w": "60",
+                "l": "6",
+                "t": "5"
+            }
+        },
+        {
+            "child": [
+                {
+                    "___labelComponent": "",
+                    "name": "image",
+                    "id": "d_touxiang",
+                    "desc": "特定位头像",
+                    "prop": {
+                        "layout": {
+                            "l": 0,
+                            "t": 7,
+                            "w": 48,
+                            "h": 48,
+                            "___layoutSupportAutoWidthHeight": 0,
+                            "centerLand": 1
+                        },
+                        "round": {
+                            "radius": "24",
+                            "___round": ""
+                        }
+                    },
+                    "data": []
+                },
+                {
+                    "___imageComponent": "",
+                    "name": "image",
+                    "id": "d_tupian",
+                    "desc": "特定位图片",
+                    "prop": {
+                        "src": "https://p1.ssl.qhimg.com/t0141aee685a8d27f2c.png",
+                        "layout": {
+                            "l": 0,
+                            "t": 0,
+                            "w": 64,
+                            "h": 64,
+                            "___layout": 0,
+                            "centerLand": 1
+                        }
+                    },
+                    "data": []
+                },
+                {
+                    "___labelComponent": "",
+                    "name": "label",
+                    "id": "d_nicheng",
+                    "desc": "特定位昵称",
+                    "prop": {
+                        "textSize": 10,
+                        "gravity": "2",
+                        "textColor": {
+                            "color": "#ffffff",
+                            "___color": "",
+                            "alpha": 1
+                        },
+                        "layout": {
+                            "t": 59,
+                            "w": 54,
+                            "___layoutSupportAutoWidthHeight": 0,
+                            "centerLand": 1,
+                            "h": 13
+                        },
+                        "maxWidth": "54",
+                        "text": "申请加入"
+                    },
+                    "data": []
+                }
+            ],
+            "___viewComponent": "",
+            "name": "view",
+            "id": "tedingwei_1",
+            "desc": "特定位",
+            "prop": {
+                "layout": {
+                    "l": 287,
+                    "t": 70,
+                    "w": 68,
+                    "h": 80,
+                    "___layoutSupportAutoWidthHeight": 0
+                },
+                "isDispatchOnClickEvent": true
+            }
+        }
+    ],
+    "setting": {
+        "contentHeight": 425
+    },
+    "h5Config": "monopoly_5",
+    "bgLayout": {
+        "id": "background",
+        "name": "bgLayout",
+        "prop": {
+            "layout": {
+                "l": 0,
+                "t": 0,
+                "w": 375,
+                "h": 812,
+                "___layout": null
+            }
+        },
+        "child": [
+            {
+                "___imageComponent": "",
+                "name": "image",
+                "id": "gameBG",
+                "desc": "游戏背景",
+                "prop": {
+                    "src": "https://p2.ssl.qhimg.com/t016331a996bc38b938.png",
+                    "mode": "0",
+                    "layout": {
+                        "l": 0,
+                        "t": 0,
+                        "w": 375,
+                        "h": "823",
+                        "___layout": null
+                    }
+                },
+                "data": []
+            }
+        ]
+    },
+    "h5Data": {
+        "specialSort": {
+            "arr": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        }
+    }
+}

@@ -1,6 +1,9 @@
 import { IRGBA } from "@/types/color";
+import { Direction, LinearGradientdirection } from "@layout/core/gradient";
+import Color from "@layout/utils/color";
+import Tippy from "@tippyjs/react";
 import React, { ForwardedRef, PropsWithChildren, forwardRef } from "react";
-import styled from "styled-components";
+import styled, { CSSProperties } from "styled-components";
 
 interface ColorWrapperProps {
     $width: number
@@ -59,6 +62,60 @@ export const ColorBlock = forwardRef(function ColorBlock(props: PropsWithChildre
                 >
                 { props.children }
             </ColorBox>
+        </ColorWrapper>
+    );
+})
+
+interface BackgroundBlockProps {
+    width?: number
+    height?: number
+    background: Color | LinearGradientdirection
+}
+export const BackgroundBlock = forwardRef(function BackgroundBolck(props: PropsWithChildren<BackgroundBlockProps>, ref: ForwardedRef<HTMLDivElement>) {
+    const { width = 16, height = 16, background} = props;
+    const style: CSSProperties = {}
+    if (background instanceof Color) {
+        const rgba = background.rgba;
+        style['backgroundColor'] = `rgba(
+            ${rgba.r},
+            ${rgba.g},
+            ${rgba.b},
+            ${rgba.a}
+        )`
+    }
+    if (background instanceof LinearGradientdirection) {
+        const dir = background.direction;
+        let gatherColors = ''
+        background.colors.forEach((color, index) => {
+            const {r, g, b, a} = color.rgba;
+            gatherColors += `rgba(${r}, ${g}, ${b}, ${a})`
+            if (index !== background.colors.length - 1) {
+                gatherColors += ', '
+            }
+        })
+        if (dir === Direction.toRight) {
+            style['background'] = `
+                linear-gradient(to right, ${gatherColors})
+            `
+        } else {
+            style['background'] = `
+                linear-gradient(to bottom, ${gatherColors})
+            `
+        }
+    }
+
+
+    return (
+        <ColorWrapper
+            ref={ ref }
+            $width={ width }
+            $height={ height }
+            >
+                <ColorBox
+                    style={ style }
+                    >
+                    { props.children }
+                </ColorBox>
         </ColorWrapper>
     );
 })

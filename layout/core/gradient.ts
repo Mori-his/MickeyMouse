@@ -1,3 +1,4 @@
+import Color from "@layout/utils/color";
 import { Alignment } from "./alignment";
 import { assert } from "./assert";
 
@@ -26,7 +27,7 @@ export abstract class Gradient {
      * @param colors 颜色列表
      */
     constructor(
-        public colors: Array<string>,
+        public colors: Array<Color>,
         public stops?: Array<number>,
     ) {}
 
@@ -35,7 +36,7 @@ export abstract class Gradient {
             return this.stops!;
         assert(this.colors.length >= 2, 'colors list must have at least two colors');
         const separation = 1.0 / (this.colors.length - 1);
-        return this.colors.map((color: string, index: number) => index * separation)
+        return this.colors.map((color: Color, index: number) => index * separation)
     }
 }
 
@@ -46,8 +47,8 @@ export class LinearGradient extends Gradient {
     constructor(
         public begin: Alignment = Alignment.centerLeft,
         public end: Alignment = Alignment.centerRight,
-        public colors: Array<string>,
-        public stops: Array<number>,
+        public colors: Array<Color>,
+        public stops?: Array<number>,
         public tileMode: TileMode = TileMode.clamp
     ) {
         super(colors, stops);
@@ -64,7 +65,7 @@ export class LinearGradientdirection extends Gradient {
 
     constructor(
         public direction: Direction = Direction.toRight,
-        public colors: Array<string>,
+        public colors: Array<Color>,
         public stops?: Array<number>
     ){
         super(colors, stops);

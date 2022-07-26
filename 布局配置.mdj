@@ -17,7 +17,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Main",
+					"name": "Layout",
 					"defaultDiagram": true,
 					"ownedViews": [
 						{
@@ -4835,6 +4835,24 @@
 							}
 						}
 					]
+				}
+			]
+		},
+		{
+			"_type": "UMLModel",
+			"_id": "AAAAAAF//Oko8Scfe4o=",
+			"_parent": {
+				"$ref": "AAAAAAFF+h6SjaM2Hec="
+			},
+			"name": "Menu",
+			"ownedElements": [
+				{
+					"_type": "UMLClassDiagram",
+					"_id": "AAAAAAF//Oko9CcgnZs=",
+					"_parent": {
+						"$ref": "AAAAAAF//Oko8Scfe4o="
+					},
+					"name": "ClassDiagram1"
 				}
 			]
 		}

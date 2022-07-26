@@ -24,15 +24,21 @@ export function ContainerParentDataMixin<ChildType extends BasicNode>(Base: Clas
     }
     return _ContainerParentDataMixin
 }
-export type ContainerParentDataMixin<ChildType extends BasicNode> = {
+export type ContainerParentDataMixin<ChildType extends BasicNode = BasicNode> = {
     previousSibling?: ChildType;
     nextSibling?: ChildType;
     detach(): void
 }
 
-type BasicNodeVisitor<T extends BasicNode> = (child: T, index: number) => void
+type BasicNodeVisitor<T extends BasicNode, P = void> = (child: T, index: number) => P
 
-export default class BasicNode extends AbstractNode {
+export interface IBasicNode extends AbstractNode {
+    parentData: ParentData | null
+    setupParentData(child: IBasicNode): void
+    visitChildren(visitor: BasicNodeVisitor<BasicNode>): void
+}
+
+export default class BasicNode extends AbstractNode implements IBasicNode {
 
     parentData: ParentData | null = null;
 
@@ -42,8 +48,8 @@ export default class BasicNode extends AbstractNode {
     }
 
     /**
-     * 
-     * @param child 
+     *
+     * @param child
      * @override
      */
     adoptChild(child: BasicNode) {
@@ -51,7 +57,11 @@ export default class BasicNode extends AbstractNode {
         this.setupParentData(child);
         super.adoptChild(child);
     }
-
+    /**
+     *
+     * @param child
+     * @override
+     */
     dropChild(child: BasicNode) {
         assert(child);
         assert(child.parentData);
@@ -65,28 +75,38 @@ export default class BasicNode extends AbstractNode {
 }
 
 
-
+export interface  IContainerNodeMixin<ChildType extends BasicNode> extends AbstractNode {
+    root: ChildType
+    insert(child: ChildType, after?: ChildType) : void
+    add(child: ChildType): void
+    addAll(children: ChildType[]): void
+    remove(child: ChildType): void
+    removeAll(): void
+    childBefore(child: ChildType): ChildType | undefined
+    childAfter(child: ChildType): ChildType | undefined
+    setChildCount(count: number): void
+    move(child: ChildType, after?: ChildType): void
+    visitChildren(visitor: BasicNodeVisitor<ChildType>): void
+    map<P>(visitor: BasicNodeVisitor<ChildType, P>): void
+}
 
 
 /**
  * 混入方法，只能用于混入[BasicNode]及它的派生类
  * @param TargetClass 继承自BasicNode的对象
- * @returns 
+ * @returns
  */
 export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType extends ContainerParentDataMixin<ChildType>>(
     TargetClass: ClassType<BasicNode>
 ) {
-    abstract class _ContainerNodeMixin extends TargetClass {
-        constructor(...args: any[]) {
-            super(...args);
-        }
+    return class extends TargetClass implements IContainerNodeMixin<ChildType> {
 
         childCount: number = 0;
-        
+
         firstChild?: ChildType;
 
         lastChild?: ChildType;
-    
+
         /**
          * 测试头部节点是否和比较的节点相等
          * @param child 当前child
@@ -117,7 +137,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             }
             return child === equals;
         }
-        
+
         /**
          * 插入子节点
          * @param child 要插入的节点
@@ -170,7 +190,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
                 }
             }
         }
-        
+
         /**
          * 插入子节点
          * @param child 要插入的节点
@@ -207,7 +227,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
          * 删除指定节点
          * @param child 要删除的子节点
          */
-        private _removeFromChildList(child: ChildType) {
+        protected _removeFromChildList(child: ChildType) {
             const childParentData: ParentDataType = child.parentData! as ParentDataType;
             assert(this._debugUltimatePreviousSiblingOf(child, this.firstChild));
             assert(this._debugUltimateNextSiblingOf(child, this.lastChild));
@@ -286,8 +306,6 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
             // 这里要有个钩子
         }
 
-        abstract strideMove(widget: ChildType, after?: ChildType): void
-
         /**
          * 附加到目标
          * @param owner 附加到此目标
@@ -319,6 +337,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
 
         /**
          * 重新计算所有子节点的[depth]深度
+         * @override
          */
         redepthChildren() {
             let child: ChildType = this.firstChild!;
@@ -343,10 +362,24 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
                 index++;
             }
         }
+
+        map<T>(visitor: BasicNodeVisitor<ChildType, T>) {
+            let child: ChildType = this.firstChild!;
+            let index = 0;
+            let result: Array<T> = [];
+            while(child) {
+                result.push((() => visitor(child, index))());
+                const childParentData: ParentDataType = child.parentData! as ParentDataType;
+                child = childParentData.nextSibling!;
+                index++;
+            }
+            return result;
+        }
+
         /**
          * 获取指定节点的上一个节点
          * @param child 指定节点
-         * @returns 
+         * @returns
          */
         childBefore(child: ChildType): ChildType | undefined {
             assert(child);
@@ -357,7 +390,7 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
         /**
          * 获取指定节点的下一个节点
          * @param child 指定节点
-         * @returns 
+         * @returns
          */
         childAfter(child: ChildType): ChildType | undefined {
             assert(child);
@@ -369,8 +402,15 @@ export function ContainerNodeMixin<ChildType extends BasicNode, ParentDataType e
         setChildCount(count: number) {
             this.childCount = count;
         }
+
+        get root(): ChildType {
+            let parent = this.parent;
+            while(parent && parent.parent && parent.parent !== this.owner) {
+                parent = parent.parent;
+            }
+            return (parent || this) as ChildType;
+        }
     }
-    return _ContainerNodeMixin;
 }
 
 // export abstract class MultiChild {
