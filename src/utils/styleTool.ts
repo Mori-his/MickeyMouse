@@ -63,11 +63,11 @@ export function getParentScrollEl(element: HTMLElement) {
 
 /**
  * 简单慢速滚动指定滚动条位置
- * @param {Number}} value 要移动的目标值
- * @param {String}} direction 方向,默认: scrollY, [scrollY, scrollX, scrollTop, scrollLeft]
+ * @param  value - 要移动的目标值
+ * @param  direction - 方向,默认: scrollY, [scrollY, scrollX, scrollTop, scrollLeft]
  * scrollTop|scrollLeft是针对HTMLElement的
- * @param {Element|Window} target 目标元素，默认为window
- * @param {Number} speed 速率,默认:5
+ * @param target - 目标元素，默认为window
+ * @param speed - 速率,默认:5
  * @returns Promise
  */
  export function toScroll(

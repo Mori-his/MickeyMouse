@@ -7,6 +7,8 @@ export enum ShortcutsObserverType {
     CTRL_X = 'ctrl+x',
     CTRL_V = 'ctrl+v',
     DELETE = 'delete',
+    ARROWDOWN = 'down',
+    ARROWUP = 'up'
 }
 
 export type IShortcuts = {
@@ -95,7 +97,9 @@ export class ShortcutsObserver extends ShortcutsEvent {
                 [ShortcutsObserverType.CTRL_C]: '⌘C',
                 [ShortcutsObserverType.CTRL_X]: '⌘X',
                 [ShortcutsObserverType.CTRL_V]: '⌘V',
-                [ShortcutsObserverType.DELETE]: '',
+                [ShortcutsObserverType.DELETE]: '⌫',
+                [ShortcutsObserverType.ARROWDOWN]: '⌄',
+                [ShortcutsObserverType.ARROWUP]: '⌃'
             }
         }
         return {
@@ -103,6 +107,8 @@ export class ShortcutsObserver extends ShortcutsEvent {
             [ShortcutsObserverType.CTRL_X]: 'Ctrl+X',
             [ShortcutsObserverType.CTRL_V]: 'Ctrl+V',
             [ShortcutsObserverType.DELETE]: 'delete',
+            [ShortcutsObserverType.ARROWDOWN]: '⌄',
+            [ShortcutsObserverType.ARROWUP]: '⌃'
         }
     })()
 
@@ -120,7 +126,9 @@ export class ShortcutsObserver extends ShortcutsEvent {
     ];
     // 不需要组合的按键
     private _shortcuts = [
-        { key: 'delete', type: ShortcutsObserverType.DELETE}
+        { key: 'delete', type: ShortcutsObserverType.DELETE},
+        { key: 'ArrowDown', type: ShortcutsObserverType.ARROWDOWN},
+        { key: 'ArrowUp', type: ShortcutsObserverType.ARROWUP},
     ];
 
     private onKeyDown!: (event: Event) => void

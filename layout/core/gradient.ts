@@ -23,8 +23,8 @@ export enum TileMode {
 
 export abstract class Gradient {
     /**
-     * @todo 颜色列表设置为Color类来承载颜色
-     * @param colors 颜色列表
+     * 颜色列表设置为Color类来承载颜色
+     * @param colors - 颜色列表
      */
     constructor(
         public colors: Array<Color>,

@@ -47,6 +47,12 @@ export type Res = {
     animation: string
 }
 
+export interface UserAttr {
+    id: string | number
+    uid: string
+    pos: string
+}
+
 export type NodeProps = {
     layout: Partial<Layout>
     bgGradient: BgGradient
@@ -87,6 +93,25 @@ export type NodeProps = {
     relay:  string
     // agora_game
     usedBy: string
+    asHost: '0' | '1'
+    asGuest: '0' | '1'
+    userList: UserAttr[]
+    zoom: { to?: string }
+    bigger: number | string
+    zoomable: number | string
+    mute: number | string
+    // lyrics组件
+    lyrics: Object                          // 歌词数据
+    highlightTextColor: NodeColor           // 高亮歌词颜色
+    normalTextColor: NodeColor              // 普通歌词颜色
+    highlghtTextSize: number                // 高亮歌词字体大小，默认20
+    normalTextSize: number                  // 普通歌词字体大小，默认17
+    numberOfRows: number                    // 歌词行数，默认值为2，ios通过总高度除以行数计算行高度
+    contentSize: {
+        w: string | number,
+        h: string | number
+    }
+    stream: Object
 }
 
 export type TEmoticon = {
@@ -95,8 +120,19 @@ export type TEmoticon = {
     w: string | number
 }
 
+// RootSetting的类型定义
+export type TSetting = {
+    contentHeight: string | number
+    minMsgsViewHeight: string | number
+    layoutBySafeArea: string | number
+    chatAreaMarginTop?: string | number
+    canvasMargin?: string | number
+}
+
+
 export type Node = {
     id: string | number
+    ___imageComponent?: string | Object
     name: string
     prop: Partial<NodeProps>
     desc: string,
@@ -106,5 +142,6 @@ export type Node = {
     h5Config: string
     h5Data: Object
     data: { [key: string]: string}
+    setting: Partial<TSetting>
     emoticon?: Partial<TEmoticon>
 }

@@ -16,7 +16,19 @@ interface TreeItemWrapperProps {
 }
 
 const TreeItemHoverCss = css`
-    background-color: ${props => props.theme.assist};
+    background-color: ${props => props.theme.blue400};
+    .tree-shrink  {
+        flex-shrink: 0;
+    }
+    .tree-shrink .svg-fill {
+        fill: #fff;
+    }
+    .tree-item-name {
+        color: ${props => props.theme.lightText};
+    }
+`;
+const TreeItemActiveCss = css`
+    background-color: ${props => props.theme.blue700};
     .tree-shrink  {
         flex-shrink: 0;
     }
@@ -65,7 +77,7 @@ const TreeItemWrapper = styled.div<TreeItemWrapperProps>`
     border-radius: 8px;
     margin: 2px 0;
     background: ${props => props.theme.main};
-    ${props => props.active && TreeItemHoverCss};
+    ${props => props.active && TreeItemActiveCss};
     &:hover {
         ${props => !props.draging && TreeItemHoverCss};
     }
@@ -161,7 +173,7 @@ export const TreeItem = observer(function(props: TreeItemProps) {
         if (treeItemRef.current) {
             // 把当前widget和元素做一次绑定
             // 主要用于拖拽时方便获取到指定widget
-            ;(treeItemRef.current as HTMLWithWidgetAttr)[widgetAttrName] = widget;
+            (treeItemRef.current as HTMLWithWidgetAttr)[widgetAttrName] = widget;
             widget.__el = treeItemRef.current;
         }
     }, [widget]);

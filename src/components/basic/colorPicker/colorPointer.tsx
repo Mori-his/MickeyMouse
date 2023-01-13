@@ -85,10 +85,13 @@ export default class ColorPointer extends React.Component<ColorPointerProps<Reac
     }
     render() {
         const {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             ref,
             size = 12,
             isActive = false,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             onDragChange = () => {},
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             onMoveUp = () => {},
             ...remains
         } = this.props;

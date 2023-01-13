@@ -1,6 +1,6 @@
 import Color from "@layout/utils/color";
 import React, { useImperativeHandle, useRef } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
 
@@ -64,7 +64,7 @@ function ColorOpacity(
         width = 16,
         height = 160,
         pointerSize = 12,
-        onDragChange = () => {},
+        onDragChange = () => ({}),
         y: opacityY = 0
     } = props;
     const halfPointer = pointerSize / 2;
@@ -98,7 +98,7 @@ function ColorOpacity(
 
     /**
      * 更新透明度值
-     * @param value 通明度Y轴的值是加上指示器高度一半的值
+     * @param value - 通明度Y轴的值是加上指示器高度一半的值
      */
     const handleValueChange = function(value: number) {
         requestAnimationFrame(() => {
@@ -109,7 +109,7 @@ function ColorOpacity(
     useImperativeHandle(ref, () => ({
         /**
          * 设置透明度位置
-         * @param y 传入进来的是减去指示器高度的一半的值
+         * @param y - 传入进来的是减去指示器高度的一半的值
          */
         setOpacityY(y) {
             y = +y.toFixed(1);

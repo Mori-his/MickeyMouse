@@ -21,9 +21,16 @@ const LayoutTheme = {
     contrast: '#393e46',
     lightContrast: '#e2e2e2', 
     lightContrastText: '#5b5b5b',
-    white50: '#d8d8d8',
-    white40: '#a7a7a7',
     white30: '#7F7F7F',
+    white40: '#a7a7a7',
+    white50: '#d8d8d8',
+    blue: '#2196F3',
+    blue400: '#42A5F5',
+    blue700: '#1976D2',
+    blue800: '#1565C0',
+    blue900: '#0D47A1',
+    grey: '#757575',
+    grey900: '#212121',
     buttons: {
         primary: {
             color: '#fff',

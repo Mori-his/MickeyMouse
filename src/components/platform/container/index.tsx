@@ -6,6 +6,10 @@ import { CustomScrollbar } from "@styles/globals";
 import { modalControl, withModels } from "@components/hoc/modals";
 import { NewConfigModal } from "@components/hoc/modals/newConfig";
 import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import { LayoutConfig } from "@/types/platform/platform";
+import { api } from "@utils/axiosInstance";
+import { LoadingControl } from "@components/basic/common/loading/loading";
 
 
 const PlatformWrapper = styled.div`
@@ -14,7 +18,7 @@ const PlatformWrapper = styled.div`
 `;
 
 const PlatformMenu = styled.div`
-    width: 312px;
+    width: 224px;
     background-color: ${props => props.theme.main};
     overflow: auto;
     ${ CustomScrollbar }
@@ -34,12 +38,12 @@ const MenuItem = styled.div`
 `;
 
 type PlatformLogoProps = {
-    backgroundImage: String
+    backgroundImage: string
 }
 const PlatformLogo = styled.div<PlatformLogoProps>`
     margin: 0 8px 0 16px;   
-    width: 112px;
-    height: 104px;
+    width: 72px;
+    height: 64px;
     border-radius: 16px;
     ${props => `
         background: url(${props.backgroundImage});
@@ -83,16 +87,24 @@ const AddLayout = styled(PlatformSection)`
     :hover {
         transform: translate(-2px, -2px);
         box-shadow: 0px 2px 8px 0px ${props => props.theme.assist};
-        transition: all 1s ease-out;
+        transition: all .2s ease-out;
     }
 `;
 
-const LayoutItem = styled(PlatformSection)`
+const LayoutItemColors = [
+    '#4ef2c0', '#544EF2', '#f24eed',
+    '#edf24e', '#f2c94e', '#f24e8a',
+    '#f24e69', '#6ff24e', '#f27f4e'
+];
+interface LayoutItemProps {
+    itemColor: string
+}
+const LayoutItem = styled(PlatformSection)<LayoutItemProps>`
     background-color: ${props => props.theme.main};
     :hover {
         transform: translate(-2px, -2px);
-        box-shadow: 0px 2px 8px 0px #4ef2c0;
-        transition: all 1s ease-out;
+        box-shadow: 0px 2px 8px 0px ${props => props.itemColor};
+        transition: all .2s ease-out;
     }
     &:before {
         content: '';
@@ -101,7 +113,7 @@ const LayoutItem = styled(PlatformSection)`
         top: 0;
         width: 16px;
         height: 176px;
-        background: #4ef2c0;
+        background: ${props => props.itemColor};
     }
 `;
 
@@ -110,7 +122,7 @@ const LayoutTitle = styled.div`
 `;
 const LayoutDesc = styled.div`
     font-size: 14px;
-    color: #7f7f7f;
+    color: ${props => props.theme.white30};
 `;
 
 const LayoutOperate = styled.div`
@@ -123,50 +135,27 @@ const LayoutOperate = styled.div`
 
 function Container () {
     const [activeIndex, setActiveIndex] = useState<number>(0);
-    const [platformList, setPlatformList] = useState<any[]>([]);
     const container: any = useRef(null);
     const router = useRouter();
     useEffect(() => {
-        getPlatformList();
+        // getPlatformList();
         router.prefetch('/layout');
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const getPlatformList = () => {
-        const platformList = [{
-            id: 1,
-            name: '花椒直播',
-            img: 'https://p2.ssl.qhimg.com/t01bd8affce5ec65eba.png',
-            layouts: [{
-                id: 1,
-                name: '花椒直播布局名称',
-                desc: '布局介绍'
-            }, {
-                id: 2,
-                name: '花椒直播布局名称',
-                desc: '布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍'
-            }, {
-                id: 3,
-                name: '花椒直播布局名称',
-                desc: '布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍'
-            }]
-        }, {
-            id: 2,
-            name: '六间房',
-            img: 'https://p2.ssl.qhimg.com/t01bd8affce5ec65eba.png',
-            layouts: [{
-                id: 1,
-                name: '六间房布局名称',
-                desc: '布局介绍'
-            }, {
-                id: 2,
-                name: '六间房布局名称',
-                desc: '布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍布局介绍'
-            }]
-        }];
-        setPlatformList(platformList);
-    }
+    const { isLoading, error, data } = useQuery({
+        queryKey: ["layoutConfig"],
+        queryFn: () =>
+          api
+            .get("https://layout-api.test.huajiao.com/layoutConfig/getLayoutConfigList")
+            .then((res: any) => res.data),
+    });
+    
+    if (isLoading) return <>Loading...</>;
 
+    if (error) return <>An error has occurred</>;
+
+    const layoutConfig: Array<LayoutConfig> = data.layoutConfigList || [];
     const changePlatform = (index: number) => {
         setActiveIndex(index);
         container?.current?.scrollTo(0, 0)
@@ -176,14 +165,26 @@ function Container () {
         console.log('添加布局');
         modalControl.find(NewConfigModal)?.open({
             onConfirm(data) {
-                console.log(data);
+                const PlatformId = layoutConfig[activeIndex].platFormId;
+                const { name: layoutName, description: layoutDesc} = data;
+                api.post('https://layout-api.test.huajiao.com/layoutConfig/saveLayoutConfig', {
+                    data: {
+                        PlatformId,
+                        layoutName,
+                        layoutDesc,
+                        layoutData: '{}'
+                    }
+                })
             },
         })
     }
 
     const selectLayout = (id: number) => {
         console.log('进入布局', id);
-        router.push(`/layout?id=${id}`, )
+        const loading = LoadingControl.open();
+        router.push(`/layout?id=${id}`, ).finally(() => {
+            loading.close();
+        });
     }
 
     const copyLayout = (id: number) => {
@@ -198,12 +199,16 @@ function Container () {
         <PlatformWrapper>
             <PlatformMenu>
                 {
-                    platformList.map((i: any, index) => (
-                        <MenuItem className={activeIndex === index ? 'active' : ''} key={i.id} onClick={() => changePlatform(index)}>
+                    layoutConfig.map((layout: LayoutConfig, index: number) => (
+                        <MenuItem
+                            className={activeIndex === index ? 'active' : ''}
+                            key={layout.platFormId}
+                            onClick={() => changePlatform(index)}
+                            >
                             <PlatformLogo
-                                backgroundImage={"https://p2.ssl.qhimg.com/t01bd8affce5ec65eba.png"}
+                                backgroundImage={layout.platformIcon}
                                 />
-                            { i.name }
+                            { layout.platformName }
                         </MenuItem>
                     ))
                 }
@@ -221,10 +226,15 @@ function Container () {
                 </AddLayout>
 
                 {
-                    platformList[activeIndex]?.layouts.map((i: any) => (
-                        <LayoutItem key={i.id} onClick={() => selectLayout(i.id)}>
-                            <LayoutTitle>{ i.name }</LayoutTitle>
-                            <LayoutDesc>{ i.desc }</LayoutDesc>
+                    layoutConfig[activeIndex]?.layoutConfigList.map((item, index) => (
+                        <LayoutItem
+                            key={item.layoutId}
+                            itemColor={LayoutItemColors[index % LayoutItemColors.length]}
+                            onClick={() => selectLayout(item.layoutId)}
+                            title="点击进入布局配置页"
+                            >
+                            <LayoutTitle>{ item.layoutName }</LayoutTitle>
+                            <LayoutDesc>{ item.layoutDesc }</LayoutDesc>
                         
                             <LayoutOperate>
                                 <IconButton
@@ -234,7 +244,7 @@ function Container () {
                                     hoverBgColor="transparent"
                                     onClick={(event: Event) => {
                                         event.stopPropagation();
-                                        copyLayout(i.id);
+                                        copyLayout(item.layoutId);
                                     }}
                                     />
                                 <IconButton
@@ -248,7 +258,7 @@ function Container () {
                                             content: '确认要删除吗？'
                                         }).then((confirm) => {
                                             confirm.onClose();
-                                            deleteLayout(i.id);
+                                            deleteLayout(item.layoutId);
                                         })
                                     }}
                                     />

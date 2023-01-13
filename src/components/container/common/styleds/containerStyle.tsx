@@ -16,3 +16,18 @@ export const PaddingRL8 = styled.div`
 export const TextareaBox = styled.div`
     padding: 0 0 8px;
 `;
+
+export const FlexJustifyBetween = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+export const TextPanelItem = styled(FlexJustifyBetween)`
+    padding: 8px 0;
+`;
+
+export const InputBeforeSpan = styled.span`
+    flex-shrink: 0;
+    color: ${props => props.theme.lesserText};
+    margin: 0 8px;
+`;

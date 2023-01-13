@@ -123,9 +123,13 @@ export default observer(function ExteriorPanel() {
                             content="边框粗细"
                             >
                             <Input
+                                label="边框粗细"
+                                labelAnimation
                                 type="number"
                                 width={ 86 }
                                 center
+                                select
+                                auto
                                 placeholder="边框粗细"
                                 onChange={ (event: React.ChangeEvent<HTMLInputElement>) => handleBorderWidthChange(event) }
                                 value={ currWidget.border.bottom.width }

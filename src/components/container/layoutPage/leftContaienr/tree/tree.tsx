@@ -258,8 +258,8 @@ export const TreeBox = React.memo(observer(function TreeBox(props: TreeProps) {
 
 // /**
 //  * 组合节点
-//  * @param child 子节点
-//  * @param depth 深度
+//  * @param child - 子节点
+//  * @param depth - 深度
 //  * @description 组合节点的职责是只有深度递归组合节点，和组合结点综合处理
 //  * @returns 
 //  */

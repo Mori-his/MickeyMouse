@@ -1,14 +1,15 @@
 import Input from "@components/basic/form/input/input";
 import { PureIconButton } from "@components/basic/iconButton";
 import LightTippy from "@components/basic/toolTip/lightTippy";
-import Title, { TitleCollapse } from "@components/container/common/title";
+import { TitleCollapse } from "@components/container/common/title";
 import ownerCaretaker from "@models/owners";
-import { SeatVideoMode, SeatViewWidget, TSeatVideoMode, ValueLabel } from "@widgets/seatView";
+import { BIGGER, MuteMode, SeatVideoMode, SeatViewWidget, TSeatVideoMode, ValueLabel, ZOOMABLE } from "@widgets/seatView";
 import { observer } from "mobx-react";
 import styled from "styled-components";
 import Select, { GroupBase, mergeStyles, StylesConfig } from "react-select";
 import { selectStyle } from "@styles/globals";
 import { selectCustomTheme } from "@styles/layout.theme";
+import { Textarea } from "@components/basic/form/textarea";
 
 
 const TitleWrapper = styled.div`
@@ -32,6 +33,12 @@ const SeatViewWrapper = styled.div`
     cursor: pointer;
 `;
 
+// const SeatTestEmoticon = styled.span`
+//     flex-shrink: 0;
+//     color: #fff;
+//     margin-right: 4px;
+// `;
+
 const withSelectStyles: StylesConfig<any, false, GroupBase<any>> = mergeStyles(selectStyle, {
     control: (style) => ({
         ...style,
@@ -44,7 +51,7 @@ const withSelectStyles: StylesConfig<any, false, GroupBase<any>> = mergeStyles(s
     }),
     container: (style) => ({
         ...style,
-        width: '100%'
+        width: '100%',
     }),
 });
 
@@ -54,8 +61,35 @@ export const SeatViewRender = observer(function() {
     const currWidget = ownerCaretaker.currOwner.currWidget as SeatViewWidget;
     
     const options: ValueLabel[] = [];
-    for (let key in SeatVideoMode) {
+    const zoombleds = [
+        { value: ZOOMABLE.NO, label: '否', },
+        { value: ZOOMABLE.YES, label: '是' }
+    ];
+    const biggers = [
+        { value: BIGGER.NO, label: '否' },
+        { value: BIGGER.YES, label: '是' }
+    ]
+    for (const key in SeatVideoMode) {
         options.push(SeatVideoMode[key as unknown as keyof TSeatVideoMode])
+    }
+
+    const testEmoticonPosition = function() {
+        const parent = document.querySelector(`[pid="${currWidget.id}"]`);
+        if (!parent) return;
+        const img: any = document.createElement('span');
+        img.style = `
+            position: absolute;
+            width: ${currWidget.emoticon.width}px;
+            height: ${currWidget.emoticon.width}px;
+            top: ${currWidget.emoticon.top}px;
+            left: ${currWidget.emoticon.left}px;
+            background-image: url(https://image.huajiao.com/4fafd8c2dfbce6dcbd8b38435a0f76df.jpg);
+            background-size: auto ${currWidget.emoticon.width}px ;
+        `;
+        parent.appendChild(img);
+        setTimeout(() => {
+            img.remove();
+        }, 2000);
     }
 
     return (
@@ -69,7 +103,67 @@ export const SeatViewRender = observer(function() {
                         options={ options }
                         styles={ withSelectStyles }
                         theme={ selectCustomTheme }
-                        onChange={ (option) => (console.log(option), currWidget.setVideoMode(option.value))}
+                        onChange={ (option) => currWidget.setVideoMode(option.value) }
+                        />
+                </div>
+            </TitleCollapse>
+
+            <TitleCollapse
+                title="静音模式模式"
+                >
+                <div className="padding16">
+                    <Select
+                        value={ MuteMode.find(option => option.value === currWidget.mute) }
+                        options={ MuteMode }
+                        styles={ withSelectStyles }
+                        theme={ selectCustomTheme }
+                        onChange={ (option) => currWidget.setMute(option.value) }
+                        />
+                </div>
+            </TitleCollapse>
+            <TitleCollapse
+                title="是否支持缩放,与[缩放配置]配合"
+                >
+                <LightTippy
+                    content="用于告知客户端提供操作入口"
+                    >
+                    <div className="padding16">
+                        <Select
+                            value={ zoombleds.find(option => option.value === currWidget.zoomable) }
+                            options={ zoombleds }
+                            styles={ withSelectStyles }
+                            theme={ selectCustomTheme }
+                            onChange={ (option) => currWidget.setZoomable(option.value) }
+                            />
+                    </div>
+                </LightTippy>
+            </TitleCollapse>
+            <TitleCollapse
+                title="缩放配置"
+                >
+                <LightTippy
+                    content="如果配置了支持缩放，则必须配置如下内容.如果当前为大窗，则此处填写的就是切换至小窗的布局。反之亦然"
+                    >
+                    <div className="padding16">
+                        <Textarea
+                            label="缩放后的标识"
+                            placeholder="请输入缩放后的标识"
+                            value={ currWidget.zoom.to }
+                            onChange={ (event) => currWidget.setZoom({to: event.target.value})}
+                            />
+                    </div>
+                </LightTippy>
+            </TitleCollapse>
+            <TitleCollapse
+                title="当前是否为放大的窗口"
+                >
+                <div className="padding16">
+                    <Select
+                        value={ biggers.find(option => option.value === currWidget.bigger) }
+                        options={ biggers }
+                        styles={ withSelectStyles }
+                        theme={ selectCustomTheme }
+                        onChange={ (option) => currWidget.setBigger(option.value) }
                         />
                 </div>
             </TitleCollapse>
@@ -85,15 +179,25 @@ export const SeatViewRender = observer(function() {
                             />
                     </TitleWrapper>
                 }
+                actions={
+                    <PureIconButton
+                        $title="表情定位测试"
+                        icon='position'
+                        onClick={ () => testEmoticonPosition() }
+                        />
+                }
                 >
                 <InputWrapper>
                     <LightTippy
                         content="表情大小"
                         >
                         <Input
+                            label="大小"
+                            labelAnimation
                             type="number"
                             center
-                            placeholder="大小"
+                            select
+                            auto
                             width={ inputWidth }
                             value={ currWidget.emoticon.width }
                             onChange={ (event) => { currWidget.emoticon.setWidth(event.target.value || '')}}
@@ -103,8 +207,12 @@ export const SeatViewRender = observer(function() {
                         content="表情居左位置"
                         >
                         <Input
+                            label="居左"
+                            labelAnimation
                             type="number"
                             center
+                            select
+                            auto
                             placeholder="居左"
                             width={ inputWidth }
                             value={ currWidget.emoticon.left }
@@ -115,8 +223,12 @@ export const SeatViewRender = observer(function() {
                         content="表情居上位置"
                         >
                         <Input
+                            label="居上"
+                            labelAnimation
                             type="number"
                             center
+                            select
+                            auto
                             placeholder="居上"
                             width={ inputWidth }
                             value={ currWidget.emoticon.top }
@@ -133,8 +245,12 @@ export const SeatViewRender = observer(function() {
                         content="座位号"
                         >
                         <Input
+                            label="座位号"
+                            labelAnimation
                             type="number"
                             center
+                            select
+                            auto
                             placeholder="座位号"
                             width={ inputWidth }
                             value={ currWidget.seat }

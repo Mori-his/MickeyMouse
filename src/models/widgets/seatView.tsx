@@ -115,23 +115,70 @@ export const SeatVideoMode: TSeatVideoMode = {
     }
 }
 
+// 是否可以缩放
+export enum ZOOMABLE {
+    // 禁止缩放
+    NO = 0,
+    // 可缩放
+    YES = 1,
+}
+// 窗口是否可放大
+export enum BIGGER {
+    // 不可以放大窗口
+    NO = 0,
+    // 可以放大窗口
+    YES = 1,
+}
+
+export type TZoom = {
+    to: string
+}
+
+export enum EMUTE {
+    NOT_MUTE = 0,
+    ME_MUTE = 1,
+    MANAGE_MUTE = 2,
+}
+
+export const MuteMode = [
+    {
+        value: EMUTE.NOT_MUTE,
+        label: '效果：不静音'
+    },
+    {
+        value: EMUTE.ME_MUTE,
+        label: '效果：自己关闭'
+    },
+    {
+        value: EMUTE.MANAGE_MUTE,
+        label: '效果：被管理员关闭'
+    },
+]
+
 
 export interface SeatViewWidgetOptions extends WidgetOptions{
     fillet?: BorderRadius
     border?: Border
+    activeBorder?: boolean
     background?: Color | LinearGradientdirection
     emoticon?: Emoticon
     seat?: number | string
     asHost?: boolean
     asGuest: boolean
     videoMode?: VideoMode
+    mute?: EMUTE
+    zoomable?: ZOOMABLE
+    bigger?: BIGGER
+    zoom?: TZoom
 }
 
+
+
 /**
- * 座位控件
- * 1、创建座位控件时要自动添加一个空座位
- * 2、空座位和音视频控件要放到prop->states->{[empty, audio, video]}
- * 3、除了[empty, audio, video]外都放在child里面
+ * 座位控件  
+ * 1、创建座位控件时要自动添加一个空座位  
+ * 2、空座位和音视频控件要放到prop->states->{[empty, audio, video]}  
+ * 3、除了[empty, audio, video]外都放在child里面  
  */
 @widgetType('seatView', {icon: 'seat_text', label: '座位'})
 export class SeatViewWidget extends TreeWidget implements Exterior {
@@ -160,15 +207,42 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
     activeBackground: boolean;
     activeBorder: boolean;
 
+    // 默认可缩放
+    zoomable!: ZOOMABLE
+    // 当前是否为放大窗口
+    bigger!: BIGGER
+
+    // 如果能缩放  缩放后要跳到哪个布局标识里  to: 布局标识
+    zoom: TZoom;
+
+    mute!: EMUTE
+
+    // TODO
+    // 流信息设置
+    // "stream": {
+    //     "width": 504,
+    //     "height": 896,
+    //     "fps": 15,
+    //     "rate": 800,
+    //     "___stream": ""
+    // },
+
     constructor({
         seat = '',
         asHost = false,
         asGuest = false,
         fillet = new BorderRadius({}),
         border,
+        activeBorder,
         background,
         emoticon,
         videoMode,
+        mute = EMUTE.ME_MUTE,
+        zoomable = ZOOMABLE.YES,
+        bigger = BIGGER.YES,
+        zoom = {
+            to: ''
+        },
         ...superOptions
     }: SeatViewWidgetOptions) {
         super(superOptions);
@@ -181,7 +255,6 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
             Border.fromBorderSide(
                 new BorderSide({
                     color: new Color(0, 0, 100, 1),
-                    width: 1
                 })
             )
         );
@@ -192,7 +265,11 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
         });
         this.activeEmoticon = Boolean(emoticon);
         this.activeBackground = Boolean(background);
-        this.activeBorder = Boolean(border);
+        this.activeBorder = Boolean(activeBorder);
+        this.mute = mute;
+        this.zoomable = zoomable;
+        this.bigger = bigger;
+        this.zoom = zoom;
         if (videoMode) {
             this.seatVideoMode = SeatVideoMode[videoMode];
         } else {
@@ -209,6 +286,10 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
             asGuest: observable,
             seatVideoMode: observable,
             activeEmoticon: observable,
+            mute: observable,
+            zoomable: observable,
+            bigger: observable,
+            zoom: observable,
             setBorder: action,
             setFillet: action,
             setAsHost: action,
@@ -218,7 +299,11 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
             setBackground: action,
             setActiveBackground: action,
             setActiveBorder: action,
-            setActiveEmoticon: action
+            setActiveEmoticon: action,
+            setMute: action,
+            setZoomable: action,
+            setBigger: action,
+            setZoom: action,
         });
         this.registerTracks();
     }
@@ -239,10 +324,18 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
             { read: () => this.activeBackground, write: (active: boolean) => this.setActiveBackground(active) },
             { read: () => this.activeBorder, write: (active: boolean) => this.setActiveBorder(active) },
             { read: () => this.activeEmoticon, write: (active: boolean) => this.setActiveEmoticon(active) },
+            { read: () => this.mute, write: (mute: EMUTE) => this.setMute(mute) },
+            { read: () => this.zoomable, write: (zoomable: ZOOMABLE) => this.setZoomable(zoomable) },
+            { read: () => this.zoom, write: (zoom: TZoom) => this.setZoom(zoom) },
+            { read: () => this.bigger, write: (bigger: BIGGER) => this.setBigger(bigger) },
         ]);
         // 注册表情的监听
         this.emoticon.registerTracks(this);
         super.registerTracks();
+    }
+
+    setZoomable(zoomable: ZOOMABLE): void {
+        this.zoomable = zoomable;
     }
 
     setActiveBackground(active: boolean): void {
@@ -254,7 +347,7 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
 
     /**
      * 设置当前座位视频模式
-     * @param videoMode 视频模式
+     * @param videoMode - 视频模式
      */
     setVideoMode(videoMode: VideoMode) {
         this.seatVideoMode = SeatVideoMode[videoMode];
@@ -262,7 +355,7 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
 
     /**
      * 设置是否是用户上麦
-     * @param asGuest 是否是用户上麦
+     * @param asGuest - 是否是用户上麦
      */
     setAsGuest(asGuest: boolean) {
         this.asGuest = asGuest;
@@ -281,8 +374,24 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
     }
 
     /**
+     * 设置音频状态
+     * @param mute - 是否静音
+     */
+    setMute(mute: EMUTE) {
+        this.mute = mute;
+    }
+
+    setBigger(bigger: BIGGER) {
+        this.bigger = bigger
+    }
+
+    setZoom(zoom: TZoom) {
+        this.zoom = zoom;
+    }
+
+    /**
      * 设置是否为主持人上麦
-     * @param asHost 是否是主持人上麦
+     * @param asHost - 是否是主持人上麦
      */
     setAsHost(asHost: boolean) {
         this.asHost = asHost;
@@ -290,7 +399,7 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
 
     /**
      * 设置当前座位号
-     * @param seatNumber 座位号
+     * @param seatNumber - 座位号
      */
     setSeat(seatNumber: number | string) {
         this.seat = seatNumber;
@@ -331,10 +440,7 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
         if (this.activeBackground) {
             background = backgroundToJson(this.background);
         }
-        let round: {round?: Partial<TRound>} = {};
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
-        }
+        const round: {round?: Partial<TRound>} = borderToJson(this.border, this.fillet, this.activeBorder);
         let emoticon: {emoticon?: Partial<TEmoticon>} = {};
         if (this.activeEmoticon) {
             emoticon = {
@@ -358,8 +464,11 @@ export class SeatViewWidget extends TreeWidget implements Exterior {
                 visible: this.visible,
                 states,
                 seat: this.seat,
-                asHost: this.asHost,
-                asGuest: this.asGuest,
+                asHost: Number(this.asHost).toString(),
+                asGuest: Number(this.asGuest).toString(),
+                zoomable: this.zoomable,
+                bigger: this.bigger,
+                zoom: this.zoom,
             },
             child: childrenJson,
             ...emoticon,

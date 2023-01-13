@@ -10,11 +10,11 @@ export class Size implements ISize {
     constructor(public width: number | string = '', public height: number | string = '') {}
 
     setWidth(width: number | string) {
-        this.width = width || '';
+        this.width = width;
     }
 
     setHeight(height: number | string) {
-        this.height = height || '';
+        this.height = height;
     }
 
     static zero() {
@@ -23,7 +23,7 @@ export class Size implements ISize {
 }
 
 export interface IAdaptiveSizeProps {
-    size: Size,
+    size: ISize,
     widthAdaptive?: boolean
     heightAdaptive?: boolean
 }

@@ -15,7 +15,7 @@ import { AudioAnimRender } from "@components/container/layoutPage/rightContainer
 
 
 export interface AudioAnimWidgetOptions extends WidgetOptions{
-    src?: string
+    url?: string
 }
 
 /**
@@ -28,11 +28,11 @@ export class AudioAnimWidget extends TreeWidget implements SourceSrc {
     src?: string
 
     constructor({
-        src,
+        url,
         ...superOptions
     }: AudioAnimWidgetOptions) {
         super(superOptions);
-        this.src = src;
+        this.src = url;
         makeObservableWithWidget(this, {
             src: observable,
             setSrc: action,

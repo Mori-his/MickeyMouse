@@ -1,7 +1,7 @@
-import Tippy from "@tippyjs/react";
 import React from "react";
 import styled from "styled-components";
 import { getIcon, IconWrapper, IIcons, SvgWrapperStyle } from "../svgs/icons";
+import LightTippy from "../toolTip/lightTippy";
 
 
 interface IconTabWrapperProps {
@@ -52,7 +52,7 @@ export default function IconTab(props: React.PropsWithChildren<IconTabProps>) {
     const { icon, active = false, barColor, onClick = () => {} } = props;
     const CurrIcon = getIcon(icon);
     return (
-        <Tippy
+        <LightTippy
             content={ props.title }
             disabled={ !props.title }
             >
@@ -75,6 +75,6 @@ export default function IconTab(props: React.PropsWithChildren<IconTabProps>) {
                     <CurrIcon />
                 </IconWrapper>
             </IconTabWrapper>
-        </Tippy>
+        </LightTippy>
     );
 }

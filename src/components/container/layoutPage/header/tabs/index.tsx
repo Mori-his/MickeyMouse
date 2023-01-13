@@ -1,7 +1,7 @@
 // import { observer } from 'mobx-react';
 import React, { ReactElement } from "react";
 import styled from "styled-components";
-import ownerCaretaker, { Owner } from "@models/owners";
+import ownerCaretaker from "@models/owners";
 import { CustomScrollbar, HiddenScrollbar } from "@styles/globals";
 import AppendButton from "@components/basic/appendButton";
 import Tab, { TabProps } from "@components/basic/tab";
@@ -12,6 +12,7 @@ import { initRootWidget } from "@models/factory/widgetBuild.factory";
 import { ConfirmControl } from "@components/basic/common/confirm/confirm";
 import LayoutTheme from "@styles/layout.theme";
 import { MessageControl } from "@components/basic/common";
+import { Owner } from "@models/owners/owner";
 
 /**
  * ===========================================================
@@ -51,7 +52,7 @@ export interface TagListProps {
     tabIndex: number
 }
 export const TagList = observer((props: React.PropsWithChildren<TagListProps>) => {
-    let tabs: ReactElement<TabProps>[] = [];
+    const tabs: ReactElement<TabProps>[] = [];
 
     // 勿删此操作，因Mobx依赖收集，如果没有observable属性的引用不会尝试更新此组件
     // 此组件使用的是访问者模式无侵入源代码，所以如果不增加此[childCount]会导致收集不到

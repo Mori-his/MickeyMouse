@@ -1,9 +1,10 @@
 import { MessageControl } from "@components/basic/common";
+import Input from "@components/basic/form/input/input";
 import { PureIconButton } from "@components/basic/iconButton";
 import ownerCaretaker from "@models/owners";
 import { deleteWidget, isDelete, isMoveDown, isMoveUp, moveDown, moveUp } from "@utils/tree.tool";
 import { observer } from "mobx-react";
-import { useContext } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 
 const ManageTreeWrapper = styled.div`
@@ -23,16 +24,27 @@ export const ManageTree = observer(function() {
 
     const theme = useContext(ThemeContext);
 
+    const [query, setQuery] = useState('');
+
     const setAllShrink = function(state: boolean) {
         const tree = ownerCaretaker.currOwner?.rollTree;
         if (!tree) return;
 
-        for( let key in tree) {
+        for(const key in tree) {
             const widget = tree[key];
             if (widget.childCount) {
                 widget.setShrink(state);
             }
         }
+    }
+    /**
+     * 搜索框被输入
+     * @param event - 按键Event
+     */
+    const handleQuery = function(event: ChangeEvent<HTMLInputElement>) {
+        console.log(event);
+        // event.target.value
+        // TODO 开发搜索组件功能
     }
 
     // const isMoveUpDisabled = !currWidget || !isMoveUp(currWidget);
@@ -83,6 +95,13 @@ export const ManageTree = observer(function() {
                 $title="删除"
                 disabled={ isDeleteDisabled }
                 onClick={ () => deleteWidget(currWidget!)}
+                />
+            <Input
+                id="query_widget"
+                type="text"
+                placeholder="请输入组件名称或者ID搜索"
+                defaultValue={ query }
+                onChange={ (event) => handleQuery(event) }
                 />
         </ManageTreeWrapper>
     );

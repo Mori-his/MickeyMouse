@@ -239,6 +239,7 @@ export const selectStyle: StylesConfig<any, false, GroupBase<any>> = {
     container: (style) => ({
         ...style,
         width: 232,
+        ...(CustomScrollbar as any),
     }),
     singleValue: (style) => ({
         ...style,
@@ -257,6 +258,7 @@ export const selectStyle: StylesConfig<any, false, GroupBase<any>> = {
     }),
     option: (style) => ({
         ...style,
+        fontSize: 14,
         ":hover": {
             backgroundColor: theme.assist,
         }
@@ -264,6 +266,9 @@ export const selectStyle: StylesConfig<any, false, GroupBase<any>> = {
     input: (style) => ({
         ...style,
         color: theme.lightText,
+    }),
+    menuList: (style) => ({
+        ...style,
     })
 };
 
@@ -325,6 +330,31 @@ export const messageTransition = (props: MessageTransitionProps) => css`
     &.message-transition-exit-active {
         transition: opacity ${props.duration}ms, transform ${props.duration}ms;
         transform: scale(0);
+        opacity: 0;
+    }
+`
+
+type OpacityTransitionProps = {
+    duration: number
+    fn?: string
+}
+export const opacityTransition = ({
+    duration,
+    fn = 'ease-in'
+}: OpacityTransitionProps) => css`
+    &.opacity-transition-enter {
+        opacity: 0;
+    }
+    &.opacity-transition-enter-active {
+        transition: opacity ${duration}ms ${fn};
+        opacity: 1;
+    }
+    &.opacity-transition-exit {
+        opacity: 1;
+        transform: scale(1);
+    }
+    &.opacity-transition-exit-active {
+        transition: opacity ${duration}ms ${fn};
         opacity: 0;
     }
 `

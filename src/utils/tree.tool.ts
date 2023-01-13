@@ -4,7 +4,7 @@ import { TreeWidget } from "@widgets/treeWidget"
 
 /**
  * 是否可以向下移动
- * @param widget 欲判断的节点
+ * @param widget - 欲判断的节点
  * @returns 是否可以向下移动
  */
 export const isMoveDown = function(widget: TreeWidget): boolean {
@@ -19,7 +19,7 @@ export const isMoveDown = function(widget: TreeWidget): boolean {
 
 /**
  * 是否可以被删除
- * @param widget 欲判断的节点
+ * @param widget - 欲判断的节点
  * @returns 是否可以被删除
  */
 export const isDelete = function(widget: TreeWidget): boolean {
@@ -28,7 +28,7 @@ export const isDelete = function(widget: TreeWidget): boolean {
 
 /**
  * 是否可以向上移动
- * @param widget 欲判断的节点
+ * @param widget - 欲判断的节点
  * @returns 是否可以向上移动
  */
 export const isMoveUp = function(widget: TreeWidget): boolean {
@@ -37,7 +37,7 @@ export const isMoveUp = function(widget: TreeWidget): boolean {
 
 /**
  * 是否可以向下插入节点
- * @param widget 欲判断的节点
+ * @param widget - 欲判断的节点
  * @returns 是否可以向下插入节点
  */
 export const isInsertNextNode = function(widget: TreeWidget) {
@@ -46,7 +46,7 @@ export const isInsertNextNode = function(widget: TreeWidget) {
 
 /**
  * 是否可以向上插入节点
- * @param widget 欲判断的节点
+ * @param widget - 欲判断的节点
  * @returns 是否可以向上插入节点
  */
  export const isInsertPrevNode = function(widget: TreeWidget) {
@@ -55,7 +55,7 @@ export const isInsertNextNode = function(widget: TreeWidget) {
 
 /**
  * 向上移动
- * @param widget 欲移动的节点
+ * @param widget - 欲移动的节点
  */
 export const moveUp = function(widget: TreeWidget) {
     if (widget?.parent) {
@@ -70,7 +70,7 @@ export const moveUp = function(widget: TreeWidget) {
 
 /**
  * 向下移动
- * @param widget 欲移动的节点
+ * @param widget - 欲移动的节点
  */
 export const moveDown = function(widget: TreeWidget) {
     if (widget?.parent) {

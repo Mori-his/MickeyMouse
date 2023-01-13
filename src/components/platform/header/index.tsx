@@ -5,6 +5,8 @@ import styled from "styled-components";
 import IconButton from "@components/basic/iconButton";
 import { ConfirmControl } from "@components/basic/common/confirm/confirm";
 import Image from "next/image";
+import Cookies from "js-cookie";
+import { clearAuth } from "@utils/auth";
 
 
 const HeaderWrapper = styled.div`
@@ -60,14 +62,14 @@ const ExitWrapper= styled.div`
 
 function Header() {
     const router = useRouter();
+    const name = Cookies.get('display');
 
     const handleLoginOut = () => {
         ConfirmControl.open({
             content: '确认要退出吗？'
         }).then((confirm) => {
             confirm.onClose();
-            Cookie.remove('token');
-            router.replace('/login');
+            clearAuth(router);
         });
     }
 
@@ -83,7 +85,7 @@ function Header() {
             </Logo>
             <AccountWrapper>
                 <Avator></Avator>
-                <UserName>111</UserName>
+                <UserName>{ name }</UserName>
                 <ExitWrapper onClick={handleLoginOut}>
                     <IconButton
                         icon="exit"

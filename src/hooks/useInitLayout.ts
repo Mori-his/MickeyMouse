@@ -1,6 +1,7 @@
 import { Node } from "@models/factory/types";
 import { widgetBuildBFS } from "@models/factory/widgetBuild.factory";
-import ownerCaretaker, { Owner } from "@models/owners";
+import ownerCaretaker from "@models/owners";
+import { Owner } from "@models/owners/owner";
 import { spy } from "@models/owners/spy";
 import { useEffect } from "react";
 
@@ -68,11 +69,12 @@ export const useInnitLayout = function() {
         } catch(err) {
             console.error(err);
         }
+
         window.onbeforeunload = function(event) {
             if (ownerCaretaker.childCount) {
                 window.localStorage.setItem("ownerCaretaker", JSON.stringify(ownerCaretaker.toJson()));
             }
-            return "确定要离开此页面吗?"
+            // return "确定要离开此页面吗?"
         }
     
         return () => {

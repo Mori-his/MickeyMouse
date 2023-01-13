@@ -1,10 +1,12 @@
 
+import { ChangeEvent, useRef } from 'react';
 import { observer } from 'mobx-react';
+import CreatableSelect from 'react-select/creatable';
+import { GroupBase, mergeStyles, SingleValue, StylesConfig } from 'react-select';
 import ownerCaretaker from '@models/owners';
 import LightTippy from '@components/basic/toolTip/lightTippy';
 import { Alignment, LabelViewWidget, TextFormat, TextOverflow } from '@widgets/label';
 import Input from '@components/basic/form/input/input';
-import { ChangeEvent, useRef } from 'react';
 import Tippy from '@tippyjs/react';
 import ColorPicker, { ColorPickerRef } from '@components/basic/colorPicker/colorPicker';
 import { ColorBlock, ColorWrapper } from '@components/basic/colorBlock';
@@ -12,7 +14,6 @@ import Color from '@layout/utils/color';
 import { IRGBA } from '@/types/color';
 import { IconsContainer } from '../../../common/styleds/containerStyle';
 import IconButton from '@components/basic/iconButton';
-import Select, { GroupBase, mergeStyles, SingleValue, StylesConfig } from 'react-select';
 import { selectStyle } from '@styles/globals';
 import { selectCustomTheme } from '@styles/layout.theme';
 
@@ -69,6 +70,8 @@ export const FontSize = observer(function FontSize(props: FontSizeProps) {
                 type="number"
                 width={ 72 }
                 center
+                select
+                auto
                 placeholder={ placeholder }
                 onChange={ (e) => handleFontSizeChange(e) }
                 value={ currWidget.fontSize }
@@ -105,7 +108,7 @@ export const SelectFontFamily = observer(function SelectFontFamily() {
     }
     
     return (
-        <Select
+        <CreatableSelect
             options={ options }
             value={ options.find(option => option.value === currWidget.fontFamily) }
             styles={ withSelectStyles }
@@ -120,7 +123,7 @@ export const SelectFontFamily = observer(function SelectFontFamily() {
 export interface FontColorProps {
 
 }
-export const FontColor = observer(function FontColor(props: FontColorProps) {
+export const FontColor = observer(function FontColor() {
     const currWidget = ownerCaretaker.currOwner.currWidget! as LabelViewWidget;
     
     const colorPicker = useRef<ColorPickerRef<HTMLDivElement>>(null);
@@ -216,6 +219,8 @@ export const FontMaxLine = observer(function FontMaxLine() {
                 type="number"
                 width={ 72 }
                 center
+                select
+                auto
                 placeholder="最大行数"
                 onChange={ (e) => handleMaxLineChange(e) }
                 value={ currWidget.maxLine }
@@ -240,6 +245,8 @@ export const FontMaxWidth = observer(function FontMaxWidth() {
                 type="number"
                 width={ 72 }
                 center
+                select
+                auto
                 placeholder="最大宽度"
                 onChange={ (e) => handleMaxWidthChange(e) }
                 value={ currWidget.maxWidth }

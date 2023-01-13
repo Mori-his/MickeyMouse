@@ -17,6 +17,7 @@ export interface BgLayoutWidgetOptions extends WidgetOptions{
     background?: Color | LinearGradientdirection
     fillet?: BorderRadius
     border?: Border
+    activeBorder?: boolean
 }
 
 @widgetType('bgLayout', { label: '背景布局', icon: 'background_text'})
@@ -37,6 +38,7 @@ export class BgLayoutWidget extends TreeWidget implements Exterior {
         fillet = new BorderRadius({}),
         background,
         border,
+        activeBorder,
         ...superOptions
     }: BgLayoutWidgetOptions) {
         super(superOptions);
@@ -46,12 +48,11 @@ export class BgLayoutWidget extends TreeWidget implements Exterior {
             Border.fromBorderSide(
                 new BorderSide({
                     color: new Color(0, 0, 100, 1),
-                    width: 1
                 })
             )
         );
         this.activeBackground = Boolean(background);
-        this.activeBorder = Boolean(border);
+        this.activeBorder = Boolean(activeBorder);
         makeObservableWithWidget(this, {
             fillet: observable,
             border: observable,
@@ -115,10 +116,11 @@ export class BgLayoutWidget extends TreeWidget implements Exterior {
         if (this.activeBackground) {
             background = backgroundToJson(this.background);
         }
-        let round: any = {}
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
-        }
+        let round: any = borderToJson(
+            this.border,
+            this.fillet,
+            this.activeBorder
+        );
 
         return {
             id: this.id,

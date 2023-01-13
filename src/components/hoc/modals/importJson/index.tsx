@@ -8,8 +8,11 @@ import { ImportJsonModal } from "@components/basic/jsonPanel/importJson.modal";
 export function ImportJSONModal(props: ModalHOCProps) {
     const {
         onClose = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onConfirm = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onCancel = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         children,
         in: isOpen = false,
         ...otherProps

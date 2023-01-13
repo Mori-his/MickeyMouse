@@ -39,7 +39,7 @@ export const TreeNode = observer(function(props: TreeNodeProps) {
     const shrinkSelfRef = useRef<HTMLDivElement | null>(null);
     const shrinkClearTime = useRef<NodeJS.Timeout | null>(null);
 
-    const updateShrink = useCallback(function() {
+    const updateShrinkAnima = function() {
         if (shrinkSelfRef.current && shrinkContainerRef.current) {
             clearTimeout(shrinkClearTime.current!);
             const height = shrinkSelfRef.current.clientHeight;
@@ -60,15 +60,27 @@ export const TreeNode = observer(function(props: TreeNodeProps) {
                 }, 300);
             }
         }
+    };
+
+    const initShrink = function() {
+        if (widget.shrink) {
+            if (shrinkContainerRef.current && widget.shrink) {
+                shrinkContainerRef.current.style.overflow = 'hidden';
+                shrinkContainerRef.current.style.height = '0';
+            }
+        } else if(shrinkContainerRef.current) {
+            shrinkContainerRef.current.style.overflow = 'visible';
+            shrinkContainerRef.current.style.height = 'auto';
+        }
+    }
+
+    useEffect(() => {
+        initShrink();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [widget.shrink]);
 
-
     useEffect(() => {
-        updateShrink();
-    }, [updateShrink, widget.shrink])
-
-    useEffect(() => {
-        updateShrink();
+        initShrink();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -94,7 +106,7 @@ export const TreeNode = observer(function(props: TreeNodeProps) {
                         ownerCaretaker.currOwner.selectedWidget(widget);
                     }
                 }}
-                onShrink={(shrink: boolean) => widget.setShrink(shrink)}
+                onShrink={(shrink: boolean) => (widget.setShrink(shrink), updateShrinkAnima())}
                 />
             <ShrinkContainer
                 ref={ shrinkContainerRef }

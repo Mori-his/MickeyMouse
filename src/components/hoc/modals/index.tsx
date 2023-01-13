@@ -42,11 +42,14 @@ export const modalControl = new ModalsControl();
 // ] 
 /**
  * 创建Modal操作
- * @param modals 弹框列表
- * @returns [
+ * @param modals - 弹框列表
+ * @returns
+ * ```json
+ * [
  *     {modalsIsShow: boolean[], modalsProps: ModalHOCProps[] },
  *     {setModalsIsShow: Dispatch<SetStateAction<boolean[]>>, setModalsProps: Dispatch<SetStateAction<ModalHOCProps[]>>}
  * ]
+ * ```
  */
 function useModals(modals: ComponentType<ModalHOCProps>[]) {
     const [modalsIsShow, setModalsIsShow] = useState<boolean[]>(new Array(modals.length).fill(false));

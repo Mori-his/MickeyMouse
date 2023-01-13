@@ -2,7 +2,7 @@ import { Border, BorderRadius } from "@layout/core/boxBorder";
 import { Direction, LinearGradientdirection } from "@layout/core/gradient";
 import { TreeWidget } from "@widgets/treeWidget";
 import Color from "@layout/utils/color";
-import { isNull, isUndefined, omitBy, result } from "lodash";
+import { isEmpty, isNull, isUndefined, omitBy, result } from "lodash";
 
 export function backgroundToJson(background: Color | LinearGradientdirection) {
     const result: any = {}
@@ -27,36 +27,72 @@ export function backgroundToJson(background: Color | LinearGradientdirection) {
     return result;
 }
 
-export function borderToJson(border: Border, fillet: BorderRadius) {
-    return {
-        round: omitBy({
-            borderWidth: border.bottom?.width,
-            color: border.bottom?.color.hex,
-            alpha: border.bottom?.color.a,
+export function borderToJson(border: Border, fillet: BorderRadius, activeBorder: boolean) {
+
+    const round: any = {
             radius: fillet.bottomLeft?.x,
-            borderColor: omitBy({
-                color: border.bottom?.color.hex,
-                alpha: border.bottom?.color.a
-            }, value => value === '' || isUndefined(value) || isNull(value))
+    };
+    if (activeBorder) {
+        round.borderColor = omitBy({
+            color: border.bottom?.color.hex,
+            alpha: border.bottom?.color.a
         }, value => value === '' || isUndefined(value) || isNull(value))
+        round.color = border.bottom?.color.hex;
+        round.alpha = border.bottom?.color.a;
+        round.borderWidth = border.bottom?.width;
     }
+    return {
+        round: omitBy(round, value => value === '' || isUndefined(value) || isNull(value)), 
+    };
 }
 
 export function layoutToJson(widget: TreeWidget) {
+    // l,r,t,b最少存在2个值，大于等于2个值的不处理
+    let l = parseInt(widget.position.left as string, 10);
+    let t = parseInt(widget.position.top as string, 10);
+    let r = parseInt(widget.position.right as string, 10);
+    let b = parseInt(widget.position.bottom as string, 10);
+    const w = parseInt(widget.size.width as string, 10);
+    const h =  parseInt(widget.size.height as string, 10);
+    const list = [l, t, r, b].filter(value => !isNaN(value))
+    const len = list.length;
+    switch(len) {
+        case 0:
+            l = 0;
+            t = 0;
+            break;
+        case 1:
+            if (isNaN(l)) {
+                l = 0;
+                break;
+            }
+            if (isNaN(t)) t = 0;
+            break;
+    }
+    if (widget.position.horizontal) {
+        // 如果水平居中被选中会和left、right产生互斥
+        l = NaN;
+        r = NaN;
+    }
+    if (widget.position.vertical) {
+        // 如果垂直居中被选中会和top、bottom产生互斥
+        t = NaN;
+        b - NaN;
+    }
+
     return omitBy({
-        l: widget.position.left,
-        r: widget.position.right,
-        t: widget.position.top,
-        b: widget.position.bottom,
-        w: widget.size.width,
-        h: widget.size.height,
+        // Position
+        l, r, t, b,
+        // size
+        w, h,
+        ___layout: 0,
         ...omitBy({ // 如果value === 0 是默认值则不输出
             widthAuto: Number(widget.size.widthAdaptive), // 宽度自适应
             heightAuto: Number(widget.size.heightAdaptive), // 高度自适应
             centerLand: Number(widget.position.horizontal), // 水平居中
             centerPort: Number(widget.position.vertical), // 垂直居中
         }, (value => value === 0))
-    }, value => value === '' || isUndefined(value) || isNull(value))
+    }, (value: number) => !isEmpty(value) || isNaN(value) || isUndefined(value) || isNull(value))
 }
 
 export function syncsToJson(widget: TreeWidget) {

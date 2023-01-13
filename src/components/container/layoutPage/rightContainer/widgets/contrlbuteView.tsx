@@ -4,6 +4,7 @@ import LightTippy from "@components/basic/toolTip/lightTippy";
 import { TitleCollapse } from "@components/container/common/title";
 import ownerCaretaker from "@models/owners";
 import { ContributeViewWidget } from "@widgets/contrlbuteView";
+import { observer } from "mobx-react";
 
 
 const InputWrapper = styled.div`
@@ -13,7 +14,7 @@ const InputWrapper = styled.div`
     color: ${props => props.theme.lesser};
 `;
 
-export const ContrlbuteViewRender = function() {
+export const ContrlbuteViewRender = observer(function() {
     const inputWidth = 72;
     const currWidget = ownerCaretaker.currOwner.currWidget as ContributeViewWidget;
 
@@ -26,9 +27,10 @@ export const ContrlbuteViewRender = function() {
                     content="粉丝宽度"
                     >
                     <Input
+                        label="宽度"
+                        labelAnimation
                         type="number"
                         center
-                        placeholder="宽度"
                         width={ inputWidth }
                         value={ currWidget.fansWidth }
                         onChange={ (event) => { currWidget.setFansWidth(event.target.value)}}
@@ -38,9 +40,10 @@ export const ContrlbuteViewRender = function() {
                     content="粉丝边框宽度"
                     >
                     <Input
+                        label="边框宽度"
+                        labelAnimation
                         type="number"
                         center
-                        placeholder="边框宽度"
                         width={ inputWidth }
                         value={ currWidget.fansBorderWidth }
                         onChange={ (event) => { currWidget.setFansBorderWidth(event.target.value)}}
@@ -50,6 +53,8 @@ export const ContrlbuteViewRender = function() {
                     content="粉丝边距"
                     >
                     <Input
+                        label="边距"
+                        labelAnimation
                         type="number"
                         center
                         placeholder="边距"
@@ -61,4 +66,4 @@ export const ContrlbuteViewRender = function() {
             </InputWrapper>
         </TitleCollapse>
     );
-}
+});

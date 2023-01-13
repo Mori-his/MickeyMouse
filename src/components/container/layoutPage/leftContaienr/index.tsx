@@ -19,7 +19,7 @@ import { CreateNode } from "@components/hoc/modals/createNode/createNode";
 import { ManageTree } from "./manageTree";
 
 
-let width: number = 296;
+const width: number = 296;
 
 const LeftFlexibleWrapper = styled.div`
     display: flex;

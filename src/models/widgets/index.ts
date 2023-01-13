@@ -19,5 +19,8 @@ export * from './videoView';
 export * from './view';
 export * from './media';
 export * from './audioContainer';
-export * from './audioAnimLive'
-export * from './container'
+export * from './audioAnimLive';
+export * from './container';
+export * from './userList';
+export * from './lyric';
+export * from './scroll';

@@ -1,8 +1,9 @@
+import * as mobx from "mobx";
 import { Border, BorderRadius, BorderSide } from "@layout/core/boxBorder"
 import { LinearGradientdirection } from "@layout/core/gradient"
 import { TreeWidget } from "@widgets/treeWidget";
 import Color from "@layout/utils/color"
-
+import { NoInfer } from "@/types/types";
 
 export enum IMAGE_FIT {
     COVER = 0, // 缩放后截取中间部分显示，不会变形，会有缺失，常用
@@ -41,4 +42,12 @@ export interface Effects extends SourceSrc, TreeWidget {
     setFillet(fillet: BorderRadius): void
     setBorder(side: BorderSide): void
     // setBorderColor(color: Color): void
+}
+
+
+/**
+ * 混入接口 - 必须实现registerObservable方法
+ */
+export interface MixinsObserve<T extends TreeWidget = TreeWidget, AdditionalKeys extends PropertyKey = never> {
+    registerObservable(): mobx.AnnotationsMap<T, NoInfer<AdditionalKeys>> | undefined,
 }

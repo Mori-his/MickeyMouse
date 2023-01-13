@@ -57,7 +57,7 @@ export class ObserveAdaptivePosition extends AdaptivePosition {
             { read: () => this.right, write: (right: number | string) => this.setRight(right) },
             { read: () => this.bottom, write: (bottom: number | string) => this.setBottom(bottom) },
             { read: () => this.left, write: (left: number | string) => this.setLeft(left) },
-            { read: () => this.horizontal, write: (horizontal: boolean) => this.setHorizontal(horizontal) },
+            { read: () => this.horizontal, write: (horizontal: boolean) =>  this.setHorizontal(horizontal) },
             { read: () => this.vertical, write: (vertical: boolean) => this.setVertical(vertical) },
         ]);
     }

@@ -31,7 +31,7 @@ export class AudioViewWidget extends TreeWidget {
     
     /**
      * 设置父节点
-     * @param parent 父节点
+     * @param parent - 父节点
      * @override
      */
     // setParent(parent: SeatViewWidget) {

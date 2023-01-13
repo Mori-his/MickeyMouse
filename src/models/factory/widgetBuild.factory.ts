@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { WidgetOptions } from "@layout/core/layout";
 import { TreeWidget } from "@widgets/treeWidget";
-import { Layout, Node, State } from './types';
+import { Layout, Node, NodeProps, State } from './types';
 import Color from "@layout/utils/color";
 import { Direction, LinearGradientdirection } from "@layout/core/gradient";
 import { Border, BorderRadius, BorderSide, Radius } from "@layout/core/boxBorder";
@@ -17,6 +17,11 @@ function presetValue<T = number>(value?: T): T | string {
     return '';
 }
 
+/**
+ * 设置{@link Position}属性
+ * @param layout - {@link Layout}结构体
+ * @returns 
+ */
 function setPosition(layout?: Partial<Layout>) {
     const _layout = {
         left: presetValue(layout?.l),
@@ -37,6 +42,11 @@ function setPosition(layout?: Partial<Layout>) {
     return position;
 }
 
+/**
+ * 设置大小以及自动大小
+ * @param layout - {@link Layout}
+ * @returns 
+ */
 function setSize(layout?: Partial<Layout>) {
     const _layout = {
         width: presetValue(layout?.w),
@@ -56,10 +66,9 @@ function setSize(layout?: Partial<Layout>) {
 }
 
 
-
 export function initializeWidgetParams(options: Partial<Node>) {
     
-    let params: WidgetOptions & {
+    const params: WidgetOptions & {
         [x: string]: any
     } = {
         id: options.id || nanoid(10),
@@ -70,8 +79,6 @@ export function initializeWidgetParams(options: Partial<Node>) {
         size: setSize(options.prop?.layout)
     };
 
-    
-    
     if (options.prop) {
         // 图片地址以及图片效果
         if (options.name === 'image') {
@@ -130,6 +137,7 @@ export function initializeWidgetParams(options: Partial<Node>) {
                 } = {
                     width: +round.borderWidth,
                 };
+                params.activeBorder = Boolean(round.borderColor);
                 if (round.borderColor) {
                     try {
                         const rgb = Color.hexToRGB(round.borderColor.color!);
@@ -199,26 +207,70 @@ export function initializeWidgetParams(options: Partial<Node>) {
             }
             (params as LabelWidgetOptions).alignment = alignment;
         }
-        // sync绑定
-        if (options.data) {
-            const syncs = [];
-            for (const key in options.data) {
-                syncs.push({
-                    key: key,
-                    value: options.data[key]
-                });
+        
+        // 性别
+        if (options.prop.genderUrl) {
+            const {F, M, N} = options.prop.genderUrl
+            params.femaleSrc = F;
+            params.manSrc = M;
+            params.unisexSrc = N;
+        }
+
+        
+        if (options.prop.userList) {
+            params.users = options.prop.userList;
+        }
+
+        // 歌词组件
+        if (options.prop.lyrics) {
+            params.lyrics = options.prop.lyrics
+        }
+        if (options.prop.highlightTextColor && options.prop.highlightTextColor.color) {
+            const textColor = options.prop.highlightTextColor;
+            const rgb = Color.hexToRGB(textColor.color as string);
+            if (typeof rgb !== 'string') {
+                const hsb = Color.rgbToHsb(rgb.r, rgb.g, rgb.b);
+                params.highlightTextColor = new Color(hsb.h, hsb.s, hsb.b, +textColor.alpha);
             }
-            params.syncs = syncs;
+        }
+        if (options.prop.normalTextColor && options.prop.normalTextColor.color) {
+            const textColor = options.prop.normalTextColor;
+            const rgb = Color.hexToRGB(textColor.color as string);
+            if (typeof rgb !== 'string') {
+                const hsb = Color.rgbToHsb(rgb.r, rgb.g, rgb.b);
+                params.normalTextColor = new Color(hsb.h, hsb.s, hsb.b, +textColor.alpha);
+            }
+        }
+        // root setting
+        params.contentHeight = options.setting?.contentHeight;
+        params.minMsgsViewHeight = options.setting?.minMsgsViewHeight;
+        params.chatAreaMarginTop = options.setting?.chatAreaMarginTop;
+        params.canvasMargin = options.setting?.canvasMargin;
+
+        params.highlghtTextSize = options.prop.highlghtTextSize;
+        params.normalTextSize = options.prop.normalTextSize;
+        params.numberOfRows = options.prop.numberOfRows;
+
+        // 座位配置相关
+        params.mute = options.prop.mute;
+        params.zoomable = options.prop.zoomable;
+        params.bigger = options.prop.bigger;
+        params.zoom = options.prop.zoom;
+        
+        params.stream = options.prop.stream;
+
+        // scroll 控件
+        params.contentSize = {
+            width: options.prop.contentSize?.w,
+            height: options.prop.contentSize?.h,
         }
 
-        if (options.emoticon) {
-            params.emoticon = new Emoticon({
-                width: options.emoticon.w || '',
-                left: options.emoticon.l || '',
-                top: options.emoticon.t || '',
-            });
-        }
-
+        // 是否是主持人上麦或者用户上麦
+        // asHost
+        // asGuest
+        params.asHost = options.prop.asHost === '1';
+        params.asGuest = options.prop.asGuest === '1';
+        params.url = options.prop.url;
         params.text = options.prop.text;
         params.fontSize = options.prop.textSize;
         params.fontFamily = options.prop.fontName;
@@ -232,6 +284,25 @@ export function initializeWidgetParams(options: Partial<Node>) {
         params.sn =  options.prop.sn;
         params.uid =  options.prop.uid;
         params.relay =  options.prop.relay;
+    }
+    // sync绑定
+    if (options.data) {
+        const syncs = [];
+        for (const key in options.data) {
+            syncs.push({
+                key: key,
+                value: options.data[key]
+            });
+        }
+        params.syncs = syncs;
+    }
+
+    if (options.emoticon) {
+        params.emoticon = new Emoticon({
+            width: options.emoticon.w || '',
+            left: options.emoticon.l || '',
+            top: options.emoticon.t || '',
+        });
     }
     if (options.game) {
         params.gameId = options.game;
@@ -247,6 +318,10 @@ export function initializeWidgetParams(options: Partial<Node>) {
     return params;
 }
 
+/**
+ * 初始化根节点
+ * @returns 返回一个[RootWidget]初始节点
+ */
 export const initRootWidget = function () {
     return new RootWidget({
         id: nanoid(10),
@@ -295,15 +370,19 @@ export function widgetBuildBFS(treeJson: Node): TreeWidget {
 
     const queues: Node[] = [];
     const parentQueues: ParentQueue[] = [];
-    let rootWidget: TreeWidget = initRootWidget();
-    queues.push(treeJson)
+    let rootWidget!: TreeWidget;
+    queues.push(treeJson);
+    let count = 0;
 
     while(queues.length) {
         const newNode = queues.shift()!;
         const newWidget = createWidget(newNode!);
-        if (newNode.name === 'root') {
+
+        if (count === 0) {
             rootWidget = newWidget;
         }
+        count++;
+
         // 取出当前父节点
         let currParent: ParentQueue;
         if (parentQueues.length) {
@@ -326,7 +405,7 @@ export function widgetBuildBFS(treeJson: Node): TreeWidget {
         }
         if (newNode.prop && newNode.prop.states) {
             // 座位下 有音视频的控件
-            for (let key in newNode.prop.states) {
+            for (const key in newNode.prop.states) {
                 queues.push(newNode.prop.states[key as keyof State]);
                 parent.countChild++;
             }
@@ -345,7 +424,7 @@ export function widgetBuildBFS(treeJson: Node): TreeWidget {
             parentQueues.push(parent);
         }
     }
-    return rootWidget;
+    return rootWidget || initRootWidget();
 }
 
 
@@ -384,7 +463,7 @@ export function widgetBuildFactory(treeJson: Node): TreeWidget {
 }
 
 function widgetBuildChildren(children: Node[]) {
-    let results: TreeWidget[] = [];
+    const results: TreeWidget[] = [];
     children.forEach((child: Node) => {
         const widgetType = widgetTypeManage.get(child.name);
         if (!widgetType) {
@@ -410,8 +489,8 @@ function widgetBuildChildren(children: Node[]) {
 
 function widgetBuildState(states: State) {
     if (!states) return;
-    let results = [];
-    for (let key in states) {
+    const results = [];
+    for (const key in states) {
         const child = states[key as keyof State];
         const widgetType = widgetTypeManage.get(child.name);
         if (!widgetType) {

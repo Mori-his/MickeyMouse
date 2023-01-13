@@ -85,7 +85,7 @@ interface ColorCollectPanelProps {
 }
 export function ColorCollectPanel(props: ColorAdopePropsWithEvent<ColorCollectPanelProps>) {
     const { color, onColorClick = () => {} } = props;
-    const tooltipRef = useRef(null);
+    // const tooltipRef = useRef(null);
     const mouseRef = useRef({
         downX: 0,
         downY: 0,
@@ -145,7 +145,7 @@ export function ColorCollectPanel(props: ColorAdopePropsWithEvent<ColorCollectPa
                     >
                     <ColorCollectItem
                         style={{backgroundColor: `rgba(${intRgba.r}, ${intRgba.g}, ${intRgba.b}, ${intRgba.a})`}}
-                        onClick={e => handleColorClick(color) }
+                        onClick={() => handleColorClick(color) }
                         />
                 </ColorCollectItemWrapper>
         </Tippy>

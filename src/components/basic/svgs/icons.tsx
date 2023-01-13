@@ -77,21 +77,25 @@ export function IconWrapper(props: React.PropsWithChildren<IconPropsWithSize<Ico
 
 
 /**
+ * ```
  * 替换外层容器的正则表达式:
  * <rect\s*id="(.*?)"\s*width="24"\s*height="24"\s*fill="none"/>
  * 替换为： <rect width="100%" height="100%" fill="none"/>
  * 删除svg中[width, height]属性
  * <svg(\s*(id=".*?"\s*)?xmlns=".*?"\s*)width="24"\s*height="24"\s*viewBox="0 0 24 24">
  * 替换为： <svg$1 viewBox="0 0 24 24">
+ * ```
  */
 
 /**
- * ##设计ICON时注意事项##
+ * ## 设计ICON时注意事项
+ * ```
  * 1、Icon以正方形呈现
  * 2、icon容器会比实际Icon大8px
  * 3、提供的size一定要大于实际icon大小8px
  * 4、`svgWrapper`会自动计算size大小, 不需要额外处理
  * 5、`svg`元素全部替换为根据父元素大小而变化，在设计中要用矩形全透明元素撑大容器为24*24
+ * ```
  */
 
 /**
@@ -1236,11 +1240,34 @@ const icons = {
     },
     exit() {
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <rect width="100%" height="100%" fill="none"/>
                 <path className="svg-fill" d="M5.478,0V1.89h7.3v9.452h-7.3v1.89h9.13V0ZM7.3,3.781v1.89H0v1.89H7.3v1.89l3.652-2.836Z" transform="translate(4.696 5.384)" />
             </svg>
         );
+    },
+    position() {
+        return (
+            <svg id="position" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <rect width="100%" height="100%" fill="none"/>
+                <g className="svg-stroke" transform="translate(4 4)" fill="none" strokeWidth="1">
+                    <circle cx="8" cy="8" r="8" stroke="none"/>
+                    <circle cx="8" cy="8" r="7.5" fill="none"/>
+                </g>
+                <g className="svg-stroke" transform="translate(7 7)" fill="none" strokeWidth="1">
+                    <circle cx="5" cy="5" r="5" stroke="none"/>
+                    <circle cx="5" cy="5" r="4.5" fill="none"/>
+                </g>
+                <g className="svg-stroke" transform="translate(10 10)" fill="none" strokeWidth="1">
+                    <circle cx="2" cy="2" r="2" stroke="none"/>
+                    <circle cx="2" cy="2" r="1.5" fill="none"/>
+                </g>
+                <line className="svg-stroke" x2="8" transform="translate(2.5 12)" fill="none" strokeWidth="1"/>
+                <line className="svg-stroke" x2="8" transform="translate(13.5 12)" fill="none" strokeWidth="1"/>
+                <line className="svg-stroke" y2="8" transform="translate(12 2.5)" fill="none" strokeWidth="1"/>
+                <line className="svg-stroke" y2="8" transform="translate(12 13.5)" fill="none" strokeWidth="1"/>
+            </svg>
+        )
     }
 }
 

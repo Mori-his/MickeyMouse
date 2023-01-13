@@ -1,4 +1,3 @@
-import Tippy from "@tippyjs/react";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -20,22 +19,22 @@ const FlexibleWrapper = styled.div<FlexibleWrapperProps>`
     }
 `;
 
-const Strip = styled.div`
-    width: 4px;
-    background-color: ${props => props.theme.lesser};
-	border-radius: 2px;
-    margin: 0 1px;
-`;
+// const Strip = styled.div`
+//     width: 4px;
+//     background-color: ${props => props.theme.lesser};
+// 	border-radius: 2px;
+//     margin: 0 1px;
+// `;
 
-const StripSmall = styled(Strip)`
-    height: 8px;
-`;
-const StripMiddle = styled(Strip)`
-    height: 12px;
-`;
-const StripLarge = styled(Strip)`
-    height: 18px;
-`;
+// const StripSmall = styled(Strip)`
+//     height: 8px;
+// `;
+// const StripMiddle = styled(Strip)`
+//     height: 12px;
+// `;
+// const StripLarge = styled(Strip)`
+//     height: 18px;
+// `;
 
 
 export interface FlexibleProps {

@@ -1,12 +1,14 @@
+import { ChangeEvent, ForwardedRef, forwardRef, useEffect, useState } from "react";
 import { ISyncAttr, NodeSync } from "@/types/types";
-import { PureIconButton } from "@components/basic/iconButton";
-import Select, { GroupBase, mergeStyles, SingleValue, StylesConfig } from "react-select";
+import CreatableSelect from 'react-select/creatable';
+import { observer } from "mobx-react";
 import styled from "styled-components";
-import { TitleCollapse } from "../../../../common/title";
+import { GroupBase, mergeStyles, SingleValue, StylesConfig } from "react-select";
+import { PureIconButton } from "@components/basic/iconButton";
 import theme, { selectCustomTheme } from '@styles/layout.theme';
-import { ChangeEvent, useEffect, useState } from "react";
-import { CustomScrollbar, selectStyle } from "@styles/globals";
+import { selectStyle } from "@styles/globals";
 import { Textarea } from "@components/basic/form/textarea";
+import { TitleCollapse } from "../../../../common/title";
 
 const SyncItemWrapper = styled.div`
     display: flex;
@@ -41,20 +43,29 @@ interface defaultSyncProps extends ISyncAttr {
 }
 
 interface SyncItemProps {
+    id?: string | number
     // 可选择的sync列表
     syncs: ISyncAttr[]
     // 默认sync表达式值
     defaultSync?: defaultSyncProps
     onChange?: (sync: NodeSync) => void
     onDelete?: Function
+    duration?: number
 }
 
-export function SyncItem(props: SyncItemProps) {
+export const SyncItem = observer(forwardRef(function SyncItem(
+    props: SyncItemProps,
+    nodeRef: ForwardedRef<HTMLDivElement>
+) {
     const {
+        id,
         syncs = [],
         onChange = () => {},
         onDelete = () => {},
         defaultSync = null,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        duration = 500,
+        ...otherProps
     } = props;
     // 选中的sync
     const [selectSync, setSelectSync] = useState<ISyncAttr | null>(defaultSync)
@@ -74,6 +85,7 @@ export function SyncItem(props: SyncItemProps) {
         onChange({
             key: option.value,
             value: syncValue,
+            id,
         });
     }
 
@@ -82,18 +94,22 @@ export function SyncItem(props: SyncItemProps) {
         onChange({
             key: selectSync?.value || '',
             value: event.target.value,
+            id,
         });
     }
 
     return (
-        <SyncItemWrapper>
+        <SyncItemWrapper
+            ref={ nodeRef }
+            { ...otherProps }
+            >
             <TitleCollapse
                 titleStyle={{
                     backgroundColor: theme.primary,
                     flex: 1,
                 }}
                 title={
-                    <Select<ISyncAttr, false, GroupBase<ISyncAttr> >
+                    <CreatableSelect<ISyncAttr, false, GroupBase<ISyncAttr> >
                         options={ syncs }
                         value={ selectSync }
                         styles={ withSelectStyles }
@@ -119,5 +135,5 @@ export function SyncItem(props: SyncItemProps) {
             </TitleCollapse>
         </SyncItemWrapper>
     );
-};
+}));
 

@@ -2,7 +2,7 @@ import { modalTransition } from "@styles/globals";
 import { ReactNode, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
-import ModalBox, { PureModalBox } from "./modalBox";
+import ModalBox from "./modalBox";
 
 export interface ModalProps {
     in?: boolean

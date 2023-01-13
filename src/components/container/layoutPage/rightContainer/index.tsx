@@ -36,7 +36,6 @@ export default observer(function RightContainer() {
     const [settingType, setSettingType] = useState<TABTYPE>(TABTYPE.CONFIG);
     const currWidget = ownerCaretaker.currOwner?.currWidget;
 
-
     const handleTabChange = function(type: TABTYPE) {
         setSettingType(type);
     }
@@ -46,6 +45,7 @@ export default observer(function RightContainer() {
                 <RightConfigPanel>
                     <BasicPanel />
                     <SettingTab
+                        tabType={ settingType }
                         onClick={ handleTabChange }
                         />
                     {

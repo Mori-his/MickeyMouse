@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 
 export type ButtonType = 'primary' | 'secondary' | 'warning' | 'success' | 'danger' | 'info' | 'light' | 'dark';
@@ -47,6 +47,7 @@ const Button = React.forwardRef(function Button(
     btnRef: React.ForwardedRef<HTMLDivElement>
 ) {
     const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ref,
         children,
         variant = 'primary',

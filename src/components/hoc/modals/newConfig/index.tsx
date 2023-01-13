@@ -68,6 +68,7 @@ export const NewConfigModal = function(props: ModalHOCProps) {
         onClose = () => {},
         onConfirm = () => {},
         onCancel = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         children,
         in: isOpen = false,
         ...otherProps

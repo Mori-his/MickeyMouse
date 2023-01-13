@@ -1,8 +1,7 @@
 import Color from "@layout/utils/color";
-import Tippy from "@tippyjs/react";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
-import { ColorGradientPoint, ColorGradientPointInner, ColorGradientWrapper } from "./colorPickerPanelBox";
+import { ColorGradientWrapper } from "./colorPickerPanelBox";
 import ColorPointer from "./colorPointer";
 
 interface ColorGradientPointsProps {
@@ -105,7 +104,7 @@ export function ColorGradientPanel(props: ColorGradientProps) {
     }
 
     // 背景块被双击
-    const handleDoubleClick = function(event: React.MouseEvent<HTMLDivElement>) {
+    const handleDoubleClick = function() {
         onAdd(new Color(0, 0, 100, 1), 1);
     }
 
@@ -116,7 +115,7 @@ export function ColorGradientPanel(props: ColorGradientProps) {
                 style={{
                     background: gradient
                 }}
-                onDoubleClick={ (event: React.MouseEvent<HTMLDivElement>) => handleDoubleClick(event) }
+                onDoubleClick={ () => handleDoubleClick() }
             >
                 <ColorGradientPoints
                     defaultIndex={ selectIndex }

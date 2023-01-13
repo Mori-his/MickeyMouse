@@ -11,55 +11,45 @@ import { makeObservableWithWidget } from "@utils/makeAutoObservablePrototype";
 import { action, observable } from "mobx";
 import { Exterior } from "./interface/widgetInterface";
 import { mobxTrackStates } from "@models/owners";
+import { ObserveBorder } from "./observeLayout/observeBorder";
+import { Constructor } from "@/types/types";
 
 
 export interface ViewWidgetOptions extends WidgetOptions{
     fillet?: BorderRadius
     border?: Border
+    activeBorder?: boolean
     background?: Color | LinearGradientdirection
 }
 
 
 @widgetType('view', {icon: 'view_text', label: '视图'})
-export class ViewWidget extends TreeWidget implements Exterior {
+export class ViewWidget extends ObserveBorder(TreeWidget as Constructor<TreeWidget>) implements Exterior {
     type: string = 'view'
 
     background: Color | LinearGradientdirection
     fillet: BorderRadius
-    border: Border
     activeBackground: boolean;
-    activeBorder: boolean;
 
     constructor({
         fillet = new BorderRadius({}),
-        border,
+        // border,
         background,
+        // activeBorder,
         ...superOptions
     }: ViewWidgetOptions) {
         super(superOptions);
         this.fillet = fillet;
-        this.border = border || new Border(
-            Border.fromBorderSide(
-                new BorderSide({
-                    color: new Color(0, 0, 100, 1),
-                    width: 1
-                })
-            )
-        );
         this.background = background || new Color(0, 0, 100, 1);
         this.activeBackground = Boolean(background);
-        this.activeBorder = Boolean(border);
         makeObservableWithWidget(this, {
             fillet: observable,
-            border: observable,
             background: observable,
             activeBackground: observable,
-            activeBorder: observable,
-            setBorder: action,
             setBackground: action,
             setFillet: action,
             setActiveBackground: action,
-            setActiveBorder: action,
+            ...super.registerObservable(),
         });
         this.registerTracks();
     }
@@ -70,27 +60,27 @@ export class ViewWidget extends TreeWidget implements Exterior {
         // 注册undo/redo
         mobxTrackStates(this, [
             { read: () => this.fillet, write: (fillet: BorderRadius) => this.setFillet(fillet) },
-            { read: () => this.border, write: (border: Border) => this.setBorder(border) },
+            // { read: () => this.border, write: (border: Border) => this.setBorder(border) },
             { read: () => this.background, write: (color: Color | LinearGradientdirection) => this.setBackground(color) },
             { read: () => this.activeBackground, write: (active: boolean) => this.setActiveBackground(active) },
-            { read: () => this.activeBorder, write: (active: boolean) => this.setActiveBorder(active) },
+            // { read: () => this.activeBorder, write: (active: boolean) => this.setActiveBorder(active) },
         ]);
         super.registerTracks();
     }
     setActiveBackground(active: boolean): void {
         this.activeBackground = active;
     }
-    setActiveBorder(active: boolean): void {
-        this.activeBorder = active;
-    }
+    // setActiveBorder(active: boolean): void {
+    //     this.activeBorder = active;
+    // }
 
-    setBorder(side: BorderSide | Border) {
-        if (side instanceof Border) {
-            this.border = side;
-        } else {
-            this.border = Border.fromBorderSide(side);
-        }
-    }
+    // setBorder(side: BorderSide | Border) {
+    //     if (side instanceof Border) {
+    //         this.border = side;
+    //     } else {
+    //         this.border = Border.fromBorderSide(side);
+    //     }
+    // }
 
     setFillet(fillet: BorderRadius) {
         this.fillet = fillet;
@@ -110,10 +100,7 @@ export class ViewWidget extends TreeWidget implements Exterior {
         if (this.activeBackground) {
             background = backgroundToJson(this.background);
         }
-        let round: any = {}
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
-        }
+        const round = borderToJson(this.border, this.fillet, this.activeBorder);
 
         return {
             id: this.id,
@@ -131,3 +118,5 @@ export class ViewWidget extends TreeWidget implements Exterior {
         };
     }
 }
+
+// export const ObserveViewWidget = ObserveBorder(ViewWidget);

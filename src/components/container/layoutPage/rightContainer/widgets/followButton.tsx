@@ -3,9 +3,10 @@ import { TextareaBox } from "@components/container/common/styleds/containerStyle
 import { TitleCollapse } from "@components/container/common/title";
 import ownerCaretaker from "@models/owners";
 import { FollowButtonWidget } from "@widgets/followButton";
+import { observer } from "mobx-react";
 
 
-export const FollowButtonRender = function() {
+export const FollowButtonRender = observer(function() {
     const currWidget = ownerCaretaker.currOwner.currWidget as FollowButtonWidget;
     return (
         <TitleCollapse
@@ -23,4 +24,4 @@ export const FollowButtonRender = function() {
             </div>
         </TitleCollapse>
     );
-}
+});

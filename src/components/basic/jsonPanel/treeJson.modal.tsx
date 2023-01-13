@@ -67,7 +67,6 @@ export default forwardRef(function TreeJsonModal(
     modalRef: React.ForwardedRef<TreeJsonModalRef<HTMLDivElement>>
 ) {
     const {
-        placeholder = {},
         onClose = () => {},
         onLoaded = () => {},
         actions,

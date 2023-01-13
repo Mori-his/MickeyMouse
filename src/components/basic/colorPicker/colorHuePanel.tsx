@@ -1,7 +1,7 @@
 import { IRGB } from "@/types/color";
 import Color from "@layout/utils/color";
 import React, { useImperativeHandle } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
 

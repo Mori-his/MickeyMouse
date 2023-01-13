@@ -3,9 +3,10 @@ import { TextareaBox } from "@components/container/common/styleds/containerStyle
 import { TitleCollapse } from "@components/container/common/title";
 import ownerCaretaker from "@models/owners";
 import { GenderViewWidget } from "@widgets/genderView";
+import { observer } from "mobx-react";
 
 
-export const GenderViewRender = function() {
+export const GenderViewRender = observer(function() {
     const currWidget = ownerCaretaker.currOwner.currWidget as GenderViewWidget;
     return (
         <TitleCollapse
@@ -40,4 +41,5 @@ export const GenderViewRender = function() {
         </TitleCollapse>
 
     );
-}
+});
+

@@ -20,22 +20,23 @@ const SizeRailiLineItem = styled.label`
     padding: 4px 0;
 `;
 
-const SizeInput = styled.input`
-    width: 40px;
-    background: transparent;
-    border: none;
-    outline: none;
-    text-align: center;
-    color: ${props => props.theme.lightText};
-    &:focus,
-    &:active {
-        outline: none;
-    }
-`;
+// const SizeInput = styled.input`
+//     width: 40px;
+//     background: transparent;
+//     border: none;
+//     outline: none;
+//     text-align: center;
+//     color: ${props => props.theme.lightText};
+//     &:focus,
+//     &:active {
+//         outline: none;
+//     }
+// `;
 const SizeLabel = styled.span`
     position: absolute;
     left: 6px;
-    bottom: 2px;
+    bottom: 0px;
+    width: 40px;
 `;
 const SizeLabelTop = styled(SizeLabel)`
     left: 12px;
@@ -158,6 +159,7 @@ export const SizeRailLine = observer(function SizeRailLine() {
                     }}
                     select
                     center
+                    auto
                     placeholder="width"
                     backgroundColor="transparent"
                     onChange={ (e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, InputType.WIDTH) }
@@ -187,6 +189,7 @@ export const SizeRailLine = observer(function SizeRailLine() {
                         }}
                         select
                         center
+                        auto
                         placeholder="height"
                         backgroundColor="transparent"
                         onChange={ (e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, InputType.HEIGHT) }
@@ -213,12 +216,12 @@ const PositionRailLineItem = styled.div`
     display: flex;
 `;
 
-interface Position {
-    left: number | string
-    top: number | string
-    right: number | string
-    bottom: number | string
-}
+// interface Position {
+//     left: number | string
+//     top: number | string
+//     right: number | string
+//     bottom: number | string
+// }
 
 export const PositionRailLine = observer(function PositionRailLine() {
     const currWidget = ownerCaretaker.currOwner.currWidget!;
@@ -267,10 +270,11 @@ export const PositionRailLine = observer(function PositionRailLine() {
                         }}
                         select
                         center
+                        auto
                         backgroundColor="transparent"
                         placeholder="left"
                         onChange={ (e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, InputType.LEFT) }
-                        value={currWidget.position.left}
+                        value={ currWidget.position.left }
                         />
                     <RailLine
                         direction={ RailLineDirection.TOP}
@@ -288,6 +292,7 @@ export const PositionRailLine = observer(function PositionRailLine() {
                             }}
                             select
                             center
+                            auto
                             backgroundColor="transparent"
                             placeholder="top"
                             onChange={ (e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, InputType.TOP) }
@@ -313,6 +318,7 @@ export const PositionRailLine = observer(function PositionRailLine() {
                     <SizeInputHeight
                         type="number"
                         select
+                        auto
                         placeholder="right"
                         onChange={ (e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, InputType.RIGHT) }
                         value={currWidget.position.right}
@@ -324,6 +330,7 @@ export const PositionRailLine = observer(function PositionRailLine() {
                     <SizeInputHeight
                         type="number"
                         select
+                        auto
                         placeholder="bottom"
                         onChange={ (e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, InputType.BOTTOM) }
                         value={currWidget.position.bottom}

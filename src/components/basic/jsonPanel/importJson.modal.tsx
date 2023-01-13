@@ -3,8 +3,6 @@ import JSONEditor from "jsoneditor";
 import styled from "styled-components";
 import Button from "../button";
 import IconButton from "../iconButton";
-import ownerCaretaker from "@models/owners";
-import { RootWidget } from "@widgets/root";
 
 const ImportJsonWrapper = styled.div`
     display: flex;

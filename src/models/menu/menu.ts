@@ -1,8 +1,8 @@
-import { Widget, WidgetParentData } from "@layout/core/layout";
-import BasicNode, { ContainerNodeMixin, IContainerNodeMixin } from "@layout/core/object";
+import { WidgetParentData } from "@layout/core/layout";
+import BasicNode, { ContainerNodeMixin, ContainerParentDataMixin, IContainerNodeMixin } from "@layout/core/object";
 import ownerCaretaker from "@models/owners";
 import { ShortcutsObserver, ShortcutsObserverType } from "@utils/shortcuts/shortcutsObserver";
-import { action, makeAutoObservable, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 
 
@@ -127,7 +127,7 @@ type MenuOptions = {
     type?: string | Symbol
     scope?: HTMLElement
 }
-export class Menu extends ContainerNodeMixin<BasicNode, WidgetParentData>(BasicNode) implements IMenu<BasicNode> {
+export class Menu extends ContainerNodeMixin<MenuItem, ContainerParentDataMixin<MenuItem>>(BasicNode) implements IMenu<BasicNode> {
     selectType?: string | Symbol;
 
     constructor(options?: MenuOptions) {
@@ -144,8 +144,7 @@ export class Menu extends ContainerNodeMixin<BasicNode, WidgetParentData>(BasicN
 
     onBeforeUpdate(...args: Array<any>) {
         this.visitChildren((item) => {
-            const menuItem = item as MenuItem;
-            menuItem.onBeforeUpdate(...args);
+            item.onBeforeUpdate(...args);
         });
     }
 

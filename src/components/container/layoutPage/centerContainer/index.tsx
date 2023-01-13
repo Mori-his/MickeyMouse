@@ -76,31 +76,31 @@ export default observer(function CenterContainer() {
             },
             muteAudio: false, // 看播播放器是否关闭，默认不关闭。 
         });
-        ownerCaretaker.currOwner.isAutoImage = true;
+        ownerCaretaker.currOwner && (ownerCaretaker.currOwner.isAutoImage = true);
         layoutView.updateSync({
             p_layout: ownerCaretaker.currOwner?.firstChild?.toJson()
         });
-        ownerCaretaker.currOwner.isAutoImage = false;
+        ownerCaretaker.currOwner && (ownerCaretaker.currOwner.isAutoImage = false);
         let timer: NodeJS.Timeout;
         let first = true;
         spy(() => {
             if (first) {
-                ownerCaretaker.currOwner.isAutoImage = true;
+                ownerCaretaker.currOwner && (ownerCaretaker.currOwner.isAutoImage = true);
                 layoutView.updateSync({
                     p_layout: ownerCaretaker.currOwner?.firstChild?.toJson()
                 });
-                ownerCaretaker.currOwner.isAutoImage = false;
+                ownerCaretaker.currOwner && (ownerCaretaker.currOwner.isAutoImage = false);
                 first = false;
             }
             if (layoutViewRef.current) {
                 clearTimeout(timer);
                 timer = setTimeout(() => {
-                    ownerCaretaker.currOwner.isAutoImage = true;
+                    ownerCaretaker.currOwner && (ownerCaretaker.currOwner.isAutoImage = true);
                     layoutView.updateSync({
                         p_layout: ownerCaretaker.currOwner?.firstChild?.toJson(),
                         dynamic: false
                     });
-                    ownerCaretaker.currOwner.isAutoImage = false;
+                    ownerCaretaker.currOwner && (ownerCaretaker.currOwner.isAutoImage = false);
                 }, 100);
             }
         });

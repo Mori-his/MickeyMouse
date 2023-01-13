@@ -1,6 +1,6 @@
 import { IRGB } from "@/types/color";
 import Color from "@layout/utils/color";
-import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
+import React, { useState, useRef, useImperativeHandle } from "react";
 import styled from "styled-components";
 import ColorPointer from "./colorPointer";
 
@@ -70,7 +70,7 @@ function ColorPanel(
         height = 160,
         pointerSize = 12,
         hue,
-        onDragChange = () => {},
+        onDragChange = () => ({}),
     } = props;
     
     const pointerDIF = pointerSize / 2

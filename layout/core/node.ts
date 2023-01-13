@@ -18,13 +18,13 @@ export default abstract class AbstractNode {
 
     /**
      * redepthChildren
-     * @description 主要用于更新当前节点下的子节点[depth]
+     * @remarks 主要用于更新当前节点下的子节点[depth]
      */
     redepthChildren(): void {}
 
     /**
      * 附加到指定owner
-     * @param owner {Object} 所有者
+     * @param owner - 所有者
      */
     attach(owner: Object): void {
         assert(owner !== null);
@@ -41,7 +41,7 @@ export default abstract class AbstractNode {
 
     /**
      * 添加子节点
-     * @param child 要关联的[AbstractNode]
+     * @param child - 要关联的[AbstractNode]
      */
     protected adoptChild(child: AbstractNode) {
         assert(Boolean(child));
@@ -49,6 +49,7 @@ export default abstract class AbstractNode {
         assert(child.parent === null);
         assert((() => {
             // 新插入的节点不能是自己的父节点
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             let node: AbstractNode = this;
             while (node.parent !== null)
                 node = node.parent!;
@@ -80,8 +81,8 @@ export default abstract class AbstractNode {
 
     /**
      * attached
-     * @description 获取当前是否有根节点
-     * @returns {Boolean}
+     * @remarks 获取当前是否有根节点
+     * @returns
      */
     get attached(): Boolean {
         return Boolean(this.owner);

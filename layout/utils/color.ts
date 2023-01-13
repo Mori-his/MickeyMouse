@@ -143,9 +143,9 @@ export default class Color {
 
     /**
      * RGB TO HSB
-     * @param r 红色
-     * @param g 绿色
-     * @param b 蓝色
+     * @param r - 红色
+     * @param g - 绿色
+     * @param b - 蓝色
      * @returns 色相，饱和度，明度
      */
     static rgbToHsb(r: number, g: number, b: number) {

@@ -60,9 +60,13 @@ export const ExteriorBorder = observer(function ExteriorBorder() {
                 content="边框半径"
                 >
                 <Input
+                    label="LTRB"
+                    labelAnimation
                     type="number"
                     width={ 86 }
                     center
+                    select
+                    auto
                     placeholder="LTRB"
                     onChange={ e => handleBorderChange(e) }
                     value={ currWidget.fillet.bottomLeft?.x || '' }

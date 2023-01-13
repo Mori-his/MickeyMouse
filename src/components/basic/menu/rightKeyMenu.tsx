@@ -47,7 +47,7 @@ const RightKeyMenu = observer(forwardRef(function RightKeyMenu(
             >
             {
                 menus.map((menuItem, index) => {
-                    const item = menuItem as unknown as MenuItem;
+                    const item = menuItem;
                     return <RightKeyMenuItem
                         key={ item.text }
                         disabled={ item.disable }
@@ -119,6 +119,7 @@ export const RightKeyMenuItem = observer(forwardRef(function RightKeyMenuItem(
     divRef: ForwardedRef<HTMLDivElement>
 ) {
     const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ref,
         after,
         disabled = false,

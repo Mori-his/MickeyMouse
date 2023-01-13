@@ -128,6 +128,7 @@ export function CreateNode(props: ModalHOCProps) {
         onClose = () => {},
         onConfirm = () => {},
         onCancel = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         children,
         in: isOpen = false,
         ...otherProps
@@ -200,6 +201,14 @@ export function CreateNode(props: ModalHOCProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [widgetTypeManage]);
 
+    useEffect(() => {
+        if(isOpen) {
+            dispatch({
+                type: CreateNodeActions.SET_ID,
+                payload: nanoid(8)
+            });
+        }
+    }, [isOpen])
 
 
     return (

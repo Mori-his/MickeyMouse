@@ -23,6 +23,12 @@ export class Position implements IPosition {
     top: number | string
     right: number | string
     bottom!: number | string
+
+    static only(allProps: AllProps) {
+        return new Position(allProps);
+    }
+
+
     constructor(allProps: AllProps) {
         this.left = allProps.left;
         this.top = allProps.top;

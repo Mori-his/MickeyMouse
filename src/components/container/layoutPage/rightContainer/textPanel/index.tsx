@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import { TitleCollapse } from "../../../common/title";
-import { PaddingRL8 } from '../../../common/styleds/containerStyle';
+import { PaddingRL8, TextPanelItem } from '../../../common/styleds/containerStyle';
 import { FontAlignment, FontColor, FontFormat, FontMaxLine, FontMaxWidth, FontSize, FontTextOverflow, SelectFontFamily, TextInput } from './widgets';
 
 const TextPanelWrapper = styled.div`
@@ -10,14 +10,6 @@ const TextPanelWrapper = styled.div`
     margin-top: 8px;
 `;
 
-const FlexJustifyBetween = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const TextPanelItem = styled(FlexJustifyBetween)`
-    padding: 8px 0;
-`;
 
 
 export default function TextPanel() {

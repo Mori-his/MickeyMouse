@@ -3,6 +3,41 @@ import { Widget, WidgetOptions } from "@layout/core/layout";
 import { ContainerParentDataMixin } from "@layout/core/object";
 import ownerCaretaker, { CDAction, mobxTrackStates, registerCDMemoto } from "@models/owners";
 import { cloneDeep } from "lodash";
+import { ReactNode } from "react";
+
+export interface TreeWidgetSign extends Widget {
+    // 伸缩状态
+    _shrink: boolean
+    // 锁定状态
+    _lock: boolean
+    // 禁止移动
+    __forbidMove: boolean
+
+    _isDragEnter: boolean
+    // 当前节点绑定的元素
+    __el?: HTMLElement
+    // 根节点深度
+    __root_depth: number
+    // 产生兄弟节点
+    allowSibling: boolean
+    // Sync为通用数据，可以暂存这里或者在创建一个TreeWidget的派生类来实现
+    syncs: NodeSync[]
+    registerTracks(): void
+    strideMove(widget: TreeWidget, after?: TreeWidget): void
+    setLock(newState: boolean): void
+    stopTracking(): void
+    setShrink(newState: boolean): void
+    setVisible(newState: boolean): void
+    setIsDragEnter(newState: boolean): void
+    setSyncs(syncs: NodeSync[]): void
+    clone(): TreeWidget
+    render(): ReactNode | void
+    readonly forbidMove: boolean
+    readonly lock: boolean
+    readonly shrink: boolean
+    new (...args: any[]): TreeWidget
+}
+
 
 export interface TreeWidgetOptions extends WidgetOptions{
     syncs?: NodeSync[]
@@ -39,7 +74,6 @@ export abstract class TreeWidget extends Widget {
             ...otherProps
         });
         this.syncs = syncs || [];
-        
     }
 
     registerTracks() {
@@ -90,6 +124,7 @@ export abstract class TreeWidget extends Widget {
 
         this.__stopTracking = true;
         // 父节点移除当前节点
+        // stopTracking 是为了停止本次对remove的监听
         parent.stopTracking().remove(widget);
         // 当前节点插入到目标节点后面
         super.insert(widget, after);
@@ -161,6 +196,7 @@ export abstract class TreeWidget extends Widget {
                 }
             });
         }
+        this.__stopTracking = true;
         super.insert(child, after);
         this.__stopTracking = false;
     }
@@ -246,6 +282,8 @@ export abstract class TreeWidget extends Widget {
                 }
             });
         }
+
+        this.__stopTracking = true;
         super.remove(child);
         this.__stopTracking = false;
     }
@@ -275,6 +313,8 @@ export abstract class TreeWidget extends Widget {
                 }
             });
         }
+
+        this.__stopTracking = true;
         super.removeAll();
         this.__stopTracking = false;
     }
@@ -282,7 +322,7 @@ export abstract class TreeWidget extends Widget {
     /**
      * 删除子元素
      * @override
-     * @param child 要删除的子节点
+     * @param child - 要删除的子节点
      */
     protected _removeFromChildList(child: TreeWidget): void {
         // 这里实现删除后统一的操作

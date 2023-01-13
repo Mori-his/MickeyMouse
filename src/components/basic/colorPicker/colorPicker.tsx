@@ -25,10 +25,10 @@ export const maxOpacity = 100;
 
 /**
  * 饱和度/明度转为二维坐标系
- * @param s 饱和度0-100
- * @param b 明度0-100
- * @param scopeWidth 所在空间宽度
- * @param scopeHeight 所在控件高度
+ * @param s - 饱和度0-100
+ * @param b - 明度0-100
+ * @param scopeWidth - 所在空间宽度
+ * @param scopeHeight - 所在控件高度
  * @returns x,y坐标
  */
 function hsbSBToPosition(
@@ -46,8 +46,8 @@ function hsbSBToPosition(
 }
 /**
  * 色相转为为二维坐标系y
- * @param h 色相
- * @param scopeHeight 所在控件高度
+ * @param h - 色相
+ * @param scopeHeight - 所在控件高度
  * @returns y
  */
 function hsbHToY(h: number, scopeHeight: number) {
@@ -145,7 +145,7 @@ function ColorPicker(
 ) {
 
     // opacity取值范围0-100
-    const { rgba, linear, isGradient = true, onColorChange = () => {} } = props;
+    const { rgba, linear, isGradient = true, onColorChange = () => ({}) } = props;
     assert(rgba === undefined || linear === undefined, 'rgba or color只能传递一个')
     const [state, dispatch] = useReducer(ColorPickerReducer, {
         hue: { r: 255, g: 0, b: 0 }, // 用于色相值
@@ -300,6 +300,7 @@ function ColorPicker(
     }
 
     // 渐变类型被改变
+    // eslint-disable-next-line @typescript-eslint/ban-types
     const handleGradientOptionChange = function(option: IOption<{}, ColorType>) {
         let colors = state[ColorPickerActions.SET_COLORS];
 
@@ -321,6 +322,7 @@ function ColorPicker(
         });
         dispatch({
             type: ColorPickerActions.SET_COLOR_TYPE,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             payload: option.id!
         });
     }

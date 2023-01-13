@@ -18,8 +18,8 @@ import { isDelete, isInsertNextNode, isInsertPrevNode, isMoveDown, isMoveUp } fr
 
 /**
  * 创建节点
- * @param action [插入子级，向上插入, 向下插入]
- * @param data 包含新建的节点类型、ID、名称
+ * @param action - [插入子级，向上插入, 向下插入]
+ * @param data - 包含新建的节点类型、ID、名称
  * @returns 
  */
 export const createNode = function(action: CreateAction, data: CreateNodeState) {
@@ -154,24 +154,30 @@ export const menuItems =  [
                 return;
             }
             const { waitAction } = ownerCaretaker;
-            
+
             const { currWidget } = ownerCaretaker.currOwner;
             switch(waitAction.action) {
                 case ESpeedyActionType.COPY: // 拷贝被粘贴
+                    const currWidgetJson = waitAction.widget.toJson() as Node;
+                    const newWidget = widgetBuildBFS(currWidgetJson);
                     if (currWidget) { // 选中了一个元素
-                        waitAction.widget.id = `${waitAction.widget.id}_副本_${nanoid(4)}`;
+                        // TODO
+                        // 1、副本后重复问题
+                        if (Object.is(ownerCaretaker.currOwner, waitAction.widget.root)) {
+                            newWidget.id = `${waitAction.widget.id}_copy_${nanoid(4)}`;
+                        }
                         const parent: TreeWidget =  currWidget.parent as TreeWidget;
                         if (currWidget.type !== 'root') { // 选中节点不是根节点的时候
-                            parent.insert(waitAction.widget, currWidget);
+                            parent.insert(newWidget, currWidget);
                         } else { // 选中节点是根节点的时候
-                            currWidget.insert(waitAction.widget);
+                            currWidget.insert(newWidget);
                         }
                     } else if (waitAction.widget.type === 'root') { // 没有选中节点并且[复制/剪切]必须是根节点
                         ConfirmControl.open({
                             content: '确认要全部覆盖当前节点吗？此操作无法撤回!!!!'
                         }).then(() => {
                             ownerCaretaker.currOwner.removeAll();
-                            ownerCaretaker.currOwner.add(waitAction.widget);
+                            ownerCaretaker.currOwner.add(newWidget);
                         });
                     } else {
                         MessageControl.open({
@@ -184,8 +190,10 @@ export const menuItems =  [
                     const waitActionParent: TreeWidget = waitAction.widget.parent as TreeWidget;
                     if (currWidget) { // 选中了一个元素
                         const parent: TreeWidget =  currWidget.parent as TreeWidget;
+                        if (Object.is(ownerCaretaker.currOwner, waitAction.widget.root)) {
+                            waitAction.widget.id = `${waitAction.widget.id}_copy_${nanoid(4)}`;
+                        }
                         waitActionParent.remove(waitAction.widget); // 从当前链条脱离
-                        waitAction.widget.id = `${waitAction.widget.id}_副本_${nanoid(4)}`;
                         if (currWidget.type !== 'root') { // 选中节点非[root]节点
                             parent.insert(waitAction.widget, currWidget);
                         } else {
@@ -218,9 +226,8 @@ export const menuItems =  [
                 });
                 return;
             }
-            const currWidgetJson = currWidget.toJson() as Node;
             ownerCaretaker.setWaitAction({
-                widget: widgetBuildBFS(currWidgetJson),
+                widget: currWidget,
                 action: ESpeedyActionType.COPY
             });
             MessageControl.open({

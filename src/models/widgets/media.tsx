@@ -9,8 +9,8 @@ import { widgetType } from "@models/factory/widgetTypeClassManage";
 import { mobxTrackStates } from "@models/owners";
 import syncAttr from "@models/syncManage/manage";
 import { makeObservableWithWidget } from "@utils/makeAutoObservablePrototype";
-import { isUndefined, omitBy } from "lodash";
-import { action, observable } from "mobx";
+import { isEmpty, isNull, isUndefined, omitBy } from "lodash";
+import { action, makeAutoObservable, observable } from "mobx";
 import { Exterior } from "./interface/widgetInterface";
 import { TreeWidget } from "./treeWidget";
 
@@ -64,6 +64,50 @@ export const VideoModes: TVideoMode[] = [
         value: EVideoMode.ALLOW_VIDEO,
     }
 ]
+// "stream": {
+//     "width": 240,
+//     "height": 424,
+//     "fps": 15,
+//     "rate": 360,
+// }
+
+export interface MediaStreamProps {
+    width: string | number
+    height: string | number
+    fps: string | number
+    rate: string | number
+}
+export class MediaStream {
+    width?: string | number;
+    height?: string | number;
+    fps?: string | number;
+    rate?: string | number;
+    constructor(props: Partial<MediaStreamProps>) {
+        Object.assign(this, props);
+        makeAutoObservable(this, {
+            width: observable,
+            height: observable,
+            fps: observable,
+            rate: observable,
+            setWidth: action,
+            setHeight: action,
+            setFps: action,
+            setRate: action,
+        });
+    }
+    setWidth(width: string | number) {
+        this.width = width;
+    }
+    setHeight(height: string | number) {
+        this.height = height;
+    }
+    setFps(fps: string | number) {
+        this.fps = fps;
+    }
+    setRate(rate: string | number) {
+        this.rate = rate;
+    }
+}
 
 
 export interface MediaWidgetOptions extends WidgetOptions{
@@ -76,7 +120,9 @@ export interface MediaWidgetOptions extends WidgetOptions{
     relay?: string
     fillet?: BorderRadius
     border?: Border
+    activeBorder?: boolean
     background?: Color | LinearGradientdirection
+    stream?: MediaStreamProps
 }
 
 
@@ -112,6 +158,8 @@ export class MediaWidget extends TreeWidget implements Exterior {
     activeBackground: boolean;
     activeBorder: boolean;
 
+    stream: MediaStream
+    
     constructor({
         relay = '',
         uid = '',
@@ -123,6 +171,8 @@ export class MediaWidget extends TreeWidget implements Exterior {
         background,
         fillet = new BorderRadius({}),
         border,
+        activeBorder,
+        stream,
         ...otherProps
     }: MediaWidgetOptions) {
         super(otherProps);
@@ -140,12 +190,18 @@ export class MediaWidget extends TreeWidget implements Exterior {
             Border.fromBorderSide(
                 new BorderSide({
                     color: new Color(0, 0, 100, 1),
-                    width: 1
                 })
             )
         );
         this.activeBackground = Boolean(background);
-        this.activeBorder = Boolean(border);
+        this.activeBorder = Boolean(activeBorder);
+
+        this.stream = new MediaStream({
+            width: stream?.width || '',
+            height: stream?.height || '',
+            fps: stream?.fps || '',
+            rate: stream?.rate || '',
+        });
 
         makeObservableWithWidget(this, {
             relay: observable,
@@ -160,6 +216,7 @@ export class MediaWidget extends TreeWidget implements Exterior {
             background: observable,
             fillet: observable,
             border: observable,
+            stream: observable,
             setRelay: action,
             setUid: action,
             setSN: action,
@@ -273,9 +330,16 @@ export class MediaWidget extends TreeWidget implements Exterior {
         if (this.activeBackground) {
             background = backgroundToJson(this.background);
         }
-        let round: {round?: Partial<TRound>} = {};
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
+        const round: {round?: Partial<TRound>} = borderToJson(this.border, this.fillet, this.activeBorder);
+
+        let stream;
+        if (this.stream) {
+            stream = omitBy({
+                width: parseInt(this.stream.width as string, 10),
+                height: parseInt(this.stream.height as string, 10),
+                fps: parseInt(this.stream.fps as string, 10),
+                rate: parseInt(this.stream.rate as string, 10),
+            }, (value: number) => !isEmpty(value) || isNaN(value) || isUndefined(value) || isNull(value))
         }
 
         return {
@@ -295,7 +359,8 @@ export class MediaWidget extends TreeWidget implements Exterior {
                 uid: this.uid,
                 sn: this.sn,
                 sn_h265: this.snH265,
-                relay: this.relay
+                relay: this.relay,
+                stream,
             }, item => item === '' || isUndefined(item)),
             child: childrenJson,
             data: syncsToJson(this),

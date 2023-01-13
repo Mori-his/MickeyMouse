@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { useRouter } from 'next/router';
 import Cookie from 'js-cookie';
 import styled from "styled-components";
@@ -6,6 +6,9 @@ import Input from '@components/basic/form/input/input';
 import Button from '@components/basic/button';
 import { ActionMap } from '@/types/redux.type';
 import Image from "next/image";
+import Cookies from "js-cookie";
+import { LoginResponse } from "@/types/login/login";
+import { api } from "@utils/axiosInstance";
 
 const Wrapper = styled.div`
     position: fixed;
@@ -79,9 +82,9 @@ export function LoginReducer(
     };
 }
 
-function LayoutLoginPage() {
-    const router = useRouter();
 
+const LayoutLoginPage = function () {
+    const router = useRouter();
     const [state, dispatch] = useReducer(LoginReducer, {
         [LoginActions.SET_USERNAME]: '',
         [LoginActions.SET_PASSWORD]: '',
@@ -96,15 +99,48 @@ function LayoutLoginPage() {
     }
 
     const checkCanLogin = () => {
-        for(let item of Object.values(state)) {
+        for(const item of Object.values(state)) {
             if (item === '') return false;
         }
         return true;
     }
 
     const handleDomainLogin = () => {
+        const ref = encodeURIComponent(`${location.origin}/login`);
+        window.location.href = `https://login.ops.qihoo.net:4436/sec/login?ref=${ref}`
         console.log('预账号登录')
     }
+
+    const loginQuery = useCallback(async (sid: string) => {
+        const res = await api.get('https://layout-api.test.huajiao.com/system/login', {
+            params: {
+                sid
+            },
+        });
+        const data: LoginResponse = res.data;
+        if (data.loginInfo) {
+            Cookies.set('display', data.loginInfo.display);
+            Cookies.set('email', data.loginInfo.email);
+            Cookies.set('token', data.loginInfo.token);
+            Cookies.set('username', data.loginInfo.username);
+            // 如果登录成功则跳转
+            router.replace('/platform');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        // 预取页面
+        router.prefetch('/platform')
+        // 判断是否登录
+        if (router.query.sid) {
+            loginQuery(router.query.sid.toString());
+        }
+        return () => {
+            
+        }
+    }, [loginQuery, router])
+    
 
     return (
         <Wrapper>
@@ -156,6 +192,13 @@ function LayoutLoginPage() {
             </LoginWrapper>
         </Wrapper>
     )
+}
+
+
+LayoutLoginPage.getInitialProps = async ({ query }: any) => {
+    return {
+        ...query,
+    };
 }
 
 export default LayoutLoginPage;

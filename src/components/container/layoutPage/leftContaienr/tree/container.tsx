@@ -27,6 +27,7 @@ interface TreeWrapperProps {
             width: 1px;
             background-color: ${props.isSelectAsParent ? props.theme.assist : props.theme.white30};
             opacity: ${props.isSelectAsParent ? 1 : 0.4};
+            transition: all .6s;
         }
     `};
 `;

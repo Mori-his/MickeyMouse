@@ -12,8 +12,11 @@ import { ItemClickProps } from "@components/container/layoutPage/leftContaienr/t
 export function ViewJSONModal(props: ModalHOCProps) {
     const {
         onClose = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onConfirm = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onCancel = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         children,
         in: isOpen = false,
         ...otherProps
@@ -23,7 +26,7 @@ export function ViewJSONModal(props: ModalHOCProps) {
 
     /**
      * 打开JSON预览模板后判断是否显示当前选中节点JSON
-     * @param editor JSON编辑器对象
+     * @param editor - JSON编辑器对象
      */
     const handleShowJsonModal = function(editor: JSONEditor) {
         const { currWidget } = ownerCaretaker.currOwner;

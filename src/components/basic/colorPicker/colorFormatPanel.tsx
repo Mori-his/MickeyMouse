@@ -1,6 +1,6 @@
 import Color from "@layout/utils/color";
 import React, { useRef, useState } from "react";
-import { IHSB, THSBSignle, TRGBSignle, IRGBA, IRGB } from '@/types/color';
+import { THSBSignle, TRGBSignle } from '@/types/color';
 import { ColorInput, ColorInputBox, ColorValuePanel, maxOpacity } from ".";
 import Select from "../form/select";
 
@@ -114,9 +114,9 @@ export function ColorFormat(props: ColorFormatProps) {
     }
 
     const handleHSBChange = function(e: React.FocusEvent<HTMLInputElement>, type: THSBSignle) {
-        let currHSB = {h: color.h, s: color.s, b: color.b};
+        const currHSB = {h: color.h, s: color.s, b: color.b};
         try {
-            let value = +parseFloat(e.target.value).toFixed(2);
+            const value = +parseFloat(e.target.value).toFixed(2);
             currHSB[type] = value;
             changeColor(new Color(currHSB.h, currHSB.s, currHSB.b, color.a));
             e.target.value = currHSB[type].toString();

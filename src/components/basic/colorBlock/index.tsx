@@ -1,7 +1,6 @@
 import { IRGBA } from "@/types/color";
 import { Direction, LinearGradientdirection } from "@layout/core/gradient";
 import Color from "@layout/utils/color";
-import Tippy from "@tippyjs/react";
 import React, { ForwardedRef, PropsWithChildren, forwardRef } from "react";
 import styled, { CSSProperties } from "styled-components";
 

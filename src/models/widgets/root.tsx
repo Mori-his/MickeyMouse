@@ -4,12 +4,15 @@ import { WidgetOptions } from "@layout/core/layout"
 import { TreeWidget } from "@widgets/treeWidget";
 import Color from "@layout/utils/color"
 import { backgroundToJson, borderToJson, layoutToJson, syncsToJson } from "@models/factory/toJson"
-import { Node } from "@models/factory/types"
+import { Node, TSetting } from "@models/factory/types"
 import { widgetType } from "@models/factory/widgetTypeClassManage"
 import { makeObservableWithWidget } from "@utils/makeAutoObservablePrototype"
-import { action, observable } from "mobx"
+import { action, makeObservable, observable } from "mobx"
 import { Exterior } from "./interface/widgetInterface"
 import { mobxTrackStates } from "@models/owners";
+import { assert } from "@layout/core/assert";
+import { isNull, isUndefined, omitBy } from "lodash";
+import { RootRender } from "@components/container/layoutPage/rightContainer/widgets/root";
 
 
 export interface RootWidgetOptions extends WidgetOptions{
@@ -19,7 +22,105 @@ export interface RootWidgetOptions extends WidgetOptions{
     fillet?: BorderRadius
     background?: Color
     border?: Border
+    activeBorder?: boolean
+    contentHeight?: string | number
+    minMsgsViewHeight?: string | number
+    chatAreaMarginTop?: string | number
+    layoutBySafeArea?: string | number
+    canvasMargin?: ECanvasMargin
 }
+
+// 玩法列表
+export const Games = [
+    { label: '非玩法', value: 0 },
+    { label: '团战PK', value: 3 },
+    { label: '谁是卧底', value: 5 },
+    { label: '你画我猜', value: 6 },
+    { label: '抢占C位', value: 7 },
+    { label: '跳一跳', value: 8 },
+    { label: '连连看', value: 9 },
+    { label: '摩登大厦', value: 10 },
+    { label: '记忆卡', value: 11 },
+    { label: '拍卖', value: 12 },
+    { label: '团战pk-v2', value: 13 },
+    { label: '睡吧', value: 15 },
+    { label: '简易拍卖', value: 16 }
+]
+
+// canvasMargin枚举类型
+export enum ECanvasMargin {
+    CNS_DOWN_START = 0,
+    SCREEN_TOP_START = 1
+}
+
+// canvasMargins可选列表
+export const canvasMargins = [
+    { value: ECanvasMargin.CNS_DOWN_START, label: '画布上边距', description: '可选，端上默认从台标下开始画布局。可选贴着屏幕顶开始画' },
+    { value: ECanvasMargin.SCREEN_TOP_START, label: '从屏幕顶部边缘开始画', description: '可选，端上默认从台标下开始画布局。可选贴着屏幕顶开始画' }
+]
+
+
+
+export class RootSetting {
+
+    contentHeight!: string | number
+    minMsgsViewHeight!: string | number
+    chatAreaMarginTop!: string | number
+    // 未开发setter/getter
+    // 是否从安全区以下开始布局。默认是true
+    layoutBySafeArea?: string | number
+    canvasMargin?: ECanvasMargin | null
+
+    constructor(settings: TSetting) {
+        Object.assign(this, settings);
+        makeObservable(this, {
+            contentHeight: observable,
+            minMsgsViewHeight: observable,
+            chatAreaMarginTop: observable,
+            canvasMargin: observable,
+            setContentHeight: action,
+            setMinMsgsViewHeight: action,
+            setChatAreaMarginTop: action,
+            setCanvasMargin: action,
+        });
+    }
+
+    setContentHeight(height: string | number) {
+        // "minimum": 100,
+        // "maximum": 3000,
+        // assert(height < 100, '实际内容高度不能小于100');
+        // assert(height > 3000, '实际内容高度不能大于3000');
+        this.contentHeight = height;
+    }
+    
+    setMinMsgsViewHeight(height: string | number) {
+        // assert(height < 0, '弹幕区最小高度不能小于0');
+        // assert(height > 1000, '弹幕区最小高度不能大于1000');
+        this.minMsgsViewHeight = height;
+    }
+    
+    setChatAreaMarginTop(top: string | number) {
+        // assert(top < 0, '弹幕上边界距布局顶的高度不能小于0');
+        // assert(top > 1000, '弹幕上边界距布局顶的高度不能大于1000');
+        this.chatAreaMarginTop = top;
+    }
+
+    setCanvasMargin(marginType?: ECanvasMargin | null) {
+        this.canvasMargin = marginType;
+    }
+
+    toJson() {
+        return omitBy({
+            contentHeight: this.contentHeight,
+            minMsgsViewHeight: this.minMsgsViewHeight,
+            chatAreaMarginTop: this.chatAreaMarginTop,
+            layoutBySafeArea: this.layoutBySafeArea,
+            canvasMargin: this.canvasMargin,
+        }, value => isUndefined(value) || isNull(value));
+    }
+}
+
+
 
 
 @widgetType('root', {label: '根节点'})
@@ -32,12 +133,10 @@ export class RootWidget extends TreeWidget implements Exterior {
     allowSibling: boolean = false;
     
     // 游戏ID 只有Root节点存在
-    gameId?: number | string
+    gameId: number | string = 0
     // h5配置项 -> h5config
     config?: string
-    /**
-     * 圆角
-     */
+    // 圆角
     fillet: BorderRadius
     border: Border
     background: Color | LinearGradientdirection
@@ -47,13 +146,21 @@ export class RootWidget extends TreeWidget implements Exterior {
 
     h5Data: Object = {}
 
+    setting!: RootSetting
+
     constructor({
         gameId = 0,
         config = '',
         h5Data = {},
         fillet = new BorderRadius({}),
         border,
+        activeBorder,
         background,
+        contentHeight = 460,
+        minMsgsViewHeight = 170,
+        layoutBySafeArea = '1',
+        chatAreaMarginTop,
+        canvasMargin,
         ...superOptions
     }: RootWidgetOptions) {
         super(superOptions);
@@ -61,17 +168,24 @@ export class RootWidget extends TreeWidget implements Exterior {
         this.config = config;
         this.h5Data = h5Data;
         this.fillet = fillet;
+        this.setting = new RootSetting({
+            contentHeight,
+            minMsgsViewHeight,
+            chatAreaMarginTop,
+            layoutBySafeArea,
+            canvasMargin,
+        });
         this.border = border || new Border(
             Border.fromBorderSide(
                 new BorderSide({
                     color: new Color(0, 0, 100, 1),
-                    width: 1
                 })
             )
         );
+        // 这里的“或”是为了activeBackground是否被选中而故意而为之的
         this.background = background || new Color(0, 0, 100, 1);
         this.activeBackground = Boolean(background);
-        this.activeBorder = Boolean(border);
+        this.activeBorder = Boolean(activeBorder);
         makeObservableWithWidget(this, {
             gameId: observable,
             config: observable,
@@ -113,7 +227,7 @@ export class RootWidget extends TreeWidget implements Exterior {
         super.registerTracks();
     }
     
-    setGameId(newId?: string | number) {
+    setGameId(newId: string | number) {
         this.gameId = newId;
     }
 
@@ -163,10 +277,7 @@ export class RootWidget extends TreeWidget implements Exterior {
         if (this.activeBackground) {
             background = backgroundToJson(this.background);
         }
-        let round: any = {}
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
-        }
+        const round: any = borderToJson(this.border, this.fillet, this.activeBorder);
 
         return {
             id: this.id,
@@ -184,7 +295,12 @@ export class RootWidget extends TreeWidget implements Exterior {
                 visible: this.visible,
             },
             child: childrenJson,
+            setting: this.setting.toJson(),
             data: syncsToJson(this),
         };
+    }
+
+    render() {
+        return <RootRender />
     }
 }

@@ -10,7 +10,8 @@ import { makeObservableWithWidget } from "@utils/makeAutoObservablePrototype";
 import { omitBy } from "lodash";
 import { action, observable } from "mobx";
 import { Effects } from "./interface/widgetInterface";
-import { mobxTrackStates, Owner } from "@models/owners";
+import { mobxTrackStates } from "@models/owners";
+import { Owner } from "@models/owners/owner";
 
 export enum IMAGE_FIT {
     COVER = 0, // 缩放后截取中间部分显示，不会变形，会有缺失，常用
@@ -24,6 +25,7 @@ export interface ImageWidgetOptions extends WidgetOptions {
     fit?: IMAGE_FIT
     fillet?: BorderRadius
     border?: Border
+    activeBorder?: boolean
 }
 
 const defaultImageUrl: string[] = [
@@ -71,6 +73,7 @@ export class ImageWidget extends TreeWidget implements Effects {
         fit = IMAGE_FIT.COVER,
         fillet = new BorderRadius({}),
         border,
+        activeBorder,
         ...superOptions
     }: ImageWidgetOptions) {
         super(superOptions);
@@ -83,10 +86,9 @@ export class ImageWidget extends TreeWidget implements Effects {
         this.border = border || Border.fromBorderSide(
             new BorderSide({
                 color: new Color(0, 0, 100, 1),
-                width: 1
             })
         );
-        this.activeBorder = Boolean(border);
+        this.activeBorder = Boolean(activeBorder);
         makeObservableWithWidget(this, {
             src: observable,
             blur: observable,
@@ -153,10 +155,11 @@ export class ImageWidget extends TreeWidget implements Effects {
             const currChild = child as TreeWidget;
             childrenJson.push(currChild.toJson() as Node);
         });
-        let round: any = {}
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
-        }
+        const round: any = borderToJson(
+            this.border,
+            this.fillet,
+            this.activeBorder,
+        );
 
         const isAutoImage = (this.root as Owner)?.isAutoImage;
 
@@ -168,6 +171,7 @@ export class ImageWidget extends TreeWidget implements Effects {
             id: this.id,
             name: this.type,
             desc: this.name,
+            ___imageComponent: '',
             prop: {
                 layout: layoutToJson(this),
                 ...round,

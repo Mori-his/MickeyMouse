@@ -15,10 +15,10 @@ const LayoutPadding = styled.div`
     padding: 8px 8px;
 `;
 // 布局面板title容器
-const LayoutPanelTitleWrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
+// const LayoutPanelTitleWrapper = styled.div`
+//     display: flex;
+//     align-items: center;
+// `;
 // 布局面板对齐功能容器
 const LayoutPanelAlignWrapper = styled.div`
     display: flex;
@@ -96,7 +96,7 @@ export enum EAlignment {
     BOTTOM = 'bottom'
 }
 
-export const LayoutAlignDirection = observer(function LayoutAlignDirection(props: React.PropsWithChildren<LayoutAlignProps>) {
+export const LayoutAlignDirection = observer(function LayoutAlignDirection() {
     const currWidget = ownerCaretaker.currOwner.currWidget!;
 
     const theme = useContext(ThemeContext);
@@ -170,6 +170,7 @@ export const LayoutAlignDirection = observer(function LayoutAlignDirection(props
     );
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const LayoutAlignCenter = observer(function LayoutAlignCenter(_props: React.PropsWithChildren<LayoutAlignProps>) {
     const currWidget = ownerCaretaker.currOwner.currWidget!;
     const theme = useContext(ThemeContext);
@@ -199,6 +200,7 @@ export const LayoutAlignCenter = observer(function LayoutAlignCenter(_props: Rea
     );
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const LayoutAlignAuto = observer(function LayoutAlignAuto(props: React.PropsWithChildren<LayoutAlignProps>) {
     const currWidget = ownerCaretaker.currOwner.currWidget!;
     const theme = useContext(ThemeContext);

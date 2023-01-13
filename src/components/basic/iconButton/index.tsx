@@ -131,16 +131,16 @@ export interface IconButtonProps extends IconProps {
     padding?: number
     /**
      * 设置盒子形状
-     * @param 'circle' | 'round-angle'
+     * 'circle' | 'round-angle'
      */
     shape?: TShape
     /**
      * border-radius的四个角  
      * 如果设置了`shape: circle`则此属性无效
-     * @param topLeft
-     * @param topRight
-     * @param bottomLeft
-     * @param bottomRight
+     * topLeft
+     * topRight
+     * bottomLeft
+     * bottomRight
      */
     angle?: TAngle
     tippyProps?: TippyProps

@@ -1,0 +1,2592 @@
+{
+    "properties": {
+      "name": {
+        "title": "布局类型",
+        "type": "string",
+        "description": "",
+        "default": "root",
+        "readOnly": true,
+        "propertyOrder": 10
+      },
+      "id": {
+        "title": "节点唯一标识",
+        "type": "string",
+        "description": "当前布局内不允许重复，用于H5识别对应组件，根组件默认为root",
+        "default": "root",
+        "readOnly": true,
+        "propertyOrder": 20
+      },
+      "game": {
+        "title": "玩法",
+        "description": "玩法布局修改下次生效（当前正在使用此布局的不会同步变更修改，下次再使用此布局时才是最新的布局）",
+        "type": "string",
+        "enum": [
+          "0",
+          "3",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "15",
+          "16"
+        ],
+        "options": {
+          "enum_titles": [
+            "非玩法",
+            "团战PK",
+            "谁是卧底",
+            "你画我猜",
+            "抢占C位",
+            "跳一跳",
+            "摩登大厦",
+            "连连看",
+            "记忆卡",
+            "拍卖",
+            "团战pk-v2",
+            "睡吧",
+            "简易拍卖"
+          ]
+        },
+        "propertyOrder":30
+      },
+      "prop": {
+        "properties": {
+          "layout": {
+            "type": "object",
+            "$ref": "#/definitions/layout",
+            "default": {
+              "l": 0,
+              "t": 0,
+              "w": 900,
+              "h": 1600
+            },
+            "options": {
+              "collapsed": true
+            }
+          },
+          "bgColor": {
+            "title": "背景色",
+            "type": "object",
+            "$ref": "#/definitions/color"
+          },
+          "round": {
+            "title": "圆角",
+            "type": "object",
+            "$ref": "#/definitions/round",
+            "format": "grid"
+          },
+          "visible": {
+            "title": "是否可见",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            }
+          }
+        },
+        "title": "属性",
+        "type": "object",
+        "defaultProperties": [
+          "layout"
+        ],
+        "required": ["layout"],
+        "propertyOrder": 40
+      },
+      "child": {
+        "items": {
+          "title": "子组件",
+          "type": "object",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/labelComponent"
+            },
+            {
+              "$ref": "#/definitions/imageComponent"
+            },
+            {
+              "$ref": "#/definitions/viewComponent"
+            },
+            {
+              "$ref": "#/definitions/lottieComponent"
+            },
+            {
+              "$ref": "#/definitions/keyframeComponent"
+            },
+            {
+              "$ref": "#/definitions/keyframeProComponent"
+            },
+            {
+              "$ref": "#/definitions/seatViewComponent"
+            },
+            {
+              "$ref": "#/definitions/muteButtonComponent"
+            },
+            {
+              "$ref": "#/definitions/genderComponent"
+            },
+            {
+              "$ref": "#/definitions/followButtonComponent"
+            },
+            {
+              "$ref": "#/definitions/contributeComponent"
+            },
+            {
+              "$ref": "#/definitions/anchorAudienceMixedList"
+            }
+          ]
+        },
+        "title": "子组件",
+        "description": "层级越深，客户端的性能越低。层级：父组件和子组件就是一个层级，子组件再增加子组件，就是又加了一个层级。",
+        "type": "array",
+        "propertyOrder": 50
+      },
+      "bgLayout": {
+        "title": "背景层",
+        "description": "从左上角(0,0)点开始计算位置，设计分辨率同root节点一致",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "唯一标识",
+            "type": "string",
+            "description": "当前布局内不允许重复，用于H5识别对应组件，根组件默认为root",
+            "default": "background",
+            "readOnly": true
+          },
+          "name": {
+            "title": "名称",
+            "type": "string",
+            "default": "bgLayout",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layout",
+                "default": {
+                  "l": 0,
+                  "t": 0,
+                  "w": 900,
+                  "h": 1600
+                },
+                "options": {
+                  "collapsed": true
+                }
+              },
+              "bgColor": {
+                "title": "背景色",
+                "type": "object",
+                "$ref": "#/definitions/color"
+              },
+              "round": {
+                "title": "圆角",
+                "type": "object",
+                "$ref": "#/definitions/round",
+                "format": "grid"
+              },
+              "visible": {
+                "title": "是否可见",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                }
+              }
+            },
+            "title": "属性",
+            "type": "object",
+            "defaultProperties": [
+              "layout"
+            ],
+            "required": ["layout"]
+          },
+          "child": {
+            "items": {
+              "title": "子组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/bgViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "description": "层级越深，客户端的性能越低。层级：父组件和子组件就是一个层级，子组件再增加子组件，就是又加了一个层级。",
+            "type": "array"
+          }
+        },
+        "propertyOrder": 60
+      },
+      "setting": {
+        "type": "object",
+        "title": "布局配置",
+        "properties": {
+          "contentHeight": {
+            "type": "number",
+            "title": "实际内容高度",
+            "minimum": 100,
+            "maximum": 3000,
+            "description": "可选，默认同画布高度。以画布左上角0,0处计算，影响聊天区域的自适应"
+          },
+          "minMsgsViewHeight": {
+            "type": "number",
+            "title": "弹幕区最小高度（弹幕区高度控制）",
+            "minimum": 0,
+            "maximum": 1000,
+            "description": "可选，端上存在一个默认的最小高度，如果指定此选项，则此选项优先级高。注意：此选项和 弹幕上边界距布局顶的高度 选项冲突，仅可设置其一。"
+          },
+          "chatAreaMarginTop": {
+            "type": "number",
+            "title": "弹幕上边界距布局顶的高度（弹幕区高度控制）",
+            "minimum": 0,
+            "maximum": 1000,
+            "description": "可选，指定此选项后，弹幕区高度为客户端动态计算，保证弹幕顶部距布局顶是此选项指定的值。注意：此选项和 弹幕区最小高度 选项冲突，仅可设置其一。"
+          },
+          "canvasMargin": {
+            "type": "string",
+            "title": "画布上边距",
+            "description": "可选，端上默认从台标下开始画布局。可选贴着屏幕顶开始画",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "从台标下开始画（默认）",
+                "从屏幕顶部边缘开始画"
+              ]
+            }
+          }
+        },
+        "defaultProperties": [
+          "contentHeight"
+        ],
+        "options": {
+          "collapsed": true
+        },
+        "propertyOrder": 70
+      }
+    },
+    "title": "布局",
+    "type": "object",
+    "defaultProperties": [
+      "name",
+      "id",
+      "game",
+      "prop",
+      "child",
+      "setting"
+    ],
+    "required": ["name", "id", "prop", "child"],
+    "definitions": {
+      "___": {
+        "patternProperties": {
+          "___.*": {
+            "title": "识别属性，勿动",
+            "type": "string",
+            "required": ["___.*"],
+            "options": {
+              "hidden": true
+            }
+          }
+        }
+      },
+      "base": {
+        "$ref": "#/definitions/___",
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "组件名称",
+            "type": "string",
+            "propertyOrder": 10
+          },
+          "id": {
+            "title": "节点唯一标识",
+            "type": "string",
+            "description": "当前布局内不允许重复，用于H5识别对应组件。座位相关的需要以“_座位号”结尾，如“abc_1”、“abc_10”。非座位相关组件，不允许使用“_数字”结尾，如：“label_123”",
+            "pattern": "^[a-zA-Z0-9_]+$",
+            "minLength": 1,
+            "maxLength": 50,
+            "propertyOrder": 20
+          },
+          "desc": {
+            "title": "描述",
+            "type": "string",
+            "description": "备注，方便查看及修改",
+            "maxLength": 100,
+            "propertyOrder": 30
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layout",
+                "propertyOrder": 1
+              },
+              "bgColor": {
+                "$ref": "#/definitions/color",
+                "propertyOrder": 2000
+              },
+              "bgGradient": {
+                "title": "背景渐变色",
+                "description": "可以结合round使用，和bgColor互斥，优先级高于bgColor",
+                "type": "object",
+                "properties": {
+                  "orientation": {
+                    "title": "渐变方向",
+                    "type": "string",
+                    "enum": [
+                      "0",
+                      "1"
+                    ],
+                    "options": {
+                      "enum_titles": [
+                        "从左到右",
+                        "从上到下"
+                      ]
+                    }
+                  },
+                  "colors": {
+                    "title": "渐变颜色",
+                    "description": "均匀分布，一般为2-3个",
+                    "type": "array",
+                    "items": {
+                      "minLength": 2,
+                      "maxLength": 5,
+                      "$ref": "#/definitions/color"
+                    }
+                  }
+                },
+                "propertyOrder": 2500
+              },
+              "round": {
+                "$ref": "#/definitions/round",
+                "format": "grid",
+                "propertyOrder": 3000
+              },
+              "visible": {
+                "title": "是否可见",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                },
+                "propertyOrder": 4000
+              }
+            },
+            "title": "属性",
+            "type": "object",
+            "defaultProperties": [
+              "layout"
+            ],
+            "options": {
+              "collapsed": true
+            },
+            "required": ["layout"],
+            "propertyOrder": 40
+          },
+          "data": {
+            "title": "数据映射（如无，请从上级勾掉）",
+            "type": "object",
+            "description": "至少有一个属性，如无，请整体取消此属性。此组件支持的属性可指定数据来源，具体格式参照：https://git.corp.qihoo.net/pepper/doc/blob/master/interface/live/publicRoom/README.md",
+            "propertyOrder": 50,
+            "patternProperties": {
+              ".*": {
+                "type": "string",
+                "minLength": 6,
+                "maxLength": 200
+              }
+            },
+            "minProperties": 1
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "desc",
+          "prop"
+        ],
+        "defaultProperties": [
+          "name",
+          "id",
+          "desc",
+          "prop"
+        ]
+      },
+      "layout": {
+        "$ref": "#/definitions/___",
+        "properties": {
+          "l": {
+            "title": "距左",
+            "description": "单位：像素",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "propertyOrder": 10
+          },
+          "r": {
+            "title": "距右",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 20
+          },
+          "t": {
+            "title": "距上",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 30
+          },
+          "b": {
+            "title": "距下",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 40
+          },
+          "w": {
+            "title": "宽度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 50
+          },
+          "h": {
+            "title": "高度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 60
+          },
+          "centerLand": {
+            "title": "相对于父容器，横向居中",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            },
+            "propertyOrder": 70
+          },
+          "centerPort": {
+            "title": "相对于父容器，纵向居中",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            },
+            "propertyOrder": 80
+          },
+          "___layout": {}
+        },
+        "title": "位置布局",
+        "type": "object",
+        "description": "可灵活设置各种布局，如不会使用请咨询客户端同学",
+        "format": "grid",
+        "defaultProperties": [
+          "l",
+          "t",
+          "w",
+          "h",
+          "___layout"
+        ]
+      },
+      "layoutSupportAutoWidthHeight": {
+        "$ref": "#/definitions/___",
+        "properties": {
+          "l": {
+            "title": "距左",
+            "description": "单位：像素",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "propertyOrder": 10
+          },
+          "r": {
+            "title": "距右",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 20
+          },
+          "t": {
+            "title": "距上",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 30
+          },
+          "b": {
+            "title": "距下",
+            "type": "number",
+            "minimum": -2000,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 40
+          },
+          "w": {
+            "title": "宽度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 50
+          },
+          "h": {
+            "title": "高度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "description": "单位：像素",
+            "propertyOrder": 60
+          },
+          "centerLand": {
+            "title": "横向居中",
+            "description": "相对于父容器",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            },
+            "propertyOrder": 70
+          },
+          "centerPort": {
+            "title": "纵向居中",
+            "description": "相对于父容器",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            },
+            "propertyOrder": 80
+          },
+          "widthAuto": {
+            "title": "宽度自适应",
+            "description": "可用于横向布局，固定高度",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            },
+            "propertyOrder": 90
+          },
+          "heightAuto": {
+            "title": "高度自适应",
+            "description": "可用于纵向布局，固定宽度",
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "options": {
+              "enum_titles": [
+                "否",
+                "是"
+              ]
+            },
+            "propertyOrder": 100
+          },
+          "___layoutSupportAutoWidthHeight": {}
+        },
+        "title": "位置布局（支持自适应）",
+        "type": "object",
+        "description": "可灵活设置各种布局，如不会使用请咨询客户端同学",
+        "format": "grid",
+        "defaultProperties": [
+          "l",
+          "t",
+          "w",
+          "h",
+          "___layoutSupportAutoWidthHeight"
+        ]
+      },
+      "stream": {
+        "$ref": "#/definitions/___",
+        "properties": {
+          "width": {
+            "title": "宽度",
+            "description": "单位：像素",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "default": 180,
+            "propertyOrder": 10
+          },
+          "height": {
+            "title": "高度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "default": 320,
+            "description": "单位：像素",
+            "propertyOrder": 20
+          },
+          "fps": {
+            "title": "帧率",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 25,
+            "default": 15,
+            "description": "单位：fps",
+            "propertyOrder": 30
+          },
+          "rate": {
+            "title": "码率",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 3000,
+            "default": 90,
+            "description": "单位：kbps",
+            "propertyOrder": 40
+          },
+          "___stream": {}
+        },
+        "title": "视频流配置",
+        "type": "object",
+        "description": "配置码率，帧率，如不会使用请咨询客户端同学",
+        "format": "grid",
+        "defaultProperties": [
+          "width",
+          "height",
+          "fps",
+          "rate",
+          "___stream"
+        ]
+      },
+      "color": {
+        "$ref": "#/definitions/___",
+        "properties": {
+          "color": {
+            "title": "颜色",
+            "type": "string",
+            "format": "color",
+            "default": "#000000"
+          },
+          "alpha": {
+            "title": "透明度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1
+          },
+          "___color": {}
+        },
+        "title": "颜色",
+        "type": "object",
+        "format": "grid",
+        "defaultProperties": [
+          "color",
+          "___color"
+        ]
+      },
+      "round": {
+        "$ref": "#/definitions/___",
+        "properties": {
+          "radius": {
+            "title": "圆角半径",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "borderWidth": {
+            "title": "边框的宽度",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 20
+          },
+          "borderColor": {
+            "title": "边框颜色",
+            "$ref": "#/definitions/color"
+          },
+          "___round": {}
+        },
+        "title": "圆角",
+        "type": "object",
+        "defaultProperties": [
+          "radius",
+          "___round"
+        ]
+      },
+      "viewComponent": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponent1"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/seatViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponent": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponent"
+        ]
+      },
+      "viewComponent1": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponent2"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/seatViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "description": "层级越深，客户端的性能越低。层级：父组件和子组件就是一个层级，子组件再增加子组件，就是又加了一个层级。",
+            "type": "array"
+          },
+          "___viewComponent1": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponent1"
+        ]
+      },
+      "viewComponent2": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponent3"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/seatViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponent2": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponent2"
+        ]
+      },
+      "viewComponent3": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponent4"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/seatViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponent3": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponent3"
+        ]
+      },
+      "viewComponent4": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponent5"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/seatViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponent4": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponent4"
+        ]
+      },
+      "viewComponent5": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/seatViewComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponent5": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponent5"
+        ]
+      },
+      "viewComponentWithoutSeat": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "selectBgView表示用户点击座位时的选中效果视图",
+            "default": "view",
+            "enum": [
+              "view",
+              "selectBgView"
+            ]
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponentWithoutSeat1"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                },
+                {
+                  "$ref": "#/definitions/stampView"
+                }
+              ]
+            },
+            "title": "子组件",
+            "description": "层级越深，客户端的性能越低。层级：父组件和子组件就是一个层级，子组件再增加子组件，就是又加了一个层级。",
+            "type": "array"
+          },
+          "___viewComponentWithoutSeat": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponentWithoutSeat"
+        ]
+      },
+      "viewComponentWithoutSeat1": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "selectBgView表示用户点击座位时的选中效果视图",
+            "default": "view",
+            "enum": [
+              "view",
+              "selectBgView"
+            ]
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponentWithoutSeat2"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                },
+                {
+                  "$ref": "#/definitions/stampView"
+                }
+              ]
+            },
+            "title": "子组件",
+            "description": "层级越深，客户端的性能越低。层级：父组件和子组件就是一个层级，子组件再增加子组件，就是又加了一个层级。",
+            "type": "array"
+          },
+          "___viewComponentWithoutSeat1": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponentWithoutSeat1"
+        ]
+      },
+      "viewComponentWithoutSeat2": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "selectBgView表示用户点击座位时的选中效果视图",
+            "default": "view",
+            "enum": [
+              "view",
+              "selectBgView"
+            ]
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponentWithoutSeat3"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                },
+                {
+                  "$ref": "#/definitions/stampView"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponentWithoutSeat2": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponentWithoutSeat2"
+        ]
+      },
+      "viewComponentWithoutSeat3": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "selectBgView表示用户点击座位时的选中效果视图",
+            "default": "view",
+            "enum": [
+              "view",
+              "selectBgView"
+            ]
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponentWithoutSeat4"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                },
+                {
+                  "$ref": "#/definitions/stampView"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponentWithoutSeat3": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponentWithoutSeat3"
+        ]
+      },
+      "viewComponentWithoutSeat4": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "selectBgView表示用户点击座位时的选中效果视图",
+            "default": "view",
+            "enum": [
+              "view",
+              "selectBgView"
+            ]
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponentWithoutSeat5"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                },
+                {
+                  "$ref": "#/definitions/stampView"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponentWithoutSeat4": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponentWithoutSeat4"
+        ]
+      },
+      "viewComponentWithoutSeat5": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "selectBgView表示用户点击座位时的选中效果视图",
+            "default": "view",
+            "enum": [
+              "view",
+              "selectBgView"
+            ]
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                },
+                {
+                  "$ref": "#/definitions/stampView"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___viewComponentWithoutSeat5": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___viewComponentWithoutSeat5"
+        ]
+      },
+      "bgViewComponent": {
+        "$ref": "#/definitions/base",
+        "title": "view组件",
+        "properties": {
+          "name": {
+            "default": "view",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "description": "层级越深，客户端的性能越低。层级：父组件和子组件就是一个层级，子组件再增加子组件，就是又加了一个层级。",
+            "type": "array"
+          },
+          "___bgViewComponent": {}
+        },
+        "defaultProperties": [
+          "child",
+          "___bgViewComponent"
+        ]
+      },
+      "labelComponent": {
+        "$ref": "#/definitions/base",
+        "title": "文字组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "label",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              },
+              "text": {
+                "type": "string",
+                "title": "文字内容",
+                "maxLength": 1000,
+                "propertyOrder": 10
+              },
+              "textSize": {
+                "type": "number",
+                "title": "文字大小",
+                "minimum": 10,
+                "maximum": 100,
+                "propertyOrder": 20
+              },
+              "textColor": {
+                "title": "文字颜色",
+                "type": "object",
+                "$ref": "#/definitions/color",
+                "propertyOrder": 30
+              },
+              "maxWidth": {
+                "type": "number",
+                "title": "最大宽度",
+                "minimum": 0,
+                "maximum": 2000,
+                "propertyOrder": 40
+              },
+              "ellipsize": {
+                "type": "string",
+                "title": "超长处理",
+                "description": "文本超过显示范围后的末尾处理方式。设置最大宽度或宽度后，单行可以有跑马灯效果，单行多行可以末尾省略号或截断",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "省略号",
+                    "截断",
+                    "跑马灯"
+                  ]
+                },
+                "propertyOrder": 50
+              },
+              "maxLines": {
+                "type": "number",
+                "title": "最多显示行数",
+                "minimum": 1,
+                "maximum": 50,
+                "default": 1,
+                "propertyOrder": 60
+              },
+              "gravity": {
+                "type": "string",
+                "title": "内部文字位置",
+                "description": "可用于固定label大小，设置文字位置，纵向始终是居中的",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "default": "0",
+                "options": {
+                  "enum_titles": [
+                    "左对齐",
+                    "右对齐",
+                    "居中"
+                  ]
+                },
+                "propertyOrder": 70
+              },
+              "format": {
+                "title": "格式化",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "保持原样",
+                    "数字缩写（超过1千万，改成0.2f万；超过1亿改成0.2f亿）"
+                  ]
+                }
+              },
+              "fontName": {
+                "title": "字体名称",
+                "type": "string",
+                "enum": [
+                  "cyrillic",
+                  "bold",
+                  "italic",
+                  "archive"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "PT DIN Condensed Cyrillic",
+                    "Roboto Condensed Bold",
+                    "Roboto Black Italic",
+                    "ARCHIVE"
+                  ]
+                }
+              }
+            },
+            "defaultProperties": [
+              "text",
+              "textSize",
+              "gravity",
+              "textColor"
+            ]
+          },
+          "___labelComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___labelComponent"
+        ]
+      },
+      "imageComponent": {
+        "$ref": "#/definitions/base",
+        "title": "图片组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "image",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "src": {
+                "title": "图片地址",
+                "type": "string",
+                "format": "url"
+              },
+              "defaultSrc": {
+                "title": "默认图地址",
+                "description": "支持使用客户端内置默认图标识：avatar（默认头像）",
+                "type": "string"
+              },
+              "mode": {
+                "title": "显示模式",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "缩放后截取中间部分显示，不会变形，会有缺失，常用",
+                    "有留白，不会变形",
+                    "铺满，会变形"
+                  ]
+                }
+              },
+              "blur": {
+                "title": "高斯模糊",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                }
+              }
+            },
+            "defaultProperties": [
+              "src",
+              "defaultSrc",
+              "mode"
+            ]
+          },
+          "___imageComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___imageComponent"
+        ]
+      },
+      "lottieComponent": {
+        "$ref": "#/definitions/base",
+        "title": "json动画组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "当作为音频座位呼吸灯时，取值为：audioAnim",
+            "default": "lottie",
+            "enum": [
+              "lottie",
+              "audioAnim"
+            ],
+            "readOnly": false
+          },
+          "prop": {
+            "properties": {
+              "url": {
+                "type": "string",
+                "title": "json动画url",
+                "format": "url"
+              }
+            },
+            "title": "属性",
+            "type": "object",
+            "defaultProperties": [
+              "url"
+            ]
+          },
+          "___lottieComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___lottieComponent"
+        ]
+      },
+      "keyframeComponent": {
+        "$ref": "#/definitions/base",
+        "title": "关键帧动画组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "keyframe",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "url": {
+                "type": "string",
+                "title": "帧动画url",
+                "format": "url"
+              }
+            },
+            "defaultProperties": [
+              "url"
+            ]
+          },
+          "___keyframeComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___keyframeComponent"
+        ]
+      },
+      "keyframeProComponent": {
+        "$ref": "#/definitions/base",
+        "title": "头像框类帧动画组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "keyframePro",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "res": {
+                "title": "动画资源",
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "title": "静态图url",
+                    "type": "string"
+                  },
+                  "animation": {
+                    "title": "动画zip包url",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "title": "属性",
+            "type": "object"
+          },
+          "data": {
+            "properties": {
+              "res": {
+                "title": "动画资源(res)",
+                "type": "string",
+                "default": "sync:p_avatar_frame.avatar_frames[uid=$sync:p_user.users[seat=1].user.uid]"
+              }
+            }
+          },
+          "___keyframeProComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___keyframeProComponent"
+        ]
+      },
+      "seatViewComponent": {
+        "$ref": "#/definitions/base",
+        "title": "座位组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "seatView",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "seat": {
+                "type": "number",
+                "title": "座位号",
+                "minimum": 0,
+                "maximum": 8,
+                "propertyOrder": 1
+              },
+              "pos": {
+                "type": "number",
+                "title": "顺序",
+                "description": "座位展示顺序，小在前大在后。如果不设置则默认为座位号，一般用于按顺序处理座位，例如:老板位举牌子",
+                "minimum": 0,
+                "maximum": 8,
+                "propertyOrder": 2
+              },
+              "asHost": {
+                "title": "是否可以作为主持人位置",
+                "description": "如果允许，则用户可以使用主持人身份上此座位，也就是允许同时多个主持人在座位。房间内主持人数量限制在别处实现",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                },
+                "propertyOrder": 10
+              },
+              "asGuest": {
+                "title": "普通用户是否可以上此座位",
+                "description": "允许设置成某个座位仅有主持人权限的用户才可使用",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                },
+                "propertyOrder": 20
+              },
+              "video": {
+                "type": "string",
+                "title": "视频模式",
+                "description": "可设置是否允许操作视频模式、默认上麦是否使用视频模式",
+                "remark": "按位计算，位为1时，低1位表示视频模式上麦；低2位表示展示视频按钮；低3位表示禁止使用视频模式",
+                "default": "2",
+                "enum": [
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "允许使用视频模式，不展示视频操作按钮，音频模式上麦",
+                    "允许使用视频模式，不展示视频操作按钮，视频模式上麦",
+                    "允许使用视频模式，展示视频操作按钮，音频模式上麦",
+                    "允许使用视频模式，展示视频操作按钮，视频模式上麦",
+                    "不允许使用视频模式，不展示视频操作按钮，音频模式上麦"
+                  ]
+                },
+                "propertyOrder": 30
+              },
+              "mute": {
+                "title": "上麦默认静音",
+                "description": "上麦后，默认为关闭了声音，可选同自己关闭的效果，或者同管理员关闭的效果。",
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "效果：不静音",
+                    "效果：自己关闭",
+                    "效果：被管理员关闭"
+                  ]
+                },
+                "propertyOrder": 40
+              },
+              "seatInfo": {
+                "type": "object",
+                "title": "座位信息",
+                "description": "请通过数据映射设置"
+              },
+              "states": {
+                "type": "object",
+                "title": "状态布局",
+                "properties": {
+                  "empty": {
+                    "$ref": "#/definitions/base",
+                    "type": "object",
+                    "title": "空座位布局",
+                    "properties": {
+                      "name": {
+                        "default": "emptyView",
+                        "readOnly": true
+                      },
+                      "child": {
+                        "items": {
+                          "title": "组件",
+                          "type": "object",
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/labelComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/imageComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/viewComponentWithoutSeat"
+                            },
+                            {
+                              "$ref": "#/definitions/lottieComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/keyframeComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/keyframeProComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/muteButtonComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/genderComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/followButtonComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/contributeComponent"
+                            }
+                          ]
+                        },
+                        "title": "子组件",
+                        "type": "array"
+                      }
+                    },
+                    "defaultProperties": [
+                      "child"
+                    ]
+                  },
+                  "audio": {
+                    "$ref": "#/definitions/base",
+                    "title": "音频模式布局",
+                    "properties": {
+                      "name": {
+                        "default": "audioView",
+                        "readOnly": true
+                      },
+                      "child": {
+                        "items": {
+                          "title": "组件",
+                          "type": "object",
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/labelComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/imageComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/viewComponentWithoutSeat"
+                            },
+                            {
+                              "$ref": "#/definitions/lottieComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/keyframeComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/keyframeProComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/muteButtonComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/genderComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/followButtonComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/contributeComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/stampView"
+                            }
+                          ]
+                        },
+                        "title": "子组件",
+                        "type": "array"
+                      }
+                    },
+                    "defaultProperties": [
+                      "child"
+                    ]
+                  },
+                  "video": {
+                    "$ref": "#/definitions/base",
+                    "title": "视频模式布局",
+                    "properties": {
+                      "name": {
+                        "default": "videoView",
+                        "readOnly": true
+                      },
+                      "child": {
+                        "items": {
+                          "title": "组件",
+                          "type": "object",
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/labelComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/imageComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/viewComponentWithoutSeat"
+                            },
+                            {
+                              "$ref": "#/definitions/lottieComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/keyframeComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/keyframeProComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/muteButtonComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/genderComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/followButtonComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/contributeComponent"
+                            },
+                            {
+                              "$ref": "#/definitions/stampView"
+                            }
+                          ]
+                        },
+                        "title": "子组件",
+                        "type": "array"
+                      }
+                    },
+                    "defaultProperties": [
+                      "child"
+                    ]
+                  }
+                },
+                "propertyOrder": 40,
+                "options": {
+                  "collapsed": true
+                }
+              },
+              "stream": {
+                "title": "视频流配置",
+                "$ref": "#/definitions/stream",
+                "propertyOrder": 50
+              },
+              "zoomable": {
+                "title": "是否支持缩放，需同时配置“缩放配置”",
+                "description": "用于告知客户端提供操作入口",
+                "type": "string",
+                "default": "1",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                },
+                "propertyOrder": 60
+              },
+              "bigger": {
+                "title": "当前是否为放大的窗口",
+                "type": "string",
+                "default": "0",
+                "enum": [
+                  "0",
+                  "1"
+                ],
+                "options": {
+                  "enum_titles": [
+                    "否",
+                    "是"
+                  ]
+                },
+                "propertyOrder": 70
+              },
+              "zoom": {
+                "title": "缩放配置",
+                "description": "如果配置了支持缩放，则必须配置如下内容",
+                "type": "object",
+                "properties": {
+                  "to": {
+                    "title": "缩放操作切换至的布局标识",
+                    "description": "如果当前为大窗，则此处填写的就是切换至小窗的布局。反之亦然",
+                    "type": "string"
+                  }
+                },
+                "defaultProperties": ["to"],
+                "propertyOrder": 80
+              }
+            },
+            "require": [
+              "seat",
+              "states"
+            ],
+            "defaultProperties": [
+              "seat",
+              "states"
+            ]
+          },
+          "data": {
+            "properties": {
+              "seatInfo": {
+                "title": "座位信息(seatInfo)",
+                "description": "需要修改seat对应的值为具体座位号",
+                "type": "string",
+                "default": "sync:p_user.users[seat=1]"
+              }
+            }
+          },
+          "child": {
+            "items": {
+              "title": "子组件",
+              "type": "object",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/labelComponent"
+                },
+                {
+                  "$ref": "#/definitions/imageComponent"
+                },
+                {
+                  "$ref": "#/definitions/viewComponentWithoutSeat"
+                },
+                {
+                  "$ref": "#/definitions/lottieComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeComponent"
+                },
+                {
+                  "$ref": "#/definitions/keyframeProComponent"
+                },
+                {
+                  "$ref": "#/definitions/muteButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/genderComponent"
+                },
+                {
+                  "$ref": "#/definitions/followButtonComponent"
+                },
+                {
+                  "$ref": "#/definitions/contributeComponent"
+                }
+              ]
+            },
+            "title": "子组件",
+            "type": "array"
+          },
+          "___seatViewComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "child",
+          "___seatViewComponent"
+        ]
+      },
+      "muteButtonComponent": {
+        "$ref": "#/definitions/base",
+        "title": "静音按钮组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "muteButton",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "onSrc": {
+                "type": "string",
+                "title": "开启图标",
+                "description": "不填则使用客户端内置图标",
+                "format": "url"
+              },
+              "offSrc": {
+                "type": "string",
+                "title": "关闭图标",
+                "description": "不填则使用客户端内置图标",
+                "format": "url"
+              }
+            },
+            "defaultProperties": []
+          },
+          "___muteButtonComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___muteButtonComponent"
+        ]
+      },
+      "genderComponent": {
+        "$ref": "#/definitions/base",
+        "title": "性别组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "genderView",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "genderUrl": {
+                "type": "object",
+                "title": "性别图片url",
+                "properties": {
+                  "M": {
+                    "type": "string",
+                    "title": "男性图片",
+                    "description": "不填则使用客户端内置图标",
+                    "format": "url"
+                  },
+                  "F": {
+                    "type": "string",
+                    "title": "女性图片",
+                    "description": "不填则使用客户端内置图标",
+                    "format": "url"
+                  },
+                  "N": {
+                    "type": "string",
+                    "title": "未知性别图片",
+                    "description": "不填则使用客户端内置图标",
+                    "format": "url"
+                  }
+                },
+                "defaultProperties": [
+                  "M",
+                  "F",
+                  "N"
+                ]
+              }
+            }
+          },
+          "___genderComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___genderComponent"
+        ]
+      },
+      "followButtonComponent": {
+        "$ref": "#/definitions/base",
+        "title": "关注按钮组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "followButton",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "src": {
+                "type": "string",
+                "title": "按钮图标url",
+                "description": "不填则使用客户端内置图标",
+                "format": "url"
+              }
+            },
+            "title": "属性",
+            "type": "object"
+          },
+          "___followButtonComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___followButtonComponent"
+        ]
+      },
+      "contributeComponent": {
+        "$ref": "#/definitions/base",
+        "title": "三人贡献榜组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "contributeView",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "fansWidth": {
+                "title": "粉丝头像宽度",
+                "type": "number",
+                "minimum": 10,
+                "maximum": 300
+              },
+              "fansMargin": {
+                "title": "粉丝头像间间距",
+                "type": "number",
+                "minimum": -100,
+                "maximum": 300
+              },
+              "fansBorderWidth": {
+                "title": "粉丝头像边框宽度",
+                "type": "number",
+                "minimum": 10,
+                "maximum": 300
+              },
+              "rank": {
+                "title": "贡献榜数据",
+                "description": "一般由data映射而来",
+                "type": "object"
+              },
+              "layout": {
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              }
+            },
+            "title": "属性",
+            "type": "object"
+          },
+          "data": {
+            "properties": {
+              "rank": {
+                "title": "贡献榜数据(rank)",
+                "description": "需要修改seat为对应的座位号",
+                "type": "string",
+                "default": "sync:p_rank_user2author.ranks[author=$sync:p_user.users[seat=1].user.uid]"
+              }
+            }
+          },
+          "___contributeComponent": {}
+        },
+        "defaultProperties": [
+          "data",
+          "___contributeComponent"
+        ]
+      },
+      "stampView": {
+        "$ref": "#/definitions/base",
+        "title": "盖章承载组件",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "stampView",
+            "readOnly": true
+          },
+          "___stampView": {}
+        },
+        "defaultProperties": [
+          "___stampView"
+        ]
+      },
+      "anchorAudienceMixedList": {
+        "$ref": "#/definitions/base",
+        "title": "用户列表组件（在麦+观众）",
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "anchor_audience_mixed_list",
+            "readOnly": true
+          },
+          "prop": {
+            "properties": {
+              "layout": {
+                "type": "object",
+                "$ref": "#/definitions/layoutSupportAutoWidthHeight"
+              },
+              "sort": {
+                "items": {
+                  "title": "用户排序描述",
+                  "type": "object",
+                  "properties":{
+                    "uid": {
+                      "type": "number",
+                      "title": "用户uid",
+                      "description": "用户uid",
+                      "propertyOrder": 1
+                    },
+                    "pos": {
+                      "type": "number",
+                      "title": "顺序",
+                      "description": "展示顺序，小在前大在后",
+                      "minimum": 1,
+                      "maximum": 100,
+                      "propertyOrder": 2
+                    }
+                  }
+                },
+                "title": "用户排序描述（一般为映射数据）",
+                "type": "array",
+                "propertyOrder": 50
+              }
+            }
+          },
+          "data": {
+            "properties": {
+              "sort": {
+                "title": "排序数据源（sort）",
+                "type": "string",
+                "default": "sync:p_link_user_sort.list"
+              }
+            }
+          },
+          "___anchorAudienceMixedList": {}
+        },
+        "defaultProperties": [
+          "___anchorAudienceMixedList"
+        ]
+      }
+    }
+  }

@@ -17,6 +17,7 @@ export interface ContainerWidgetOptions extends WidgetOptions {
     usedBy: string
     fillet?: BorderRadius
     border?: Border
+    activeBorder?: boolean
     background?: Color | LinearGradientdirection
 }
 
@@ -56,6 +57,7 @@ export class ContainerWidget extends TreeWidget implements Exterior {
         usedBy,
         fillet = new BorderRadius({}),
         border,
+        activeBorder,
         background,
         ...otherProps
     }: ContainerWidgetOptions) {
@@ -67,13 +69,12 @@ export class ContainerWidget extends TreeWidget implements Exterior {
             Border.fromBorderSide(
                 new BorderSide({
                     color: new Color(0, 0, 100, 1),
-                    width: 1
                 })
             )
         );
         this.background = background || new Color(0, 0, 100, 1);
         this.activeBackground = Boolean(background);
-        this.activeBorder = Boolean(border);
+        this.activeBorder = Boolean(activeBorder);
         makeObservableWithWidget(this, {
             usedBy: observable,
             fillet: observable,
@@ -141,10 +142,11 @@ export class ContainerWidget extends TreeWidget implements Exterior {
         if (this.activeBackground) {
             background = backgroundToJson(this.background);
         }
-        let round: any = {}
-        if (this.activeBorder) {
-            round = borderToJson(this.border, this.fillet);
-        }
+        let round: any = borderToJson(
+            this.border,
+            this.fillet,
+            this.activeBorder
+        );
         return {
             id: this.id,
             name: this.type,

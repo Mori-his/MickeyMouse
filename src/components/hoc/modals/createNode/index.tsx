@@ -7,7 +7,7 @@ import Input from '@components/basic/form/input/input';
 import { WidgetTypeManage } from '@models/factory/widgetTypeClassManage';
 import { ChangeEvent, useEffect, useReducer, useState } from 'react';
 import { ModalHOCProps } from '..';
-import Select, { GroupBase, SingleValue, StylesConfig } from 'react-select';
+import Select, { GroupBase, SingleValue } from 'react-select';
 import Button from '@components/basic/button';
 import { ActionMap } from '@/types/redux.type';
 import { MessageControl } from '@components/basic/common/message/message';
@@ -88,7 +88,7 @@ export function CreateNodeReducer(
 }
 
 /**
- * @deprecated
+ * @deprecated - 弃用
  */
 export const ModalCreateNode = function(props: ModalHOCProps) {
     const widgetTypeManage = WidgetTypeManage.getInstance();
@@ -96,6 +96,7 @@ export const ModalCreateNode = function(props: ModalHOCProps) {
         onClose = () => {},
         onConfirm = () => {},
         onCancel = () => {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         children,
         in: isOpen = false,
         ...otherProps

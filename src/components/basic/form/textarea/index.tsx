@@ -36,6 +36,7 @@ export type PropsTextareaWith<T = {}> = T & {
     width?: number
     height?: number
     backgroundColor?: string
+    regExp?: RegExp
 }
 
 export const Textarea = React.forwardRef(function Input(
@@ -48,10 +49,11 @@ export const Textarea = React.forwardRef(function Input(
         backgroundColor,
         onChange = () => {},
         label,
+        regExp,
         ...textareaProps
     } = props;
     const currRef = useRef<HTMLTextAreaElement | null>(null);
-
+    
     useImperativeHandle(
         textareaRef,
         () => ({

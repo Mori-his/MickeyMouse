@@ -20,7 +20,7 @@ export class Layout extends BasicNode implements ILayout {
     
     /**
      * 设置子节点的[ParentData]
-     * @param child 要设置[parentData]的子节点
+     * @param child - 要设置[parentData]的子节点
      * @override
      */
     setupParentData(child: BasicNode) {
@@ -30,7 +30,7 @@ export class Layout extends BasicNode implements ILayout {
 
     /**
      * 关联子节点
-     * @param child 要关联的子节点
+     * @param child - 要关联的子节点
      * @override
      */
     adoptChild(child: BasicNode) {
@@ -84,7 +84,7 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
     position!: IAdaptivePosition
     size!: IAdaptiveSize
 
-    abstract type: string
+    abstract readonly type: string
 
     constructor({
         id,
@@ -108,7 +108,7 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
 
     /**
      * 设置子节点的[ParentData]
-     * @param child 要设置[parentData]的子节点
+     * @param child - 要设置[parentData]的子节点
      * @override
      */
     setupParentData(child: BasicNode) {
@@ -118,7 +118,7 @@ export abstract class Widget extends ContainerNodeMixin<Layout, WidgetParentData
 
     /**
      * 关联子节点
-     * @param child 要关联的子节点
+     * @param child - 要关联的子节点
      * @override
      */
     adoptChild(child: BasicNode) {
