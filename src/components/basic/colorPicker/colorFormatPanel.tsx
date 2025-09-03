@@ -1,6 +1,6 @@
-import Color from "@utils/color";
-import React, { useEffect, useRef, useState } from "react";
-import { IHSB, THSBSignle, TRGBSignle, IRGBA, IRGB } from '@/types/color';
+import Color from "@layout/utils/color";
+import React, { useRef, useState } from "react";
+import { THSBSignle, TRGBSignle } from '@/types/color';
 import { ColorInput, ColorInputBox, ColorValuePanel, maxOpacity } from ".";
 import Select from "../form/select";
 
@@ -17,46 +17,45 @@ enum EHSB {
 }
 
 export interface ColorFormatPanelProps {
-    rgba: IRGBA
-    colorChange?: (rgb: IRGBA) => any
+    color: Color
+    colorChange?: (color: Color) => any
 }
 
 
 interface IFormatData {
     name: FORMAT
     id: number
-    serialize(rgba: IRGBA):  string | IRGBA | IHSB
 }
 
 const formatData: Array<IFormatData> = [
-    {name: FORMAT.HEX, id: 0, serialize: (rgba: IRGBA) => { return Color.rgbToHex(rgba.r, rgba.g, rgba.b).toLocaleUpperCase() }},
-    {name: FORMAT.RGB, id: 1, serialize: (rgba: IRGBA) => { return rgba }},
-    {name: FORMAT.HSB, id: 2, serialize: (rgba: IRGBA) => { return Color.rgbToHsb(rgba.r, rgba.g, rgba.b) }}
+    {name: FORMAT.HEX, id: 0 },
+    {name: FORMAT.RGB, id: 1},
+    {name: FORMAT.HSB, id: 2 }
 ];
 
 
 export interface ColorFormatProps {
     format: IFormatData
-    rgba: IRGBA
-    changeColor?: Function
+    color: Color
+    changeColor?: (color: Color) => void
 }
 
 export function ColorFormat(props: ColorFormatProps) {
-    const { format, rgba, changeColor = () => {} } = props;
+    const { format, color, changeColor = () => {} } = props;
     if (format.name === FORMAT.HEX) {
-        const hex = format.serialize(rgba) as string;
+        const hex = color.hex as string;
         const handleHexChange = function(e: React.FocusEvent<HTMLInputElement>) {
             try {
                 const RGB = Color.hexToRGB(e.target.value);
                 if (typeof RGB !== 'string') {
-                    changeColor(RGB);
-                    const hex = format.serialize(rgba) as string;
-                    e.target.value = hex.toLocaleUpperCase();
+                    const hsb = Color.rgbToHsb(RGB.r, RGB.g, RGB.b);
+                    changeColor(new Color(hsb.h, hsb.s, hsb.b, color.a));
+                    e.target.value = e.target.value.toLocaleUpperCase();
                     return;
                 }
-                e.target.value = hex;
+                e.target.value = hex.toLocaleUpperCase();
             } catch(err) {
-                e.target.value = hex;
+                e.target.value = hex.toLocaleUpperCase();
             }
         }
         return (
@@ -65,7 +64,7 @@ export function ColorFormat(props: ColorFormatProps) {
                     <ColorInput
                         key={ hex }
                         $width={80}
-                        defaultValue={ hex }
+                        defaultValue={ hex.toLocaleUpperCase() }
                         onBlur={e => handleHexChange(e)}
                         />
                 </ColorInputBox>
@@ -74,140 +73,128 @@ export function ColorFormat(props: ColorFormatProps) {
     }
     if (format.name === FORMAT.RGB) {
         const handleRGBChange = function(e: React.FocusEvent<HTMLInputElement>, type: TRGBSignle) {
+            const rgba = color.rgba;
             const value = parseInt(e.target.value);
-            let RGB = {r: rgba.r, g: rgba.g, b: rgba.b};
             if (value > 255) {
                 e.target.value = rgba[type].toString();
                 return;
             }
-            RGB[type] = value;
-            changeColor(RGB);
+            rgba[type] = value;
+            const hsb = Color.rgbToHsb(rgba.r, rgba.g, rgba.b);
+            changeColor(new Color(hsb.h, hsb.s, hsb.b, rgba.a));
         }
         return (
             <React.Fragment>
                 <ColorInputBox>
                     <ColorInput
-                        key={ rgba.r }
+                        key={ color.rgba.r }
                         $width={24}
-                        defaultValue={ rgba.r }
+                        defaultValue={ color.rgba.r  }
                         onBlur={e => handleRGBChange(e, 'r')}
                         />
                 </ColorInputBox>
                 <ColorInputBox>
                     <ColorInput
-                        key={ rgba.g }
+                        key={ color.rgba.g }
                         $width={24}
-                        defaultValue={ rgba.g }
+                        defaultValue={ color.rgba.g }
                         onBlur={e => handleRGBChange(e, 'g')}
                         />
                 </ColorInputBox>
                 <ColorInputBox>
                     <ColorInput
-                        key={ rgba.b }
+                        key={ color.rgba.b }
                         $width={24}
-                        defaultValue={ rgba.b }
+                        defaultValue={ color.rgba.b }
                         onBlur={e => handleRGBChange(e, 'b')}
                         />
                 </ColorInputBox>
             </React.Fragment>
         );
     }
-    const HSB = format.serialize(rgba) as IHSB;
+
     const handleHSBChange = function(e: React.FocusEvent<HTMLInputElement>, type: THSBSignle) {
-        let currHSB = {h: HSB.h, s: HSB.s, b: HSB.b};
+        const currHSB = {h: color.h, s: color.s, b: color.b};
         try {
-            let value = parseInt(e.target.value)
-            if (type === EHSB.S || type === EHSB.B) {
-                value /= 100;
-            }
+            const value = +parseFloat(e.target.value).toFixed(2);
             currHSB[type] = value;
-            const RGB = Color.hsvToRgb(currHSB.h, currHSB.s, currHSB.b);
-            if (typeof RGB !== 'string') {
-                changeColor(RGB);
-                return;
-            }
-            e.target.value = HSB[type].toString();
+            changeColor(new Color(currHSB.h, currHSB.s, currHSB.b, color.a));
+            e.target.value = currHSB[type].toString();
         } catch(err) {
-            e.target.value = HSB[type].toString();
+            e.target.value = currHSB[type].toString();
         }
     }
     return (
         <React.Fragment>
             <ColorInputBox>
                 <ColorInput
-                    key={ HSB.h }
+                    key={ color.h }
                     $width={24}
-                    defaultValue={ Math.round(HSB.h) }
+                    defaultValue={ color.h }
                     onBlur={e => handleHSBChange(e, EHSB.H)}
                     />
             </ColorInputBox>
             <ColorInputBox>
                 <ColorInput
-                    key={ HSB.s }
+                    key={ color.s }
                     $width={24}
-                    defaultValue={ Math.round(HSB.s * 100) }
+                    defaultValue={ color.s }
                     onBlur={e => handleHSBChange(e, EHSB.S)}
                     />
             </ColorInputBox>
             <ColorInputBox>
                 <ColorInput
-                    key={ HSB.b }
+                    key={ color.b }
                     $width={24}
-                    defaultValue={ Math.round(HSB.b * 100) }
+                    defaultValue={ color.b }
                     onBlur={e => handleHSBChange(e, EHSB.B)}
                     />
             </ColorInputBox>
         </React.Fragment>
-
     );
-
-    
 }
 
 
 export default function ColorFormatPanel(props: ColorFormatPanelProps) {
-    const { rgba, colorChange = () => {} } = props;
+    const { color, colorChange = () => {} } = props;
     const [format, setFormat] = useState(formatData[0]);
-    const opacity = useRef(rgba.a * maxOpacity)
-    const handleColorChange = function(rgb: IRGB) {
-        colorChange({
-            ...rgb,
-            a: opacity.current / maxOpacity
-        });
+    const opacity = useRef(color.a * maxOpacity)
+    const handleColorChange = function(color: Color) {
+        // console.log(rgb, opacity.current, maxOpacity);
+        // colorChange({
+        //     ...rgb,
+        //     a: opacity.current / maxOpacity
+        // });
+        colorChange(color);
     };
     const handleOpacityChange = function(e: React.FocusEvent<HTMLInputElement>) {
         const value = parseInt(e.target.value);
         if (!(value > -1)) {
-            e.target.value = `${parseInt((rgba.a * maxOpacity).toString())}%`;
+            e.target.value = `${parseInt((color.a * maxOpacity).toString())}%`;
             return;
         }
         opacity.current = value > maxOpacity ? maxOpacity : value;
-        handleColorChange({
-            r: rgba.r,
-            g: rgba.g,
-            b: rgba.b
-        });
+        handleColorChange(new Color(color.h, color.s, color.b, opacity.current / maxOpacity))
         e.target.value = `${opacity.current}%`;
     };
-
     return (
         <ColorValuePanel>
                 <Select
                     width={ 56 }
                     options={ formatData }
                     defaultOptionId={format.id}
-                    onChangeOption={(e: Event, option: IFormatData) => setFormat(option)}
+                    onChangeOption={(e: Event, option: any) => setFormat(option)}
                     />
                 <ColorFormat
                     format={ format }
-                    rgba={ rgba }
+                    color={ color }
                     changeColor={ handleColorChange }
                     />
                 <ColorInputBox>
                     <ColorInput
-                        key={ rgba.a }
+                        key={ color.a }
                         $width={34}
-                        defaultValue={ parseInt((rgba.a * maxOpacity).toString()) + '%' }
+                        defaultValue={ parseInt((color.a * maxOpacity).toString()) + '%' }
                         onBlur={ handleOpacityChange }
                         />
                 </ColorInputBox>

@@ -120,10 +120,10 @@ export interface IOption<T = {}, P = number> {
 }
 
 type PropsWithSelect<T = number> = {
-    onChangeOption?: Function
-    theme?: TSelectTheme
     options: Array<IOption>
     defaultOptionId?: T
+    onChangeOption?: (e: Event, options: IOption) => void
+    theme?: TSelectTheme
     width?: number
 }
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 
 interface ColorPointerWrapperProps {
     $size: number
+    isActive: boolean
 }
 const ColorPointerOuter = styled.div`
     border-radius: 50%;
@@ -13,17 +14,27 @@ const ColorPointerWrapper = styled.div<ColorPointerWrapperProps>`
     width: ${props => props.$size}px;
 	height: ${props => props.$size}px;
 	border: solid 2px #fff;
-    background-color: transparent;
+    ${ props => props.isActive ? `
+        background: #fff;
+    ` : `
+        background-color: transparent;
+    `
+    };
     border-radius: 50%;
+    box-sizing: border-box;
 `;
 
 
-interface ColorPointerProps {
+type ColorPointerProps<P = {}> = P & {
     size?: number
+    isActive?: boolean
+    // 当鼠标移动时 改变的移动值
     onDragChange?: (x: number, y: number) => any
+    // 当鼠标弹起时
+    onMoveUp?: (x: number, y: number) => any
 }
 
-export default class ColorPointer extends React.Component<ColorPointerProps> {
+export default class ColorPointer extends React.Component<ColorPointerProps<React.ComponentProps<'div'>>> {
     isPointerMoveLeave: boolean = true
     downX: number = 0
     downY: number = 0
@@ -56,23 +67,41 @@ export default class ColorPointer extends React.Component<ColorPointerProps> {
         this.downY = 0;
     }
     handleDocumentMouseUp() {
-        if (!this.isPointerMoveLeave) this.isPointerMoveLeave = true
+        if (!this.isPointerMoveLeave) {
+            const { onMoveUp = () => {} } = this.props;
+            this.isPointerMoveLeave = true
+            onMoveUp(this.downX, this.downY);
+        }
     }
     handleDocumentMouseMove(event: MouseEvent) {
+        const { onDragChange = () => {} } = this.props;
         if (!this.isPointerMoveLeave) {
             const currentMoveX = event.clientX - this.downX;
             const currentMoveY = event.clientY - this.downY;
-            this.props.onDragChange && this.props.onDragChange(currentMoveX, currentMoveY);
+            onDragChange(currentMoveX, currentMoveY);
             this.downX = event.clientX;
             this.downY = event.clientY;
         }
     }
     render() {
-        const { size = 12 } = this.props;
+        const {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            ref,
+            size = 12,
+            isActive = false,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onDragChange = () => {},
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onMoveUp = () => {},
+            ...remains
+        } = this.props;
         return (
-            <ColorPointerOuter>
+            <ColorPointerOuter
+                { ...remains }
+                >
                 <ColorPointerWrapper
                     $size={ size }
+                    isActive={ isActive }
                     onMouseDown={e => this.handleMouseDown(e)}
                     />
             </ColorPointerOuter>

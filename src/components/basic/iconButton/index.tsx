@@ -25,13 +25,15 @@ type IconButtonWrapperProps = {
     $padding: number
     $shape: TShape
     $angle: TAngleRect
+    disabled?: boolean
 }
 const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     ${props => `
+        cursor: ${props.disabled ? 'not-allowed' : 'pointer'};
+        opacity: ${props.disabled ? 0.5 : 1};
         width: ${ props.$size + props.$padding }px;
         height: ${ props.$size + props.$padding}px;
         background: ${ props.color || props.theme.primary};
@@ -45,6 +47,12 @@ const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
             border-bottom-right-radius: ${props.$angle.bottomRight}px;
         `};
     `};
+
+    ${props => !props.disabled && `
+        &:hover {
+            background: ${ props.hoverBgColor || props.theme.assist};
+        }
+    `}
 
     /* position: relative;
     box-sizing: border-box;
@@ -106,10 +114,6 @@ const IconButtonWrapper = styled(SvgWrapperStyle)<IconButtonWrapperProps>`
     &:disabled::after {
         opacity: 0;
     } */
-
-    &:hover {
-        background: ${ props => props.hoverBgColor || props.theme.assist};
-    }
 `;
 
 type TShape = 'circle' | 'round-angle';
@@ -127,19 +131,20 @@ export interface IconButtonProps extends IconProps {
     padding?: number
     /**
      * 设置盒子形状
-     * @param 'circle' | 'round-angle'
+     * 'circle' | 'round-angle'
      */
     shape?: TShape
     /**
      * border-radius的四个角  
      * 如果设置了`shape: circle`则此属性无效
-     * @param topLeft
-     * @param topRight
-     * @param bottomLeft
-     * @param bottomRight
+     * topLeft
+     * topRight
+     * bottomLeft
+     * bottomRight
      */
     angle?: TAngle
     tippyProps?: TippyProps
+    disabled?: boolean
 }
 
 function transitionAngle(angle: TAngle): TAngleRect {
@@ -168,12 +173,15 @@ function IconButton(props: IconButtonProps) {
         shape = 'circle',
         angle = 8,
         padding = 0,
-        tippyProps = {}
+        tippyProps = {},
+        activeColor = theme.assist,
+        defaultColor = theme.lesser,
+        hoverColor = theme.light,
+        disabled = false,
+        onClick= () => {},
+        ...otherProps
     } = props;
 
-    const activeColor = props.activeColor || theme.assist;
-    const defaultColor = props.defaultColor || theme.lesser;
-    const hoverColor = props.hoverColor || theme.light;
     const margin = Object.assign({ left: 0, top: 0, right: 0, bottom: 0}, props.margin);
     // 获取当前Icon的Svg
     const CurrentIcon = getIcon(props.icon);
@@ -191,9 +199,9 @@ function IconButton(props: IconButtonProps) {
             { ...tippyProps }
             >
             <IconButtonWrapper
-                { ...props }
+                { ...otherProps }
                 className={ props.className }
-                onClick={e => props.onClick && props.onClick(e)}
+                onClick={e => !disabled && onClick(e)}
                 active={ active }
                 $size={ size }
                 $margin={ margin }
@@ -203,6 +211,7 @@ function IconButton(props: IconButtonProps) {
                 defaultColor={ defaultColor }
                 hoverColor={ hoverColor }
                 activeColor={ activeColor }
+                disabled={ disabled }
                 >
                 <IconWrapper
                     {...props}

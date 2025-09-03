@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { CloseButton } from "@components/basic/closeButton";
 import Tippy from "@tippyjs/react";

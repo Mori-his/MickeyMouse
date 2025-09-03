@@ -1,4 +1,5 @@
 import { IRGBA } from "@/types/color";
+import Color from "@layout/utils/color";
 import Tippy from "@tippyjs/react";
 import React, { useEffect, useRef, useState } from "react";
 import { ColorCollect, ColorCollectItem, ColorCollectItemWrapper } from '.';
@@ -16,12 +17,12 @@ function getAdopeColors() {
     }
 }
 
-function adopeColor(rgba: IRGBA) {
+function adopeColor(color: Color) {
     const colors = getAdopeColors() || [];
     if (maxAdope <= colors.length) {
         colors.shift();
     }
-    colors.push(rgba);
+    colors.push(color);
     window.localStorage.setItem(storaName, JSON.stringify(colors));
 }
 
@@ -35,26 +36,25 @@ function rgbaParseInt(rgba: IRGBA) {
 }
 
 export type ColorAdopePropsWithEvent<P> = P & {
-    onColorClick?: (rgba: IRGBA) => any
+    onColorClick?: (color: Color) => any
     onDragChange?: (x: number, y: number) => any
 }
 
 interface ColorAdopePanelProps {
-    rgba: IRGBA
+    color: Color
     max?: number
 }
 export default function ColorAdopePanel(props: ColorAdopePropsWithEvent<ColorAdopePanelProps>) {
-    const { rgba, max = maxAdope, onColorClick = () => {}, onDragChange = () => {} } = props;
+    const { color, max = maxAdope, onColorClick = () => {}, onDragChange = () => {} } = props;
     maxAdope = max;
     const [colors, setColors] = useState([]);
     const handleAdopeColor = function() {
-        adopeColor(rgba);
+        adopeColor(color);
         setColors(getAdopeColors());
     }
     useEffect(() => {
         setColors(getAdopeColors());
     }, [])
-
     return (
         <ColorCollect>
             <IconButton
@@ -66,10 +66,10 @@ export default function ColorAdopePanel(props: ColorAdopePropsWithEvent<ColorAdo
                 onClick={handleAdopeColor}
                 />
             {
-                colors.map((rgba: IRGBA, index) => (
-                    <ColorCollectPanel
+                colors.map((color: Color, index) => (
+                    color.rgba && <ColorCollectPanel
                         key={ index }
-                        rgba={ rgba }
+                        color={ color }
                         onColorClick={ onColorClick }
                         onDragChange={ onDragChange }
                         />
@@ -81,20 +81,20 @@ export default function ColorAdopePanel(props: ColorAdopePropsWithEvent<ColorAdo
 
 
 interface ColorCollectPanelProps {
-    rgba: IRGBA
+    color: Color
 }
 export function ColorCollectPanel(props: ColorAdopePropsWithEvent<ColorCollectPanelProps>) {
-    const { rgba, onColorClick = () => {} } = props;
-    const tooltipRef = useRef(null);
+    const { color, onColorClick = () => {} } = props;
+    // const tooltipRef = useRef(null);
     const mouseRef = useRef({
         downX: 0,
         downY: 0,
         isMouseLeave: true
     });
-    const intRgba = rgbaParseInt(rgba);
+    const intRgba = rgbaParseInt(color.rgba);
 
-    const handleColorClick = function(rgba: IRGBA) {
-        onColorClick(rgba);
+    const handleColorClick = function(color: Color) {
+        onColorClick(color);
     }
 
     const handleMouseDown = function(e: React.MouseEvent) {
@@ -144,8 +144,8 @@ export function ColorCollectPanel(props: ColorAdopePropsWithEvent<ColorCollectPa
                     onMouseDown={e => handleMouseDown(e)}
                     >
                     <ColorCollectItem
-                        style={{backgroundColor: `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`}}
-                        onClick={e => handleColorClick(rgba) }
+                        style={{backgroundColor: `rgba(${intRgba.r}, ${intRgba.g}, ${intRgba.b}, ${intRgba.a})`}}
+                        onClick={() => handleColorClick(color) }
                         />
                 </ColorCollectItemWrapper>
         </Tippy>

@@ -1,4 +1,6 @@
-import React, { ComponentProps, ForwardedRef, forwardRef, PropsWithChildren, useImperativeHandle } from "react";
+import { Menu, MenuItem } from "@models/menu";
+import { observer } from "mobx-react";
+import React, { ComponentProps, ForwardedRef, forwardRef, PropsWithChildren, useCallback } from "react";
 import styled from "styled-components";
 
 const MenuWrapper = styled.div`
@@ -14,16 +16,9 @@ const MenuWrapper = styled.div`
     `};
 `;
 
-export type TMenuItemWith<P = {}> = P & {
-    text: string
-    tips?: string
-    disabled?: boolean
-    children?: TMenuItemWith[]
-}
-
 type PropsWithRightKeyMenu<P = {}> = P & {
-    menus: TMenuItemWith<ComponentProps<'div'>>[]
-    itemClick?: (menuItem: TMenuItemWith, index: number) => void
+    menus: Menu
+    itemClick?: (menuItem: MenuItem, index: number) => void
 }
 /**
  * TODO
@@ -31,49 +26,45 @@ type PropsWithRightKeyMenu<P = {}> = P & {
  * 2、实现分割组件 Divider
  * 3、实现多层Tippy的菜单
  */
-const RightKeyMenu = forwardRef(function RightKeyMenu(
+const RightKeyMenu = observer(forwardRef(function RightKeyMenu(
     props: PropsWithRightKeyMenu<ComponentProps<'div'>>,
     divRef: ForwardedRef<HTMLDivElement>
 ) {
     const {
-        ref,
         menus,
         itemClick = () => {},
-        ...divProps
     } = props;
-    // useImperativeHandle(
-    //   ref,
-    //   () => ({
-    //     getValue() {}
-    //   }),
-    //   []
-    // );    
 
+
+    const handleTreeContextMenu = useCallback(function(event: React.MouseEvent<HTMLDivElement>) {
+        event.preventDefault();
+    }, []);
 
     return (
         <MenuWrapper
             ref={ divRef }
-            { ...divProps }
+            onContextMenuCapture={ handleTreeContextMenu }
             >
             {
-                menus.map(({ref, text, disabled, tips, onClick = () => {}, ...itemProps}, index) => (
-                    <RightKeyMenuItem
-                        key={ text }
-                        disabled={ disabled }
-                        after={ tips }
-                        onClick={ (event: React.MouseEvent<HTMLDivElement>) => {
-                            itemClick(menus[index], index);
-                            onClick(event);
+                menus.map((menuItem, index) => {
+                    const item = menuItem;
+                    return <RightKeyMenuItem
+                        key={ item.text }
+                        disabled={ item.disable }
+                        after={ item.shortcutsTip }
+                        onClick={ () => {
+                            itemClick(item, index);
+                            item.onClick(item, index);
+                            menus.onClick(item, index);
                         }}
-                        { ...itemProps }
                         >
-                        { text }
+                        { item.text }
                     </RightKeyMenuItem>
-                ))
+                })
             }
         </MenuWrapper>
     );
-});
+}));
 
 interface MenuItemWrapperProps {
     disabled: boolean
@@ -83,20 +74,32 @@ const MenuItemWrapper = styled.div<MenuItemWrapperProps>`
     justify-content: space-between;
     align-items: center;
     height: 24px;
-    margin: 0 8px;
+    margin: 0 4px;
     padding: 0 8px;
     font-size: 12px;
-    color: ${props => props.disabled ? props.theme.lesser : props.theme.lightText};
     border-radius: 8px;
     cursor: default;
-    &:hover {
-        background-color: ${props => props.theme.assist};
-    }
+    ${
+        props => props.disabled ? `
+            color: ${props.theme.lesser};
+            cursor: not-allowed;
+        ` : `
+            color: ${props.theme.lightText};
+            &:hover {
+                background-color: ${props.theme.assist};
+                .menuItemTip {
+                    color: ${props.theme.lightText};
+                }
+            }
+        `
+    };
+    
 `;
 const MenuItemText = styled.span`
 `;
 const MenuItemTip = styled.span`
-
+    color: ${props => props.theme.lesser};
+    letter-spacing: 4px;
 `;
 
 type RightKeyMenuItemPropsWith<P = {}> = P & {
@@ -105,7 +108,7 @@ type RightKeyMenuItemPropsWith<P = {}> = P & {
     after?: React.ReactNode
 }
 
-export const RightKeyMenuItem = forwardRef(function RightKeyMenuItem(
+export const RightKeyMenuItem = observer(forwardRef(function RightKeyMenuItem(
     props: PropsWithChildren<
             RightKeyMenuItemPropsWith<
                 React.ComponentProps<
@@ -116,6 +119,7 @@ export const RightKeyMenuItem = forwardRef(function RightKeyMenuItem(
     divRef: ForwardedRef<HTMLDivElement>
 ) {
     const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ref,
         after,
         disabled = false,
@@ -132,7 +136,7 @@ export const RightKeyMenuItem = forwardRef(function RightKeyMenuItem(
             <MenuItemText>{ children }</MenuItemText>
             {
                 after ? (
-                    <MenuItemTip>
+                    <MenuItemTip className="menuItemTip">
                         { after }
                     </MenuItemTip>
                 ) : null
@@ -140,7 +144,7 @@ export const RightKeyMenuItem = forwardRef(function RightKeyMenuItem(
         </MenuItemWrapper>
     );
 
-})
+}));
 
 export default RightKeyMenu;
 
